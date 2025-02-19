@@ -49,11 +49,12 @@ class WC_Correios_Webhook
 		// Fetch configuration data from WooCommerce settings
 		$this->_configData = get_option('woocommerce_correios-integration_settings');
 		$this->_blueStatus = $this->_configData['noBlueStatus'] ?? 'wc-shipping-progress';
-		$this->_statusCheck = $this->_configData['noBlueOnCreate'] === "yes";
+		$this->_statusCheck = (is_string($this->_configData['noBlueOnCreate']) && $this->_configData['noBlueOnCreate'] === "yes") || (is_bool($this->_configData['noBlueOnCreate']) && $this->_configData['noBlueOnCreate'] === true);
 		// Comprobación con isset para evitar el error:
 		$this->_devMode = isset($this->_configData['devOptions']) && $this->_configData['devOptions'] === "yes";
 
-		$this->_blueApikey = $this->_configData['tracking_bxkey'];
+		// $this->_blueApikey = $this->_configData['tracking_bxkey'];
+		$this->_blueApikey = $this->_configData['tracking_bxkey'] ?? 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
 		// Decide the base path URL based on the devMode status
 		if ($this->_devMode && !empty($this->_configData['alternativeBasePath'])) {
 			$this->_basePathUrl = $this->_configData['alternativeBasePath'];

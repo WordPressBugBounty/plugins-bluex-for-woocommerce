@@ -188,7 +188,7 @@ class WC_Correios_Integration extends WC_Integration
 	public function admin_options()
 	{
 		echo '<div id="integration-react-form"></div>';
-
+		$GLOBALS['hide_save_button'] = true;
 
 		include WC_Correios::get_plugin_path() . 'includes/admin/views/html-admin-help-message.php';
 
@@ -347,7 +347,8 @@ class WC_Correios_Integration extends WC_Integration
 	function getBasePath()
 	{
 		$settings = $this->get_integration_settings();
-		$devMode = defined('DEV_OPTIONS') && DEV_OPTIONS && $settings['devOptions'] === 'yes';
+		// $devMode = defined('DEV_OPTIONS') && DEV_OPTIONS && $settings['devOptions'] === 'yes';
+		$devMode = $settings['devOptions'] === 'yes';
 		$alternativeBasePath = $settings['alternativeBasePath'];
 		$basePathUrl = ($devMode && !empty($alternativeBasePath)) ? $alternativeBasePath : 'https://apigw.bluex.cl';
 		return $basePathUrl;
@@ -431,8 +432,9 @@ class WC_Correios_Integration extends WC_Integration
 
 	public function get_tracking_bxkey()
 	{
+		// $devMode = defined('DEV_OPTIONS') && DEV_OPTIONS && $settings['devOptions'] === 'yes';
 		$settings = $this->get_integration_settings();
-		$devMode = defined('DEV_OPTIONS') && DEV_OPTIONS && $settings['devOptions'] === 'yes';
+		$devMode = (is_string($settings['devOptions']) && $settings['devOptions'] === 'yes') || (is_bool($settings['devOptions']) && $settings['devOptions'] === true);
 		$bxkey = $devMode ? $settings['tracking_bxkey'] : 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
 		return $bxkey;
 	}
@@ -500,6 +502,7 @@ class WC_Correios_Integration extends WC_Integration
 	{
 		$request_data = array(
 			'storeId' => $storeId,
+			'ecommerce' => 'Woocommerce',
 			'credentials' => array(
 				'accessToken' => $credentials['clientKey'],
 				'secretKey' => $credentials['clientSecret'],

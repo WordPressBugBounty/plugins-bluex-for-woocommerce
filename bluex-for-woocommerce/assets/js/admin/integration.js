@@ -8797,6 +8797,34 @@ async function updateIntegrationCredentials(storeId, credentials) {
     throw error;
   }
 }
+async function saveDeveloperSettings(settings) {
+  try {
+    const response = await fetch(
+      // eslint-disable-next-line no-undef
+      WCCorreiosIntegrationAdminParams.ajax_url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          action: "save_developer_settings",
+          // eslint-disable-next-line no-undef
+          nonce: WCCorreiosIntegrationAdminParams.nonce,
+          devOptions: settings.devOptions,
+          alternativeBasePath: settings.alternativeBasePath,
+          tracking_bxkey: settings.tracking_bxkey
+        })
+      }
+    );
+    const data = await response.json();
+    console.log("Save Developer Settings Response:", data);
+    return data;
+  } catch (error) {
+    console.error("Error saving developer settings:", error);
+    throw error;
+  }
+}
 async function saveSettings(settings) {
   try {
     const response = await fetch(
@@ -9282,6 +9310,144 @@ const styles$1 = {
     cursor: "pointer"
   }
 };
+const DeveloperToolsForm = ({
+  open,
+  onClose,
+  saveSettings: saveSettings2,
+  validateIntegration,
+  ...props
+}) => {
+  var _a, _b, _c;
+  const [loading, setLoading] = reactExports.useState(false);
+  const [url, setUrl] = reactExports.useState((_a = props.settings) == null ? void 0 : _a.alternativeBasePath);
+  const [bxKey, setBxKey] = reactExports.useState((_b = props.settings) == null ? void 0 : _b.tracking_bxkey);
+  const [isEnabled, setIsEnabled] = reactExports.useState(
+    ((_c = props.settings) == null ? void 0 : _c.devOptions) === "yes"
+  );
+  console.log("isEnabled => ", isEnabled);
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await saveSettings2({
+        devOptions: isEnabled ? "yes" : "no",
+        alternativeBasePath: url,
+        tracking_bxkey: bxKey
+      });
+      await validateIntegration();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      onClose();
+    }
+  };
+  if (!open) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      style: {
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 1e3,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      },
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          style: {
+            backgroundColor: "white",
+            padding: "20px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+            zIndex: 1e3,
+            width: "500px",
+            height: "350px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between"
+          },
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Developer tools" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                style: {
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-evenly",
+                  alignItems: "flex-start",
+                  height: "100%"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
+                    "Is enabled:",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "input",
+                      {
+                        type: "checkbox",
+                        checked: isEnabled,
+                        onChange: (e) => setIsEnabled(e.target.checked),
+                        style: { marginLeft: "10px" }
+                      }
+                    )
+                  ] }) }),
+                  isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
+                    "URL alternative:",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "input",
+                      {
+                        type: "text",
+                        value: url,
+                        onChange: (e) => setUrl(e.target.value),
+                        style: { marginLeft: "10px", padding: "5px", width: "100%" }
+                      }
+                    )
+                  ] }) }),
+                  isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
+                    "Tracking BX key:",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "input",
+                      {
+                        type: "text",
+                        value: bxKey,
+                        onChange: (e) => setBxKey(e.target.value),
+                        style: { marginLeft: "10px", padding: "5px", width: "100%" }
+                      }
+                    )
+                  ] }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", justifyContent: "flex-end" }, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: onClose,
+                        style: { marginRight: "10px", padding: "5px 10px" },
+                        children: "Cancel"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "button",
+                      {
+                        type: "button",
+                        disabled: loading,
+                        style: { padding: "5px 10px" },
+                        onClick: handleSave,
+                        children: loading ? "Saving..." : "Save"
+                      }
+                    )
+                  ] })
+                ]
+              }
+            )
+          ]
+        }
+      )
+    }
+  );
+};
 const StepProgressBar = ({ steps, currentStep }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
@@ -9384,6 +9550,7 @@ const App = () => {
   const [error, setError] = reactExports.useState(void 0);
   const [status, setStatus] = reactExports.useState(STATUS_PAGE.VALIDATING);
   const [settings, setSettings] = reactExports.useState(void 0);
+  const [developerToolsOpen, setDeveloperToolsOpen] = reactExports.useState(false);
   const [optionsEmissionOs, setOptionsEmissionOs] = reactExports.useState(void 0);
   const [pricingTest, setPricingTest] = reactExports.useState(false);
   reactExports.useEffect(() => {
@@ -9417,6 +9584,14 @@ const App = () => {
   const handleError = () => {
     setLoading(false);
   };
+  const saveSettingsDeveloperTools = reactExports.useCallback(async (settings2) => {
+    try {
+      await saveDeveloperSettings(settings2);
+    } catch (error2) {
+      console.error(error2);
+      alert("Error al guardar las configuraciones de desarrollo");
+    }
+  }, []);
   const testPricing = reactExports.useCallback(async () => {
     setLoading(true);
     try {
@@ -9429,6 +9604,18 @@ const App = () => {
       setLoading(false);
     }
   }, []);
+  const DeveloperToolsMemo = reactExports.useMemo(() => {
+    return developerToolsOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      DeveloperToolsForm,
+      {
+        open: developerToolsOpen,
+        settings,
+        validateIntegration,
+        onClose: () => setDeveloperToolsOpen(false),
+        saveSettings: saveSettingsDeveloperTools
+      }
+    );
+  }, [developerToolsOpen, settings]);
   const currentStep = reactExports.useMemo(() => {
     if (!storeId) return 0;
     if (pricingTest) return 4;
@@ -9569,7 +9756,9 @@ const App = () => {
         }
       ),
       loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })
-    ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: styles.developerTools, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setDeveloperToolsOpen(true), children: "</>" }) }),
+    DeveloperToolsMemo
   ] });
 };
 const styles = {

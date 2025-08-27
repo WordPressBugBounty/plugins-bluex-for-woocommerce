@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Correios Webhook.
  *
@@ -17,7 +19,6 @@ class WC_Correios_Webhook
 {
 
 
-
 	/**
 	 * Addresses webservice URL.
 	 *
@@ -26,9 +27,35 @@ class WC_Correios_Webhook
 	protected $_basePathUrl;
 	protected $_configData;
 	protected $_blueStatus;
-	protected $_statusCheck;
 	protected $_blueApikey;
 	protected $_devMode;
+
+	/**
+	 * Settings handler.
+	 *
+	 * @var WC_Correios_Settings
+	 */
+	protected $settings_handler = null;
+
+	/**
+	 * API Client instance.
+	 *
+	 * @var BlueX_API_Client|null
+	 */
+	private $api_client = null;
+
+	/**
+	 * Get settings handler instance
+	 *
+	 * @return WC_Correios_Settings
+	 */
+	protected function get_settings_handler()
+	{
+		if ($this->settings_handler === null) {
+			$this->settings_handler = WC_Correios_Settings::get_instance();
+		}
+		return $this->settings_handler;
+	}
 
 
 	/**
@@ -39,6 +66,8 @@ class WC_Correios_Webhook
 	public function __construct()
 	{
 		$this->setupConfig();
+		// Initialize API client
+		$this->api_client = new BlueX_API_Client();
 		add_action('init', array($this, 'init'));
 	}
 	/**
@@ -47,20 +76,13 @@ class WC_Correios_Webhook
 	private function setupConfig()
 	{
 		// Fetch configuration data from WooCommerce settings
-		$this->_configData = get_option('woocommerce_correios-integration_settings');
+		$this->_configData = $this->get_settings_handler()->get_settings();
 		$this->_blueStatus = $this->_configData['noBlueStatus'] ?? 'wc-shipping-progress';
-		$this->_statusCheck = (is_string($this->_configData['noBlueOnCreate']) && $this->_configData['noBlueOnCreate'] === "yes") || (is_bool($this->_configData['noBlueOnCreate']) && $this->_configData['noBlueOnCreate'] === true);
-		// Comprobación con isset para evitar el error:
-		$this->_devMode = isset($this->_configData['devOptions']) && $this->_configData['devOptions'] === "yes";
+		$this->_devMode = ($this->_configData['devOptions'] ?? 'no') === "yes";
 
+		// API Key and Base Path are now handled by the API Client.
 		// $this->_blueApikey = $this->_configData['tracking_bxkey'];
-		$this->_blueApikey = $this->_configData['tracking_bxkey'] ?? 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
-		// Decide the base path URL based on the devMode status
-		if ($this->_devMode && !empty($this->_configData['alternativeBasePath'])) {
-			$this->_basePathUrl = $this->_configData['alternativeBasePath'];
-		} else {
-			$this->_basePathUrl = 'https://apigw.bluex.cl';
-		}
+		// $this->_basePathUrl = $this->get_settings_handler()->get_base_path(); 
 	}
 	/**
 	 * init configuration.
@@ -77,12 +99,21 @@ class WC_Correios_Webhook
 	 * Maps the WooCommerce order to the required format for the external service.
 	 *
 	 * @param int $order_id The order ID.
-	 * @return string JSON encoded string representing the mapped order.
+	 * @return string|null JSON encoded string representing the mapped order, or null on failure.
 	 */
-	public function map_order($order_id)
+	public function map_order($order_id): ?string
 	{
+		if ($this->_devMode) {
+			bluex_log('info', "Webhook: Start mapping order ID: {$order_id}");
+		}
 
 		$order = wc_get_order($order_id);
+
+		if (!$order) {
+			bluex_log('error', "Webhook: wc_get_order failed for order ID: {$order_id}");
+			return null;
+		}
+
 		$order_data = $order->get_data();
 		$shipping_lines = $order->get_items('shipping');
 		$method_id = "";
@@ -98,30 +129,34 @@ class WC_Correios_Webhook
 
 			// Acceder a los atributos
 			$productMetadata->attributes = $productMetadata->get_attributes();
-
 			// Acceder a las dimensiones
 			$productMetadata->dimensions = array(
 				'length' => $productMetadata->get_length(),
 				'width' => $productMetadata->get_width(),
 				'height' => $productMetadata->get_height(),
 			);
-
 			// Acceder al peso
 			$productMetadata->weight = $productMetadata->get_weight();
 			$product['medatada'] = $productMetadata;
-
 			$product_ids[] = $product;
 		}
+
 		$agencyId = $order->get_meta('agencyId');
 		if ($agencyId) {
 			$order_data['agencyId'] = $agencyId;
 		}
+
 		$order_data['shipping_lines'] = $method_id;
 		$order_data['line_items'] = $product_ids;
 		$order_data['seller'] = $this->_configData;
 		$order_data['storeId'] = home_url() . '/';
 
 		$order_json = json_encode([$order_data]);
+
+		if ($this->_devMode) {
+			bluex_log('info', "Webhook: Mapped Order JSON for order {$order_id}: " . $order_json);
+		}
+
 		return $order_json;
 	}
 	/**
@@ -179,48 +214,86 @@ class WC_Correios_Webhook
 	}
 
 	/**
-	 * Sends the mapped order data to the external service.
+	 * Sends the mapped order data to the external service using API Client.
 	 *
-	 * @param string $mappedOrder JSON encoded string of the mapped order.
+	 * @param string $mappedOrderJson JSON encoded string of the mapped order array.
 	 */
-	private function send_order($mapedOrder)
+	private function send_order(string $mappedOrderJson): void
 	{
+		if (!$this->api_client) {
+			bluex_log('error', 'API Client not initialized in send_order');
+			return;
+		}
 
-		$url = $this->_basePathUrl . '/api/integr/woocommerce-wh/v1/order';
-		$request_args = array(
-			'method'  => 'POST',
-			'headers' => array(
-				'Content-Type' => 'application/json',
-				'apikey' => $this->_blueApikey,
-			),
-			'body'        => $mapedOrder
-		);
-		$returnwebhook = wp_remote_post($url, $request_args);
-		if (is_wp_error($returnwebhook)) {
-			$this->send_log_if_error($returnwebhook->get_error_message(), $mapedOrder);
+		$order_data_array = json_decode($mappedOrderJson, true);
+
+		// Check if decoding was successful and if it's an array with at least one element
+		if (json_last_error() !== JSON_ERROR_NONE || !is_array($order_data_array) || empty($order_data_array[0])) {
+			$order_id_for_log = 'Unknown Order ID'; // Fallback if decoding fails early
+			if (is_array($order_data_array) && isset($order_data_array[0]['id'])) {
+				$order_id_for_log = $order_data_array[0]['id'];
+			}
+			bluex_log('error', "Failed to decode mapped order JSON for order ID {$order_id_for_log} before sending webhook. JSON: " . $mappedOrderJson);
+			// Optionally send a log about the decoding failure itself? 
+			// $this->send_log_if_error('JSON Decode Error', ['raw_json' => $mappedOrderJson]); 
+			return;
+		}
+
+		// The webhook endpoint expects the first element of the decoded array.
+		$payload = $order_data_array[0];
+		$order_id = $payload['id'] ?? 'Unknown Order ID'; // Get order ID for logging
+
+		try {
+			$response = $this->api_client->send_order_webhook(array($payload));
+
+			if (is_wp_error($response)) {
+				// Error is already logged by the API client, but we might want to send it to the log webhook too.
+				$this->send_log_if_error($response->get_error_message(), $payload);
+				return;
+			}
+			// Optionally log success? The API client already logs the response.
+			// bluex_log('info', "Order webhook sent successfully for order ID {$order_id}. Response: " . json_encode($response));
+
+		} catch (Exception $e) { // Catch potential exceptions from API client or other issues
+			bluex_log('error', "Exception sending order webhook for order ID {$order_id}: " . $e->getMessage());
+			// Send log about the exception
+			$this->send_log_if_error('Exception: ' . $e->getMessage(), $payload);
 			return;
 		}
 	}
-	public function send_log_if_error($error, $payload)
+
+	/**
+	 * Sends log data if an error occurs, using API Client.
+	 *
+	 * @param string $error The error message.
+	 * @param array|string $payload The payload associated with the error (can be array or JSON string).
+	 */
+	public function send_log_if_error(string $error, $payload): void
 	{
-		try {
-			$dataError = array(
-				'error' => $error,
-				'order' => $payload
-			);
-			$logs = wp_remote_post($this->_basePathUrl . '/api/ecommerce/custom/logs/v1', array(
-				'method'  => 'POST',
-				'headers' => array(
-					'Content-Type' => 'application/json',
-					'apikey' =>  $this->_blueApikey
-				),
-				'body'        => json_encode($dataError)
-			));
-			if (is_wp_error($logs)) {
-				throw new Exception('Error enviando mensaje a servicio de logs');
-			}
-		} catch (Exception $e) {
+		if (!$this->api_client) {
+			// Cannot send log if client is not available, maybe log to local error_log?
+			error_log("BlueX Webhook Error (API Client N/A): {$error}");
 			return;
+		}
+
+		// Attempt to decode payload if it's a JSON string
+		$payload_array = is_string($payload) ? json_decode($payload, true) : $payload;
+		if (!is_array($payload_array)) {
+			// If decoding fails or it wasn't a string, create a simple array
+			$payload_array = ['original_payload' => $payload];
+		}
+
+		try {
+			$response = $this->api_client->send_log_webhook($error, $payload_array);
+
+			if (is_wp_error($response)) {
+				// Log the failure to send the log webhook itself to the local error log
+				error_log("BlueX: Failed to send error log via webhook. Original Error: {$error}. Webhook Error: " . $response->get_error_message());
+			}
+			// No need to throw exception here, just log the failure locally.
+		} catch (Exception $e) {
+			// Log exception during log sending to local error log
+			error_log("BlueX: Exception while sending error log via webhook. Original Error: {$error}. Exception: " . $e->getMessage());
 		}
 	}
 
@@ -235,14 +308,21 @@ class WC_Correios_Webhook
 	 */
 	public function order_status_change($order_id, $old_status, $new_status)
 	{
-		if ($this->_statusCheck) {
-			return;
+		if ($this->_devMode) {
+			bluex_log('info', "Webhook: Status change hook for order ID {$order_id}. Old: {$old_status}, New: {$new_status}. Target status: {$this->_blueStatus}");
 		}
 
 		$formatedStatus = "wc-" . $new_status;
-		if (($old_status != $new_status) && ($formatedStatus == $this->_blueStatus && $this->_statusCheck == false)) {
-			$mapedOrder = $this->map_order($order_id);
-			$this->send_order($mapedOrder);
+		if (($old_status !== $new_status) && ($formatedStatus === $this->_blueStatus)) {
+			bluex_log('info', "Webhook: Matched status for order ID {$order_id}. Sending to BlueX.");
+			$mappedOrder = $this->map_order($order_id);
+
+			if (null === $mappedOrder) {
+				bluex_log('error', "Webhook: Failed to map order ID {$order_id}, not sending.");
+				return;
+			}
+
+			$this->send_order($mappedOrder);
 		}
 	}
 
@@ -255,11 +335,16 @@ class WC_Correios_Webhook
 	 */
 	public function send_on_create($order_id)
 	{
-		if (!$this->_statusCheck) {
+		bluex_log('info', "Webhook: Order created hook triggered for order ID {$order_id}. Sending to BlueX.");
+
+		$mappedOrder = $this->map_order($order_id);
+
+		if (null === $mappedOrder) {
+			bluex_log('error', "Webhook: Failed to map order ID {$order_id}, not sending.");
 			return;
 		}
-		$mapedOrder = $this->map_order($order_id);
-		$this->send_order($mapedOrder);
+
+		$this->send_order($mappedOrder);
 	}
 }
 

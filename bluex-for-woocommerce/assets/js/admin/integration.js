@@ -3,8 +3,8 @@
   if (relList && relList.supports && relList.supports("modulepreload")) {
     return;
   }
-  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
-    processPreload(link);
+  for (const link2 of document.querySelectorAll('link[rel="modulepreload"]')) {
+    processPreload(link2);
   }
   new MutationObserver((mutations) => {
     for (const mutation of mutations) {
@@ -17,22 +17,22 @@
       }
     }
   }).observe(document, { childList: true, subtree: true });
-  function getFetchOpts(link) {
+  function getFetchOpts(link2) {
     const fetchOpts = {};
-    if (link.integrity) fetchOpts.integrity = link.integrity;
-    if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
-    if (link.crossOrigin === "use-credentials")
+    if (link2.integrity) fetchOpts.integrity = link2.integrity;
+    if (link2.referrerPolicy) fetchOpts.referrerPolicy = link2.referrerPolicy;
+    if (link2.crossOrigin === "use-credentials")
       fetchOpts.credentials = "include";
-    else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
+    else if (link2.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
     else fetchOpts.credentials = "same-origin";
     return fetchOpts;
   }
-  function processPreload(link) {
-    if (link.ep)
+  function processPreload(link2) {
+    if (link2.ep)
       return;
-    link.ep = true;
-    const fetchOpts = getFetchOpts(link);
-    fetch(link.href, fetchOpts);
+    link2.ep = true;
+    const fetchOpts = getFetchOpts(link2);
+    fetch(link2.href, fetchOpts);
   }
 })();
 function getDefaultExportFromCjs(x) {
@@ -7053,6 +7053,16 @@ function requireClient() {
   return client;
 }
 var clientExports = requireClient();
+const root = "_root_1wcjp_1";
+const appLayout = "_appLayout_1wcjp_11";
+const content = "_content_1wcjp_24";
+const developerTools = "_developerTools_1wcjp_31";
+const styles$b = {
+  root,
+  appLayout,
+  content,
+  developerTools
+};
 var propTypes = { exports: {} };
 var ReactPropTypesSecret_1;
 var hasRequiredReactPropTypesSecret;
@@ -7129,7 +7139,7 @@ function requirePropTypes() {
 var propTypesExports = /* @__PURE__ */ requirePropTypes();
 const PropTypes = /* @__PURE__ */ getDefaultExportFromCjs(propTypesExports);
 const Loading = () => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$5.container, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$a.container, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
         div.lds-ripple {
           scale: 4;
@@ -7194,7 +7204,7 @@ const Loading = () => {
 Loading.propTypes = {
   size: PropTypes.number
 };
-const styles$5 = {
+const styles$a = {
   container: {
     display: "flex",
     flexDirection: "column",
@@ -7258,7 +7268,7 @@ var get = (object, path, defaultValue) => {
 };
 var isBoolean = (value) => typeof value === "boolean";
 var isKey = (value) => /^\w*$/.test(value);
-var stringToPath = (input) => compact(input.replace(/["|']|\]/g, "").split(/\.|\[/));
+var stringToPath = (input2) => compact(input2.replace(/["|']|\]/g, "").split(/\.|\[/));
 var set = (object, path, value) => {
   let index = -1;
   const tempPath = isKey(path) ? [path] : stringToPath(path);
@@ -7349,11 +7359,11 @@ var generateWatchOutput = (names, _names, formValues, isGlobal, defaultValue) =>
   isGlobal && (_names.watchAll = true);
   return formValues;
 };
-var appendErrors = (name, validateAllFieldCriteria, errors, type, message) => validateAllFieldCriteria ? {
+var appendErrors = (name, validateAllFieldCriteria, errors, type, message2) => validateAllFieldCriteria ? {
   ...errors[name],
   types: {
     ...errors[name] && errors[name].types ? errors[name].types : {},
-    [type]: message || true
+    [type]: message2 || true
   }
 } : {};
 var getValidationModes = (mode) => ({
@@ -7388,9 +7398,9 @@ const iterateFieldsByAction = (fields, action, fieldsNames, abortEarly) => {
   }
   return;
 };
-var updateFieldArrayRootError = (errors, error, name) => {
+var updateFieldArrayRootError = (errors, error2, name) => {
   const fieldArrayErrors = convertToArrayPayload(get(errors, name));
-  set(fieldArrayErrors, "root", error[name]);
+  set(fieldArrayErrors, "root", error2[name]);
   set(errors, name, fieldArrayErrors);
   return errors;
 };
@@ -7452,39 +7462,39 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
     return {};
   }
   const inputRef = refs ? refs[0] : ref;
-  const setCustomValidity = (message) => {
+  const setCustomValidity = (message2) => {
     if (shouldUseNativeValidation && inputRef.reportValidity) {
-      inputRef.setCustomValidity(isBoolean(message) ? "" : message || "");
+      inputRef.setCustomValidity(isBoolean(message2) ? "" : message2 || "");
       inputRef.reportValidity();
     }
   };
-  const error = {};
+  const error2 = {};
   const isRadio = isRadioInput(ref);
   const isCheckBox = isCheckBoxInput(ref);
   const isRadioOrCheckbox2 = isRadio || isCheckBox;
   const isEmpty = (valueAsNumber || isFileInput(ref)) && isUndefined(ref.value) && isUndefined(inputValue) || isHTMLElement(ref) && ref.value === "" || inputValue === "" || Array.isArray(inputValue) && !inputValue.length;
-  const appendErrorsCurry = appendErrors.bind(null, name, validateAllFieldCriteria, error);
+  const appendErrorsCurry = appendErrors.bind(null, name, validateAllFieldCriteria, error2);
   const getMinMaxMessage = (exceedMax, maxLengthMessage, minLengthMessage, maxType = INPUT_VALIDATION_RULES.maxLength, minType = INPUT_VALIDATION_RULES.minLength) => {
-    const message = exceedMax ? maxLengthMessage : minLengthMessage;
-    error[name] = {
+    const message2 = exceedMax ? maxLengthMessage : minLengthMessage;
+    error2[name] = {
       type: exceedMax ? maxType : minType,
-      message,
+      message: message2,
       ref,
-      ...appendErrorsCurry(exceedMax ? maxType : minType, message)
+      ...appendErrorsCurry(exceedMax ? maxType : minType, message2)
     };
   };
   if (isFieldArray ? !Array.isArray(inputValue) || !inputValue.length : required && (!isRadioOrCheckbox2 && (isEmpty || isNullOrUndefined(inputValue)) || isBoolean(inputValue) && !inputValue || isCheckBox && !getCheckboxValue(refs).isValid || isRadio && !getRadioValue(refs).isValid)) {
-    const { value, message } = isMessage(required) ? { value: !!required, message: required } : getValueAndMessage(required);
+    const { value, message: message2 } = isMessage(required) ? { value: !!required, message: required } : getValueAndMessage(required);
     if (value) {
-      error[name] = {
+      error2[name] = {
         type: INPUT_VALIDATION_RULES.required,
-        message,
+        message: message2,
         ref: inputRef,
-        ...appendErrorsCurry(INPUT_VALIDATION_RULES.required, message)
+        ...appendErrorsCurry(INPUT_VALIDATION_RULES.required, message2)
       };
       if (!validateAllFieldCriteria) {
-        setCustomValidity(message);
-        return error;
+        setCustomValidity(message2);
+        return error2;
       }
     }
   }
@@ -7516,8 +7526,8 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
     if (exceedMax || exceedMin) {
       getMinMaxMessage(!!exceedMax, maxOutput.message, minOutput.message, INPUT_VALIDATION_RULES.max, INPUT_VALIDATION_RULES.min);
       if (!validateAllFieldCriteria) {
-        setCustomValidity(error[name].message);
-        return error;
+        setCustomValidity(error2[name].message);
+        return error2;
       }
     }
   }
@@ -7529,23 +7539,23 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
     if (exceedMax || exceedMin) {
       getMinMaxMessage(exceedMax, maxLengthOutput.message, minLengthOutput.message);
       if (!validateAllFieldCriteria) {
-        setCustomValidity(error[name].message);
-        return error;
+        setCustomValidity(error2[name].message);
+        return error2;
       }
     }
   }
   if (pattern && !isEmpty && isString(inputValue)) {
-    const { value: patternValue, message } = getValueAndMessage(pattern);
+    const { value: patternValue, message: message2 } = getValueAndMessage(pattern);
     if (isRegex(patternValue) && !inputValue.match(patternValue)) {
-      error[name] = {
+      error2[name] = {
         type: INPUT_VALIDATION_RULES.pattern,
-        message,
+        message: message2,
         ref,
-        ...appendErrorsCurry(INPUT_VALIDATION_RULES.pattern, message)
+        ...appendErrorsCurry(INPUT_VALIDATION_RULES.pattern, message2)
       };
       if (!validateAllFieldCriteria) {
-        setCustomValidity(message);
-        return error;
+        setCustomValidity(message2);
+        return error2;
       }
     }
   }
@@ -7554,13 +7564,13 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
       const result = await validate(inputValue, formValues);
       const validateError = getValidateError(result, inputRef);
       if (validateError) {
-        error[name] = {
+        error2[name] = {
           ...validateError,
           ...appendErrorsCurry(INPUT_VALIDATION_RULES.validate, validateError.message)
         };
         if (!validateAllFieldCriteria) {
           setCustomValidity(validateError.message);
-          return error;
+          return error2;
         }
       }
     } else if (isObject(validate)) {
@@ -7577,23 +7587,23 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
           };
           setCustomValidity(validateError.message);
           if (validateAllFieldCriteria) {
-            error[name] = validationResult;
+            error2[name] = validationResult;
           }
         }
       }
       if (!isEmptyObject(validationResult)) {
-        error[name] = {
+        error2[name] = {
           ref: inputRef,
           ...validationResult
         };
         if (!validateAllFieldCriteria) {
-          return error;
+          return error2;
         }
       }
     }
   }
   setCustomValidity(true);
-  return error;
+  return error2;
 };
 function baseGet(object, updatePath) {
   const length = updatePath.slice(0, -1).length;
@@ -7756,10 +7766,10 @@ const ASYNC_FUNCTION = "AsyncFunction";
 var hasPromiseValidation = (fieldReference) => !!fieldReference && !!fieldReference.validate && !!(isFunction(fieldReference.validate) && fieldReference.validate.constructor.name === ASYNC_FUNCTION || isObject(fieldReference.validate) && Object.values(fieldReference.validate).find((validateFunction) => validateFunction.constructor.name === ASYNC_FUNCTION));
 var hasValidation = (options) => options.mount && (options.required || options.min || options.max || options.maxLength || options.minLength || options.pattern || options.validate);
 function schemaErrorLookup(errors, _fields, name) {
-  const error = get(errors, name);
-  if (error || isKey(name)) {
+  const error2 = get(errors, name);
+  if (error2 || isKey(name)) {
     return {
-      error,
+      error: error2,
       name
     };
   }
@@ -7912,8 +7922,8 @@ function createFormControl(props = {}) {
       set(_formValues, name, values);
     }
   };
-  const updateErrors = (name, error) => {
-    set(_formState.errors, name, error);
+  const updateErrors = (name, error2) => {
+    set(_formState.errors, name, error2);
     _subjects.state.next({
       errors: _formState.errors
     });
@@ -7965,18 +7975,18 @@ function createFormControl(props = {}) {
     }
     return shouldUpdateField ? output : {};
   };
-  const shouldRenderByError = (name, isValid, error, fieldState) => {
+  const shouldRenderByError = (name, isValid, error2, fieldState) => {
     const previousFieldError = get(_formState.errors, name);
     const shouldUpdateValid = _proxyFormState.isValid && isBoolean(isValid) && _formState.isValid !== isValid;
-    if (_options.delayError && error) {
-      delayErrorCallback = debounce(() => updateErrors(name, error));
+    if (_options.delayError && error2) {
+      delayErrorCallback = debounce(() => updateErrors(name, error2));
       delayErrorCallback(_options.delayError);
     } else {
       clearTimeout(timer);
       delayErrorCallback = null;
-      error ? set(_formState.errors, name, error) : unset(_formState.errors, name);
+      error2 ? set(_formState.errors, name, error2) : unset(_formState.errors, name);
     }
-    if ((error ? !deepEqual(previousFieldError, error) : previousFieldError) || !isEmptyObject(fieldState) || shouldUpdateValid) {
+    if ((error2 ? !deepEqual(previousFieldError, error2) : previousFieldError) || !isEmptyObject(fieldState) || shouldUpdateValid) {
       const updatedFormState = {
         ...fieldState,
         ...shouldUpdateValid && isBoolean(isValid) ? { isValid } : {},
@@ -8000,8 +8010,8 @@ function createFormControl(props = {}) {
     const { errors } = await _executeSchema(names);
     if (names) {
       for (const name of names) {
-        const error = get(errors, name);
-        error ? set(_formState.errors, name, error) : unset(_formState.errors, name);
+        const error2 = get(errors, name);
+        error2 ? set(_formState.errors, name, error2) : unset(_formState.errors, name);
       }
     } else {
       _formState.errors = errors;
@@ -8127,7 +8137,7 @@ function createFormControl(props = {}) {
       isFieldValueUpdated = Number.isNaN(fieldValue) || isDateObject(fieldValue) && isNaN(fieldValue.getTime()) || deepEqual(fieldValue, get(_formValues, name, fieldValue));
     };
     if (field) {
-      let error;
+      let error2;
       let isValid;
       const fieldValue = getCurrentFieldValue();
       const isBlurEvent = event.type === EVENTS.BLUR || event.type === EVENTS.FOCUS_OUT;
@@ -8164,17 +8174,17 @@ function createFormControl(props = {}) {
         if (isFieldValueUpdated) {
           const previousErrorLookupResult = schemaErrorLookup(_formState.errors, _fields, name);
           const errorLookupResult = schemaErrorLookup(errors, _fields, previousErrorLookupResult.name || name);
-          error = errorLookupResult.error;
+          error2 = errorLookupResult.error;
           name = errorLookupResult.name;
           isValid = isEmptyObject(errors);
         }
       } else {
         _updateIsValidating([name], true);
-        error = (await validateField(field, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation))[name];
+        error2 = (await validateField(field, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation))[name];
         _updateIsValidating([name]);
         _updateIsFieldValueUpdated(fieldValue);
         if (isFieldValueUpdated) {
-          if (error) {
+          if (error2) {
             isValid = false;
           } else if (_proxyFormState.isValid) {
             isValid = await executeBuiltInValidation(_fields, true);
@@ -8183,7 +8193,7 @@ function createFormControl(props = {}) {
       }
       if (isFieldValueUpdated) {
         field._f.deps && trigger(field._f.deps);
-        shouldRenderByError(name, isValid, error, fieldState);
+        shouldRenderByError(name, isValid, error2, fieldState);
       }
     }
   };
@@ -8238,13 +8248,13 @@ function createFormControl(props = {}) {
       errors: name ? _formState.errors : {}
     });
   };
-  const setError = (name, error, options) => {
+  const setError = (name, error2, options) => {
     const ref = (get(_fields, name, { _f: {} })._f || {}).ref;
     const currentError = get(_formState.errors, name) || {};
-    const { ref: currentRef, message, type, ...restOfErrorTree } = currentError;
+    const { ref: currentRef, message: message2, type, ...restOfErrorTree } = currentError;
     set(_formState.errors, name, {
       ...restOfErrorTree,
-      ...error,
+      ...error2,
       ref
     });
     _subjects.state.next({
@@ -8401,8 +8411,8 @@ function createFormControl(props = {}) {
       });
       try {
         await onValid(fieldValues, e);
-      } catch (error) {
-        onValidError = error;
+      } catch (error2) {
+        onValidError = error2;
       }
     } else {
       if (onInvalid) {
@@ -8468,9 +8478,9 @@ function createFormControl(props = {}) {
             if (field && field._f) {
               const fieldReference = Array.isArray(field._f.refs) ? field._f.refs[0] : field._f.ref;
               if (isHTMLElement(fieldReference)) {
-                const form = fieldReference.closest("form");
-                if (form) {
-                  form.reset();
+                const form2 = fieldReference.closest("form");
+                if (form2) {
+                  form2.reset();
                   break;
                 }
               }
@@ -8686,64 +8696,175 @@ function useForm(props = {}) {
   _formControl.current.formState = getProxyFormState(formState, control);
   return _formControl.current;
 }
-const CustomCheckbox = ({ checked, onChange }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { style: styles$4.customcheckbox, children: [
+const toast = "_toast_kwt6m_1";
+const visible = "_visible_kwt6m_17";
+const hidden = "_hidden_kwt6m_22";
+const success = "_success_kwt6m_27";
+const error$1 = "_error_kwt6m_31";
+const info$1 = "_info_kwt6m_35";
+const warning = "_warning_kwt6m_39";
+const icon = "_icon_kwt6m_43";
+const message = "_message_kwt6m_64";
+const styles$9 = {
+  toast,
+  visible,
+  hidden,
+  success,
+  error: error$1,
+  info: info$1,
+  warning,
+  icon,
+  message
+};
+const Toast = ({ message: message2, type = "success", duration = 3e3, onClose }) => {
+  const [visible2, setVisible] = reactExports.useState(true);
+  reactExports.useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+      if (onClose) {
+        setTimeout(onClose, 300);
+      }
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [duration, onClose]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: `${styles$9.toast} ${styles$9[type]} ${visible2 ? styles$9.visible : styles$9.hidden}`,
+      children: [
+        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "✓" }),
+        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "✕" }),
+        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "ℹ" }),
+        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "⚠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.message, children: message2 })
+      ]
+    }
+  );
+};
+const select__container = "_select__container_1opku_1";
+const select = "_select_1opku_1";
+const styles$8 = {
+  select__container,
+  select
+};
+const Select = ({
+  register,
+  name,
+  placeholder,
+  options = [],
+  disabled = false,
+  defaultValue = ""
+}) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "select",
+    {
+      ...register(name),
+      disabled,
+      defaultValue,
+      className: styles$8.select,
+      children: [
+        placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
+        options.map((option) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option.value, children: option.label }, option.value))
+      ]
+    }
+  ) });
+};
+const input__container = "_input__container_wmv4y_1";
+const input$1 = "_input_wmv4y_1";
+const styles$7 = {
+  input__container,
+  input: input$1
+};
+const Input = ({ register, name, placeholder, type = "text", disabled = false }) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.input__container, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "input",
+    {
+      ...register(name),
+      type,
+      disabled,
+      placeholder,
+      className: styles$7.input
+    }
+  ) });
+};
+const label$1 = "_label_66y8x_1";
+const styles$6 = {
+  label: label$1
+};
+const Label = ({ children }) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.label, children });
+};
+const checkboxContainer = "_checkboxContainer_154vz_1";
+const checkboxInput = "_checkboxInput_154vz_13";
+const checkmark = "_checkmark_154vz_21";
+const label = "_label_154vz_60";
+const styles$5 = {
+  checkboxContainer,
+  checkboxInput,
+  checkmark,
+  label
+};
+const Checkbox = ({
+  label: label2,
+  disabled = false,
+  name,
+  className = "",
+  register
+}) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$5.checkboxContainer} ${className}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "checkbox",
-        checked,
-        onChange,
-        style: styles$4.hiddencheckbox
+        className: styles$5.checkboxInput,
+        ...register(name),
+        disabled,
+        name
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "span",
-      {
-        style: {
-          ...styles$4.styledcheckbox,
-          ...checked && styles$4.styledcheckboxchecked,
-          ...checked && styles$4.styledcheckboxcheckedafter
-        }
-      }
-    )
+    label2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: label2 }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.checkmark })
   ] });
 };
+const formContainer$1 = "_formContainer_1g0ah_1";
+const form$1 = "_form_1g0ah_1";
+const formTitle$1 = "_formTitle_1g0ah_16";
+const subTitle$1 = "_subTitle_1g0ah_23";
+const notificationBanner = "_notificationBanner_1g0ah_31";
+const notificationText = "_notificationText_1g0ah_42";
+const errorText$1 = "_errorText_1g0ah_48";
+const successText$1 = "_successText_1g0ah_56";
+const checkboxSection = "_checkboxSection_1g0ah_64";
+const checkboxSectionTitle = "_checkboxSectionTitle_1g0ah_72";
+const button$1 = "_button_1g0ah_79";
+const rowControls$1 = "_rowControls_1g0ah_102";
+const rowControlsItem$1 = "_rowControlsItem_1g0ah_111";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_1g0ah_119";
+const inputContainer = "_inputContainer_1g0ah_126";
+const buttonTest = "_buttonTest_1g0ah_130";
+const link$1 = "_link_1g0ah_142";
+const inputDisabled = "_inputDisabled_1g0ah_147";
+const labelWithMargin = "_labelWithMargin_1g0ah_152";
 const styles$4 = {
-  customcheckbox: {
-    display: "inline-block",
-    verticalAlign: "middle",
-    cursor: "pointer",
-    padding: "5px"
-  },
-  hiddencheckbox: {
-    display: "none"
-  },
-  styledcheckbox: {
-    display: "inline-block",
-    width: "25px",
-    height: "25px",
-    backgroundColor: "lightgray",
-    borderRadius: "5px"
-  },
-  styledcheckboxchecked: {
-    backgroundColor: "blue"
-  },
-  styledcheckboxafter: {
-    content: "",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    width: "10px",
-    height: "18px",
-    border: "solid white",
-    borderWidth: "0 3px 3px 0",
-    transform: "translate(-50%, -50%) rotate(45deg)",
-    opacity: "0"
-  },
-  styledcheckboxcheckedafter: {
-    opacity: "1"
-  }
+  formContainer: formContainer$1,
+  form: form$1,
+  formTitle: formTitle$1,
+  subTitle: subTitle$1,
+  notificationBanner,
+  notificationText,
+  errorText: errorText$1,
+  successText: successText$1,
+  checkboxSection,
+  checkboxSectionTitle,
+  button: button$1,
+  rowControls: rowControls$1,
+  rowControlsItem: rowControlsItem$1,
+  rowControlsItemLabel: rowControlsItemLabel$1,
+  inputContainer,
+  buttonTest,
+  link: link$1,
+  inputDisabled,
+  labelWithMargin
 };
 async function validateIntegrationStatus() {
   try {
@@ -8765,9 +8886,9 @@ async function validateIntegrationStatus() {
     const data = await response.json();
     console.log("Integration Status:", data);
     return data;
-  } catch (error) {
-    console.error("Error validating integration status:", error);
-    throw error;
+  } catch (error2) {
+    console.error("Error validating integration status:", error2);
+    throw error2;
   }
 }
 async function updateIntegrationCredentials(storeId, credentials) {
@@ -8792,12 +8913,12 @@ async function updateIntegrationCredentials(storeId, credentials) {
     const data = await response.json();
     console.log("Update Credentials Response:", data);
     return data;
-  } catch (error) {
-    console.error("Error updating integration credentials:", error);
-    throw error;
+  } catch (error2) {
+    console.error("Error updating integration credentials:", error2);
+    throw error2;
   }
 }
-async function saveDeveloperSettings(settings) {
+async function saveDeveloperSettingsService(settings) {
   try {
     const response = await fetch(
       // eslint-disable-next-line no-undef
@@ -8820,9 +8941,9 @@ async function saveDeveloperSettings(settings) {
     const data = await response.json();
     console.log("Save Developer Settings Response:", data);
     return data;
-  } catch (error) {
-    console.error("Error saving developer settings:", error);
-    throw error;
+  } catch (error2) {
+    console.error("Error saving developer settings:", error2);
+    throw error2;
   }
 }
 async function saveSettings(settings) {
@@ -8839,21 +8960,21 @@ async function saveSettings(settings) {
           action: "save_integration_settings",
           // eslint-disable-next-line no-undef
           nonce: WCCorreiosIntegrationAdminParams.nonce,
-          noBlueOnCreate: settings.noBlueOnCreate,
           districtsEnable: settings.districtsEnable,
           pudoEnable: settings.pudoEnable,
           googleKey: settings.googleKey,
           districtCode: settings.districtCode,
-          noBlueStatus: settings.noBlueStatus
+          noBlueStatus: settings.noBlueStatus,
+          active_logs: settings.active_logs
         })
       }
     );
     const data = await response.json();
     console.log("Save Settings Response:", data);
     return data;
-  } catch (error) {
-    console.error("Error saving settings:", error);
-    throw error;
+  } catch (error2) {
+    console.error("Error saving settings:", error2);
+    throw error2;
   }
 }
 async function testPricingService() {
@@ -8875,272 +8996,202 @@ async function testPricingService() {
     );
     const data = await response.json();
     return data;
-  } catch (error) {
-    console.error("Error testing pricing:", error);
-    throw error;
+  } catch (error2) {
+    console.error("Error testing pricing:", error2);
+    throw error2;
   }
 }
 const FormConfig = ({
   storeId,
   errorValidation,
   settings,
-  optionsEmissionOs,
-  testPricing
+  optionsEmissionOs = []
 }) => {
-  const { register, handleSubmit, watch, setValue } = useForm({
+  const [toast2, setToast] = reactExports.useState(null);
+  const { register, handleSubmit, watch, formState: { isSubmitting } } = useForm({
     defaultValues: {
       storeId,
       ...settings,
       districtsEnable: (settings == null ? void 0 : settings.districtsEnable) === "yes" ? true : false,
       pudoEnable: (settings == null ? void 0 : settings.pudoEnable) === "yes" ? true : false,
-      noBlueOnCreate: (settings == null ? void 0 : settings.noBlueOnCreate) === "yes" ? true : false
+      active_logs: (settings == null ? void 0 : settings.active_logs) === "yes" ? true : false
     }
   });
-  const [loading, setLoading] = reactExports.useState(false);
-  const [error, setError] = reactExports.useState(null);
+  const [error2, setError] = reactExports.useState(null);
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
+      setToast({
+        message: "Guardando configuración...",
+        type: "info"
+      });
       await saveSettings({
         ...data,
         districtsEnable: (data == null ? void 0 : data.districtsEnable) ? "yes" : "no",
         pudoEnable: (data == null ? void 0 : data.pudoEnable) ? "yes" : "no",
-        noBlueOnCreate: (data == null ? void 0 : data.noBlueOnCreate) ? "yes" : "no"
+        active_logs: (data == null ? void 0 : data.active_logs) ? "yes" : "no"
       });
-      alert("Configuración guardada correctamente");
-    } catch (error2) {
-      setError(error2);
-      alert("Error al guardar la configuración");
-    } finally {
-      setLoading(false);
+      setToast({
+        message: "Configuración guardada correctamente",
+        type: "success"
+      });
+    } catch (error22) {
+      setError(error22);
+      setToast({
+        message: "Error al guardar la configuración",
+        type: "error"
+      });
     }
   };
   const isEnabledPudo = watch("pudoEnable");
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), style: styles$3.form, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "input",
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.formContainer, children: [
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Toast,
       {
-        type: "text",
-        placeholder: "ID de tienda",
-        ...register("storeId"),
-        style: { ...styles$3.input, width: "60%", marginBottom: "10px" },
-        disabled: true
+        message: toast2.message,
+        type: toast2.type,
+        onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.activeIntegrationContainer, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { style: styles$3.activeIntegrationText, children: "Integración activa" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: styles$3.activeIntegrationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: styles$3.subTitle, children: "Configura tu tienda" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControls, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$4.formTitle, children: "Configuración" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$4.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$4.subTitle, children: "Configura tu tienda" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Código de la comuna de origen" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "label",
+            Input,
             {
-              style: { ...styles$3.rowControlsItemLabel, marginRight: "10px" },
-              children: "Código del distrito de la tienda"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: styles$3.inputContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
-            {
-              type: "text",
+              register,
+              name: "districtCode",
               placeholder: "xxx",
-              ...register("districtCode"),
-              style: styles$3.input
+              type: "text"
             }
-          ) })
+          )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Estado para crear orden en Blue" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "label",
+            Select,
             {
-              style: { ...styles$3.rowControlsItemLabel, marginRight: "10px" },
-              children: "Estado de emisión de OS"
+              register,
+              name: "noBlueStatus",
+              options: optionsEmissionOs
             }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: styles$3.inputContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsx("select", { ...register("noBlueStatus"), style: styles$3.select, children: Object.keys(optionsEmissionOs || {}).map((option) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option, children: optionsEmissionOs[option] }, option)) }) })
+          )
         ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControls, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$3.rowControlsItemLabel, children: "Enviar pedido al crearlo" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          CustomCheckbox,
-          {
-            checked: watch("noBlueOnCreate"),
-            onChange: () => setValue("noBlueOnCreate", !watch("noBlueOnCreate"))
-          }
-        )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$3.rowControlsItemLabel, children: "Habilitar funcionalidad de distritos" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          CustomCheckbox,
-          {
-            checked: watch("districtsEnable"),
-            onChange: () => setValue("districtsEnable", !watch("districtsEnable"))
-          }
-        )
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControls, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$3.rowControlsItemLabel, children: "Habilitar funcionalidad de puntos de recogida" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          CustomCheckbox,
-          {
-            checked: isEnabledPudo,
-            onChange: () => setValue("pudoEnable", !isEnabledPudo)
-          }
-        )
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$4.checkboxSectionTitle, children: "Opciones generales" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Checkbox,
+            {
+              register,
+              name: "pudoEnable",
+              label: "Habilitar Puntos de retiro Blue Express"
+            }
+          ) }),
+          isEnabledPudo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Clave API de Google Maps" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input,
+              {
+                register,
+                name: "googleKey",
+                placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                type: "text"
+              }
+            )
+          ] })
+        ] })
       ] }),
-      isEnabledPudo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$3.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$3.rowControlsItemLabel, children: "Clave API de Google Maps" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: styles$3.inputContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$4.checkboxSectionTitle, children: "Activar Logs" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Checkbox,
           {
-            type: "text",
-            placeholder: "xxx",
-            ...register("googleKey"),
-            style: styles$3.input
+            register,
+            name: "active_logs",
+            label: "Habilitar logs"
           }
-        ) })
-      ] })
-    ] }),
-    errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: styles$3.errorText, children: errorValidation }),
-    error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: styles$3.errorText, children: error }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: loading, style: styles$3.button, children: "Guardar configuración" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "button",
-      {
-        type: "button",
-        disabled: loading,
-        style: styles$3.buttonTest,
-        onClick: testPricing,
-        children: "Probar obtención de precios"
-      }
-    )
-  ] }) });
+        ) }) })
+      ] }),
+      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.errorText, children: errorValidation }),
+      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.errorText, children: error2 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "submit",
+          disabled: isSubmitting,
+          className: styles$4.button,
+          children: "Guardar configuración"
+        }
+      )
+    ] })
+  ] });
 };
-const FormConfig$1 = reactExports.memo(FormConfig);
+const formContainer = "_formContainer_ecg4b_1";
+const form = "_form_ecg4b_1";
+const formTitle = "_formTitle_ecg4b_16";
+const formDescription = "_formDescription_ecg4b_23";
+const storeIdInput = "_storeIdInput_ecg4b_30";
+const subTitle = "_subTitle_ecg4b_46";
+const tooltip = "_tooltip_ecg4b_55";
+const tooltipIcon = "_tooltipIcon_ecg4b_62";
+const tooltipText = "_tooltipText_ecg4b_74";
+const errorText = "_errorText_ecg4b_110";
+const successText = "_successText_ecg4b_118";
+const input = "_input_ecg4b_126";
+const button = "_button_ecg4b_144";
+const link = "_link_ecg4b_167";
+const rowControls = "_rowControls_ecg4b_179";
+const rowControlsItem = "_rowControlsItem_ecg4b_187";
+const rowControlsItemLabel = "_rowControlsItemLabel_ecg4b_194";
+const createAccountText = "_createAccountText_ecg4b_201";
+const helperText = "_helperText_ecg4b_208";
 const styles$3 = {
-  form: {
-    marginBottom: "20px",
-    width: "100%",
-    position: "relative"
-  },
-  subTitle: {
-    fontSize: "15px",
-    marginBottom: "15px"
-  },
-  activeIntegrationContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#28a745",
-    padding: "5px 15px",
-    borderRadius: "5px"
-  },
-  activeIntegrationText: {
-    fontSize: "15px",
-    marginBottom: "5px",
-    color: "#fff"
-  },
-  errorText: {
-    color: "red",
-    fontSize: "15px",
-    marginBottom: "15px"
-  },
-  inputContainer: {
-    width: "50%"
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc"
-  },
-  select: {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc"
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#ff7e44",
-    color: "#fff",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-  buttonTest: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#2bb9ff",
-    color: "#fff",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    marginTop: "20px"
-  },
-  link: {
-    color: "##2bb9ff",
-    textDecoration: "none"
-  },
-  rowControls: {
-    display: "flex",
-    width: "100%",
-    marginBottom: "10px",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  rowControlsItem: {
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "49%",
-    textAlign: "left"
-  },
-  rowControlsItemLabel: {
-    fontSize: "12px",
-    alignSelf: "left"
-  }
-};
-const STATUS_PAGE = {
-  VALIDATING: "Validando integración",
-  // Formulario para validar la integración.
-  NEW_INTEGRATION: "Nueva integración",
-  // Se valida si el seller esta validado y su integracion no esta bien o no existe.
-  INTEGRATED: "Integrado"
-  // Se valida si el seller esta validado y su integracion esta bien.
+  formContainer,
+  form,
+  formTitle,
+  formDescription,
+  storeIdInput,
+  subTitle,
+  tooltip,
+  tooltipIcon,
+  tooltipText,
+  errorText,
+  successText,
+  input,
+  button,
+  link,
+  rowControls,
+  rowControlsItem,
+  rowControlsItemLabel,
+  createAccountText,
+  helperText
 };
 const FormNewIntegrate = ({
   storeId,
-  error,
-  loading,
-  setStatus,
+  error: error2,
   setLoading,
-  validateIntegration
+  validateIntegration,
+  isActiveIntegration
 }) => {
-  const { register, handleSubmit } = useForm({
+  const [toast2, setToast] = reactExports.useState(null);
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
     defaultValues: {
-      storeId,
+      storeId: storeId || "",
       clientKey: "",
       clientSecret: ""
     }
   });
   const onSubmit = async (data) => {
     if (!data.storeId || !data.clientKey || !data.clientSecret) {
+      setToast({
+        message: "Por favor completa todos los campos",
+        type: "warning"
+      });
       return;
     }
     try {
@@ -9150,165 +9201,123 @@ const FormNewIntegrate = ({
         clientSecret: data.clientSecret
       });
       if (response.activeIntegration === false) {
-        alert(response.message || "Error al actualizar las credenciales");
-        setStatus(STATUS_PAGE.NEW_INTEGRATION);
+        setToast({
+          message: response.message || "Error al actualizar las credenciales",
+          type: "error"
+        });
       } else {
         await validateIntegration();
+        setToast({
+          message: "¡Conexión establecida correctamente!",
+          type: "success"
+        });
       }
-    } catch (error2) {
-      console.error("Error updating integration credentials:", error2);
-      alert("Error al actualizar las credenciales");
+    } catch (error22) {
+      console.error("Error updating integration credentials:", error22);
+      setToast({
+        message: "Error al actualizar las credenciales",
+        type: "error"
+      });
     } finally {
       setLoading(false);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), style: styles$2.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "input",
-        {
-          type: "text",
-          placeholder: "ID de Seller",
-          ...register("storeId"),
-          style: styles$2.input
-        }
-      ),
+  const renderText = (errorMsg) => {
+    if (errorMsg.includes("401")) {
+      return "La Url o Api Key de Blue Express no son correctas";
+    }
+    if (errorMsg.includes("404") || errorMsg.toLowerCase().includes("no encontramos tu dominio")) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+        "¿Aún no estás registrado? Ingresa a",
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", className: styles$3.link, target: "_blank", rel: "noopener noreferrer", children: "ecommerce.blue.cl" }),
+        "y regístrate para empezar a disfrutar de nuestros beneficios."
+      ] });
+    }
+    return errorMsg;
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.formContainer, children: [
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Toast,
+      {
+        message: toast2.message,
+        type: toast2.type,
+        onClose: () => setToast(null)
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$3.formTitle, children: "Conexión con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$3.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "ID de Seller" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.helperText, children: "Ingresa el ID Seller que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            type: "text",
+            placeholder: "ID de Seller",
+            ...register("storeId"),
+            className: styles$3.storeIdInput
+          }
+        )
+      ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: styles$2.errorText, children: error }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tooltip", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: styles$2.subTitle, children: "Credenciales de Woocommerce " }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "tooltiptext", children: [
-            "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes ",
-            "->",
-            " Avanzado ",
-            "->",
-            " API REST ",
-            "->",
-            " Añadir clave"
+        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.errorText, children: renderText(error2) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.subTitle, children: [
+          "Credenciales de Woocommerce",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.tooltip, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.tooltipIcon, children: "?" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$3.tooltipText, children: [
+              "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes → Avanzado → API REST → Añadir clave.",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+              "Clave del cliente inicia con “ck_“",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+              "Clave secreta del cliente inicia con “cs_“"
+            ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$2.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$2.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$2.rowControlsItemLabel, children: "Clave del cliente" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControls, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "Clave del cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
-                placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                placeholder: "Ingrese la clave del cliente",
                 ...register("clientKey"),
-                style: styles$2.input
+                className: styles$3.input
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$2.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { style: styles$2.rowControlsItemLabel, children: "Clave secreta de cliente" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "Clave secreta de cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
-                placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                placeholder: "Ingrese la clave secreta del cliente",
                 ...register("clientSecret"),
-                style: styles$2.input
+                className: styles$3.input
               }
             )
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: loading, style: styles$2.button, children: storeId ? "Actualizar integración" : "Crear integración" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "submit",
+          disabled: isSubmitting,
+          className: styles$3.button,
+          children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración"
+        }
+      )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$3.createAccountText, children: [
       "¿No tienes un ID de Seller?",
       " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", style: styles$2.link, children: "Crea tu cuenta aquí" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", className: styles$3.link, target: "_blank", rel: "noopener noreferrer", children: "Crea tu cuenta aquí" })
     ] })
   ] });
-};
-const FormNewIntegrate$1 = reactExports.memo(FormNewIntegrate);
-const styles$2 = {
-  form: {
-    marginBottom: "20px",
-    width: "100%"
-  },
-  subTitle: {
-    fontSize: "15px",
-    marginBottom: "15px"
-  },
-  errorText: {
-    color: "red",
-    fontSize: "15px",
-    marginBottom: "15px"
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc"
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#ff7e44",
-    color: "#fff",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-  link: {
-    color: "##2bb9ff",
-    textDecoration: "none"
-  },
-  rowControls: {
-    display: "flex",
-    gap: "10px",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  rowControlsItem: {
-    display: "flex",
-    alignItems: "flex-start",
-    flexDirection: "column",
-    justifyContent: "items-start",
-    width: "50%"
-  },
-  rowControlsItemLabel: {
-    fontSize: "15px",
-    marginBottom: "10px"
-  }
-};
-const FormValidateIntegrate = () => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$1.form, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { style: styles$1.title, children: "¿No tienes un ID de Seller?" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", style: styles$1.button, children: "Crea tu cuenta aquí" })
-  ] }) });
-};
-const FormValidateIntegrate$1 = reactExports.memo(FormValidateIntegrate);
-const styles$1 = {
-  form: {
-    marginBottom: "20px",
-    height: "300px",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "20px"
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#ff7e44",
-    color: "#fff",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  }
 };
 const DeveloperToolsForm = ({
   open,
@@ -9324,7 +9333,6 @@ const DeveloperToolsForm = ({
   const [isEnabled, setIsEnabled] = reactExports.useState(
     ((_c = props.settings) == null ? void 0 : _c.devOptions) === "yes"
   );
-  console.log("isEnabled => ", isEnabled);
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -9334,8 +9342,8 @@ const DeveloperToolsForm = ({
         tracking_bxkey: bxKey
       });
       await validateIntegration();
-    } catch (error) {
-      console.error(error);
+    } catch (error2) {
+      console.error(error2);
     } finally {
       setLoading(false);
       onClose();
@@ -9364,13 +9372,30 @@ const DeveloperToolsForm = ({
             boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
             zIndex: 1e3,
             width: "500px",
-            height: "350px",
+            height: "420px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between"
           },
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Developer tools" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                style: {
+                  backgroundColor: "#fffbe6",
+                  border: "1px solid #ffe58f",
+                  padding: "10px",
+                  marginBottom: "15px",
+                  borderRadius: "3px",
+                  color: "#8a6d3b"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Advertencia:" }),
+                  " No modifique estas configuraciones a menos que tenga un conocimiento claro de lo que está haciendo. Una mala configuración puede provocar que su plugin deje de funcionar."
+                ]
+              }
+            ),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
@@ -9448,147 +9473,471 @@ const DeveloperToolsForm = ({
     }
   );
 };
-const StepProgressBar = ({ steps, currentStep }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-    .react-bx-stepper-wrapper {
-      margin-top: auto;
-      display: flex;
-      justify-content: space-between;
-      height: 100px;
+const logsContainer = "_logsContainer_hrvv2_1";
+const logsTable = "_logsTable_hrvv2_6";
+const tableRow = "_tableRow_hrvv2_26";
+const selected = "_selected_hrvv2_35";
+const logType = "_logType_hrvv2_39";
+const error = "_error_hrvv2_46";
+const info = "_info_hrvv2_51";
+const logDetail = "_logDetail_hrvv2_56";
+const pagination = "_pagination_hrvv2_88";
+const logsDisabledContainer = "_logsDisabledContainer_hrvv2_119";
+const logsDisabledMessage = "_logsDisabledMessage_hrvv2_129";
+const styles$2 = {
+  logsContainer,
+  logsTable,
+  tableRow,
+  selected,
+  logType,
+  error,
+  info,
+  logDetail,
+  pagination,
+  logsDisabledContainer,
+  logsDisabledMessage
+};
+const BASE_URL = "/wp-json/wc-bluex/v1";
+const defaultHeaders = {
+  "Content-Type": "application/json"
+};
+class ApiError extends Error {
+  constructor(message2, status2, data) {
+    super(message2);
+    this.status = status2;
+    this.data = data;
+    this.name = "ApiError";
+  }
+}
+const fetchWrapper = async (endpoint, options = {}) => {
+  const url = `${BASE_URL}${endpoint}`;
+  const fetchOptions = {
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers
     }
-    .react-bx-stepper-item {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-
-      @media (max-width: 768px) {
-        font-size: 12px;
+  };
+  try {
+    const response = await fetch(url, fetchOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      throw new ApiError(
+        data.message || "An error occurred",
+        response.status,
+        data
+      );
+    }
+    return data;
+  } catch (error2) {
+    if (error2 instanceof ApiError) {
+      throw error2;
+    }
+    throw new ApiError(
+      "Network error or invalid JSON response",
+      500,
+      { originalError: error2.message }
+    );
+  }
+};
+const http = {
+  get: (endpoint, options = {}) => fetchWrapper(endpoint, { ...options, method: "GET" }),
+  post: (endpoint, data, options = {}) => fetchWrapper(endpoint, {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+};
+const blueExpressService = {
+  /**
+   * Test the integration with Blue Express
+   * @param {Object} data - Integration test data
+   * @returns {Promise} - Test results
+   */
+  testIntegration: (data) => {
+    return http.post("/test-integration", data);
+  },
+  /**
+   * Validate the integration status
+   * @returns {Promise} - Integration status
+   */
+  validateIntegration: () => {
+    return http.get("/validate-integration");
+  },
+  /**
+   * Update integration credentials
+   * @param {Object} credentials - New credentials
+   * @returns {Promise} - Update result
+   */
+  updateCredentials: (credentials) => {
+    return http.post("/update-credentials", credentials);
+  },
+  /**
+   * Save integration settings
+   * @param {Object} settings - Settings to save
+   * @returns {Promise} - Save result
+   */
+  saveSettings: (settings) => {
+    return http.post("/save-settings", settings);
+  },
+  /**
+   * Get current integration settings
+   * @returns {Promise} - Current settings
+   */
+  getSettings: () => {
+    return http.get("/get-settings");
+  },
+  /**
+   * Save developer settings
+   * @param {Object} devSettings - Developer settings to save
+   * @returns {Promise} - Save result
+   */
+  saveDevSettings: (devSettings) => {
+    return http.post("/save-dev-settings", devSettings);
+  },
+  /**
+   * Empty the autofill database
+   * @returns {Promise} - Operation result
+   */
+  emptyAutofillDb: () => {
+    return http.post("/empty-autofill-db");
+  },
+  /**
+   * Get logs with optional filtering
+   * @param {Object} params - Query parameters
+   * @param {number} [params.page=1] - Page number
+   * @param {number} [params.per_page=10] - Items per page
+   * @param {string} [params.type] - Log type filter
+   * @param {string} [params.start_date] - Start date filter (YYYY-MM-DD)
+   * @param {string} [params.end_date] - End date filter (YYYY-MM-DD)
+   * @returns {Promise} - Logs data
+   */
+  getLogs: (params = {}) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== void 0 && value !== null && value !== "") {
+        queryParams.append(key, value);
       }
+    });
+    const queryString = queryParams.toString();
+    return http.get(`/get-logs${queryString ? `?${queryString}` : ""}`);
+  }
+};
+const Logs = ({ settings, setActiveSection }) => {
+  const [logs, setLogs] = reactExports.useState([]);
+  const [currentPage, setCurrentPage] = reactExports.useState(1);
+  const [totalPages, setTotalPages] = reactExports.useState(1);
+  const [selectedLog, setSelectedLog] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  const logsEnabled = (settings == null ? void 0 : settings.active_logs) === "yes";
+  reactExports.useEffect(() => {
+    if (logsEnabled) {
+      fetchLogs(currentPage);
     }
-
-    .react-bx-stepper-item::before {
-      position: absolute;
-      content: "";
-      border-bottom: 2px solid #ccc;
-      width: 100%;
-      top: 20px;
-      left: -50%;
-      z-index: 2;
+  }, [currentPage, logsEnabled]);
+  const fetchLogs = async (page) => {
+    setLoading(true);
+    try {
+      const response = await blueExpressService.getLogs({ page });
+      setLogs(response.items);
+      setTotalPages(response.total_pages);
+    } catch (error2) {
+      console.error("Error fetching logs:", error2);
+    } finally {
+      setLoading(false);
     }
-
-    .react-bx-stepper-item::after {
-      position: absolute;
-      content: "";
-      border-bottom: 2px solid #ccc;
-      width: 100%;
-      top: 20px;
-      left: 50%;
-      z-index: 2;
-    }
-
-    .react-bx-stepper-item .react-bx-step-counter {
-      position: relative;
-      z-index: 5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #ccc;
-      margin-bottom: 6px;
-    }
-
-    .react-bx-stepper-item.active {
-      font-weight: bold;
-    }
-
-    .react-bx-stepper-item.completed .react-bx-step-counter {
-      background-color: #ff7e44;
-    }
-
-    .react-bx-stepper-item.completed::after {
-      position: absolute;
-      content: "";
-      border-bottom: 2px solid #ff7e44;
-      width: 100%;
-      top: 20px;
-      left: 50%;
-      z-index: 3;
-    }
-
-    .react-bx-stepper-item:first-child::before {
-      content: none;
-    }
-    .react-bx-stepper-item:last-child::after {
-      content: none;
-    }
-
-    .react-bx-stepper-item.bx-success-step > .react-bx-step-counter {
-      background-color: #28a745;
-    }
-    ` }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "react-bx-stepper-wrapper", children: steps.map((step, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
+  };
+  const handleLogClick = (log) => {
+    setSelectedLog((selectedLog == null ? void 0 : selectedLog.id) === log.id ? null : log);
+  };
+  const handleGoToConfig = (e) => {
+    e.preventDefault();
+    setActiveSection("configuracion");
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.logsContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Logs del Sistema" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Visualiza registros del funcionamiento del plugin. Uso exclusivo para soporte y monitoreo. No realices cambios sin la asesoría de Blue." }),
+    !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$2.logsDisabledMessage, children: [
+      'Para ver los logs, por favor activa la opción "Habilitar logs" en la sección de',
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "#", onClick: handleGoToConfig, children: "Configuración" }),
+      "."
+    ] }) }) : loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Cargando logs..." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$2.logsTable, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Fecha" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Tipo" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Mensaje" })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: logs.map((log) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "tr",
+          {
+            onClick: () => handleLogClick(log),
+            className: `${styles$2.tableRow} ${(selectedLog == null ? void 0 : selectedLog.id) === log.id ? styles$2.selected : ""}`,
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: new Date(log.log_timestamp).toLocaleString() }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "span",
+                {
+                  className: `${styles$2.logType} ${styles$2[log.log_type]}`,
+                  children: log.log_type
+                }
+              ) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("td", { children: [
+                log.log_body.substring(0, 100),
+                "..."
+              ] })
+            ]
+          },
+          log.id
+        )) })
+      ] }),
+      selectedLog && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.logDetail, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Detalle del Log" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: selectedLog.log_body }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.pagination, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => setCurrentPage((prev) => Math.max(prev - 1, 1)),
+            disabled: currentPage === 1,
+            type: "button",
+            children: "Anterior"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+          "Página ",
+          currentPage,
+          " de ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            onClick: () => setCurrentPage((prev) => Math.min(prev + 1, totalPages)),
+            disabled: currentPage === totalPages,
+            type: "button",
+            children: "Siguiente"
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+const sidebar = "_sidebar_h80jo_1";
+const logo = "_logo_h80jo_13";
+const logo__image = "_logo__image_h80jo_20";
+const menu = "_menu_h80jo_25";
+const menu__item = "_menu__item_h80jo_32";
+const menu__item_active = "_menu__item_active_h80jo_49";
+const styles$1 = {
+  sidebar,
+  logo,
+  logo__image,
+  menu,
+  menu__item,
+  menu__item_active
+};
+const Sidebar = ({ activeSection, setActiveSection }) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sidebar, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.logo, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "img",
       {
-        className: `react-bx-stepper-item ${currentStep > index + 1 ? "completed" : ""} ${currentStep === index + 1 ? "active" : ""} ${currentStep === steps.length ? "bx-success-step" : ""}`,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "react-bx-step-counter", children: index + 1 }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "react-bx-step-name", children: step })
-        ]
-      },
-      index
-    )) })
+        src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
+        alt: "Blue Express",
+        className: styles$1.logo__image
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: styles$1.menu, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$1.menu__item} ${activeSection === "inicio" ? styles$1.menu__item_active : ""}`,
+          onClick: () => setActiveSection("inicio"),
+          type: "button",
+          children: "Resumen"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$1.menu__item} ${activeSection === "configuracion" ? styles$1.menu__item_active : ""}`,
+          onClick: () => setActiveSection("configuracion"),
+          type: "button",
+          children: "Configuración"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$1.menu__item} ${activeSection === "conexion" ? styles$1.menu__item_active : ""}`,
+          onClick: () => setActiveSection("conexion"),
+          type: "button",
+          children: "Conexión"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$1.menu__item} ${activeSection === "logs" ? styles$1.menu__item_active : ""}`,
+          onClick: () => setActiveSection("logs"),
+          type: "button",
+          children: "Logs"
+        }
+      )
+    ] })
+  ] });
+};
+const Sidebar$1 = reactExports.memo(Sidebar);
+const home = "_home_19qak_1";
+const hero = "_hero_19qak_6";
+const hero__image = "_hero__image_19qak_20";
+const description = "_description_19qak_25";
+const highlight = "_highlight_19qak_32";
+const cards = "_cards_19qak_37";
+const card = "_card_19qak_37";
+const status = "_status_19qak_58";
+const statusContainer = "_statusContainer_19qak_65";
+const statusSuccess = "_statusSuccess_19qak_72";
+const statusError = "_statusError_19qak_73";
+const statusIcon = "_statusIcon_19qak_88";
+const connectButton = "_connectButton_19qak_93";
+const configSummary = "_configSummary_19qak_108";
+const configList = "_configList_19qak_112";
+const styles = {
+  home,
+  hero,
+  hero__image,
+  description,
+  highlight,
+  cards,
+  card,
+  status,
+  statusContainer,
+  statusSuccess,
+  statusError,
+  statusIcon,
+  connectButton,
+  configSummary,
+  configList
+};
+const Home = ({
+  connectionStatus,
+  config,
+  setActiveSection,
+  optionsEmissionOs = []
+}) => {
+  const getStatusLabel = (statusValue) => {
+    if (!statusValue) return "No configurado";
+    const option = optionsEmissionOs.find((opt) => opt.value === statusValue);
+    return option ? option.label : statusValue;
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.home, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.hero, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Bienvenido a Blue Express" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "img",
+        {
+          src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
+          alt: "Blue Express",
+          className: styles.hero__image
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles.description, children: [
+      "Con la aplicación oficial de Blue Express podrás",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.highlight, children: " gestionar tus envíos " }),
+      " de manera eficiente, cotizar precios, generar envíos y descargar etiquetas para enviar tus pedidos con Blue Express."
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.cards, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Estado de la conexión" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusSuccess, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statusIcon, children: "✓" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Conectado" })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusContainer, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusError, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statusIcon, children: "✕" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Desconectado" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: styles.connectButton,
+              onClick: () => setActiveSection("conexion"),
+              children: "Ir a Conexión"
+            }
+          )
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Resumen de la configuración" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles.configList, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Código de la comuna de origen:" }),
+            " ",
+            config.districtCode || "No configurado"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Estado para crear orden en Blue:" }),
+            " ",
+            getStatusLabel(config.noBlueStatus)
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Puntos de retiro Blue Express?:" }),
+            " ",
+            config.pudoEnable === "yes" ? "Sí" : "No"
+          ] })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay configuración disponible" }) })
+      ] })
+    ] })
   ] });
 };
 const App = () => {
   const [loading, setLoading] = reactExports.useState(true);
   const [storeId, setStoreId] = reactExports.useState(void 0);
-  const [error, setError] = reactExports.useState(void 0);
-  const [status, setStatus] = reactExports.useState(STATUS_PAGE.VALIDATING);
+  const [error2, setError] = reactExports.useState(void 0);
   const [settings, setSettings] = reactExports.useState(void 0);
   const [developerToolsOpen, setDeveloperToolsOpen] = reactExports.useState(false);
-  const [optionsEmissionOs, setOptionsEmissionOs] = reactExports.useState(void 0);
-  const [pricingTest, setPricingTest] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    validateIntegration();
-  }, []);
+  const [activeSection, setActiveSection] = reactExports.useState("inicio");
+  const [optionsEmissionOs, setOptionsEmissionOs] = reactExports.useState([]);
+  const [activeIntegration, setActiveIntegration] = reactExports.useState(false);
+  const handleError = (error22) => {
+    console.log("handleError", error22);
+  };
   const validateIntegration = reactExports.useCallback(async () => {
+    setError(void 0);
     setLoading(true);
     try {
       const response = await validateIntegrationStatus();
-      console.log("RESPONSE => ", response);
+      console.log("response validateIntegration ", response);
       if (response.storeId) {
         setStoreId(response.storeId);
         if (response.activeIntegration === false) {
-          setStatus(STATUS_PAGE.NEW_INTEGRATION);
           response.message && setError(response.message);
         } else {
-          setStatus(STATUS_PAGE.INTEGRATED);
+          setActiveIntegration(true);
         }
       } else {
-        setStatus(STATUS_PAGE.NEW_INTEGRATION);
         setError(response.message);
       }
       setSettings(response.settings);
-      setOptionsEmissionOs(response.optionsEmissionOs);
-    } catch (error2) {
-      handleError();
+      setOptionsEmissionOs(response.optionsEmissionOs || []);
+    } catch (error22) {
+      handleError(error22);
     } finally {
       setLoading(false);
     }
   }, []);
-  const handleError = () => {
-    setLoading(false);
-  };
+  reactExports.useEffect(() => {
+    validateIntegration();
+  }, []);
   const saveSettingsDeveloperTools = reactExports.useCallback(async (settings2) => {
     try {
-      await saveDeveloperSettings(settings2);
-    } catch (error2) {
-      console.error(error2);
+      await saveDeveloperSettingsService(settings2);
+    } catch (error22) {
+      console.error(error22);
       alert("Error al guardar las configuraciones de desarrollo");
     }
   }, []);
@@ -9596,9 +9945,8 @@ const App = () => {
     setLoading(true);
     try {
       await testPricingService();
-      setPricingTest(true);
-    } catch (error2) {
-      console.error(error2);
+    } catch (error22) {
+      console.error(error22);
       alert("Error al probar la obtención de precios");
     } finally {
       setLoading(false);
@@ -9616,183 +9964,62 @@ const App = () => {
       }
     );
   }, [developerToolsOpen, settings]);
-  const currentStep = reactExports.useMemo(() => {
-    if (!storeId) return 0;
-    if (pricingTest) return 4;
-    if (status === STATUS_PAGE.VALIDATING && storeId) return 1;
-    if (status === STATUS_PAGE.NEW_INTEGRATION) return 2;
-    if (status === STATUS_PAGE.INTEGRATED) return 3;
-    return 4;
-  }, [status, storeId, pricingTest]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles.root, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-          @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-          #integration-react-form * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Montserrat', sans-serif;
-          }
-          #integration-react-form h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: #073e99;
-            margin-top: 20px;
-            margin-bottom: 20px;
-          }
-          #integration-react-form p {
-            font-size: 16px;
-            font-weight: 400;
-            margin-bottom: 20px;
-          }
-          #integration-react-form .tooltip {
-            position: relative;
-            display: inline-block;
-          }
-
-          form#mainform button.woocommerce-save-button {
-            display: none;
-          }
-
-          /* Tooltip text */
-          #integration-react-form .tooltip .tooltiptext {
-            visibility: hidden;
-            min-width: 120px;
-            width: 300px;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 12px;
-            border-radius: 6px;
-          
-            /* Position the tooltip text - see examples below! */
-            position: absolute;
-            z-index: 1;
-          }
-
-          /* Show the tooltip text when you mouse over the tooltip container */
-          #integration-react-form .tooltip:hover .tooltiptext {
-            visibility: visible;
-          }
-          #integration-react-form input[type="checkbox"] {
-            appearance: none;
-            background-color: #fff;
-            margin: 0;
-            font: inherit;
-            color: currentColor;
-            width: 1.15em;
-            height: 1.15em;
-            border: 0.15em solid currentColor;
-            border-radius: 0.15em;
-            transform: translateY(-0.075em);
-
-            display: grid;
-            place-content: center;
-          }
-
-          #integration-react-form input[type="checkbox"]::before {
-            content: "";
-            width: 0.65em;
-            height: 0.65em;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em #073e99;
-          }
-
-          #integration-react-form input[type="checkbox"]:checked::before {
-            transform: scale(1);
-          }
-        ` }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles.container, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles.header, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "img",
+  const renderContent = () => {
+    switch (activeSection) {
+      case "inicio":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Home,
           {
-            src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
-            alt: "Blue Express",
-            style: styles.image
+            connectionStatus: activeIntegration,
+            config: settings,
+            setActiveSection,
+            optionsEmissionOs
           }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Bienvenido a Blue Express" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          "Con la aplicación oficial de Blue Express podrás",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#ff7a00" }, children: " gestionar tus envíos " }),
-          " de manera eficiente, cotizar precios, generar emisiones de órdenes, y descargar etiquetas para tus paquetes."
-        ] })
-      ] }),
+        );
+      case "configuracion":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          FormConfig,
+          {
+            storeId,
+            error: error2,
+            setLoading,
+            settings,
+            testPricing,
+            optionsEmissionOs
+          }
+        );
+      case "conexion":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          FormNewIntegrate,
+          {
+            storeId,
+            error: error2,
+            setLoading,
+            validateIntegration,
+            isActiveIntegration: activeIntegration
+          }
+        );
+      case "logs":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Logs, { settings, setActiveSection });
+      default:
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Home, { connectionStatus: activeIntegration, config: settings, setActiveSection, optionsEmissionOs });
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.root, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.appLayout, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        StepProgressBar,
+        Sidebar$1,
         {
-          steps: [
-            "Creacion de cuenta",
-            "Validar integración",
-            "Configuración de Blue Express",
-            "Obtencion de precios"
-          ],
-          currentStep
+          activeSection,
+          setActiveSection
         }
       ),
-      status === STATUS_PAGE.VALIDATING && !loading && /* @__PURE__ */ jsxRuntimeExports.jsx(FormValidateIntegrate$1, {}),
-      status === STATUS_PAGE.NEW_INTEGRATION && /* @__PURE__ */ jsxRuntimeExports.jsx(
-        FormNewIntegrate$1,
-        {
-          storeId,
-          error,
-          setStatus,
-          setLoading,
-          validateIntegration
-        }
-      ),
-      status === STATUS_PAGE.INTEGRATED && /* @__PURE__ */ jsxRuntimeExports.jsx(
-        FormConfig$1,
-        {
-          storeId,
-          error,
-          setStatus,
-          setLoading,
-          settings,
-          optionsEmissionOs,
-          testPricing
-        }
-      ),
-      loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$b.content, children: renderContent() })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: styles.developerTools, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setDeveloperToolsOpen(true), children: "</>" }) }),
-    DeveloperToolsMemo
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$b.developerTools, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setDeveloperToolsOpen(true), children: "</>" }) }),
+    DeveloperToolsMemo,
+    loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })
   ] });
-};
-const styles = {
-  root: {
-    width: "100%",
-    backgroundColor: "#f4faf8",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "50px",
-    paddingBottom: "50px",
-    position: "relative"
-  },
-  container: {
-    maxWidth: "900px",
-    margin: "0 auto",
-    padding: "20px",
-    textAlign: "center",
-    fontFamily: "Arial, sans-serif"
-  },
-  header: {
-    marginBottom: "20px"
-  },
-  image: {
-    width: "70%",
-    maxHeight: "250px",
-    objectFit: "contain",
-    borderRadius: "10px"
-  },
-  developerTools: {
-    position: "absolute",
-    top: "10px",
-    right: "10px"
-  }
 };
 clientExports.createRoot(document.getElementById("integration-react-form")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) })

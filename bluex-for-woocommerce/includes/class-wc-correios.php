@@ -23,6 +23,10 @@ class WC_Correios
 	{
 		add_action('init', array(__CLASS__, 'load_plugin_textdomain'), -1);
 
+		// Registramos los hooks de activación/desactivación
+		register_activation_hook(WC_CORREIOS_PLUGIN_FILE, array(__CLASS__, 'bluex_plugin_activate'));
+		register_deactivation_hook(WC_CORREIOS_PLUGIN_FILE, array(__CLASS__, 'deactivate_logger'));
+
 		// Checks with WooCommerce is installed.
 		if (class_exists('WC_Integration')) {
 			self::includes();
@@ -31,11 +35,49 @@ class WC_Correios
 				self::admin_includes();
 			}
 
+			// Inicializar la API
+			add_action('rest_api_init', array('WC_Correios_API', 'init'));
+
 			add_filter('woocommerce_integrations', array(__CLASS__, 'include_integrations'));
 			add_filter('woocommerce_shipping_methods', array(__CLASS__, 'include_methods'));
 			add_filter('woocommerce_email_classes', array(__CLASS__, 'include_emails'));
 		} else {
 			add_action('admin_notices', array(__CLASS__, 'woocommerce_missing_notice'));
+		}
+	}
+
+	public static function deactivate_logger()
+	{
+		require_once(plugin_dir_path(__FILE__) . 'logger/wc-logs-deactive-cron.php');
+	}
+
+	public static function bluex_create_logs_table()
+	{
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'bluex_logs';
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+			id bigint(20) NOT NULL AUTO_INCREMENT,
+			log_timestamp datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			log_type varchar(20) NOT NULL,
+			log_body text NOT NULL,
+			PRIMARY KEY  (id),
+			KEY log_timestamp (log_timestamp)
+		) $charset_collate;";
+
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+	}
+
+	public static function bluex_plugin_activate()
+	{
+		// Crear la tabla de logs
+		self::bluex_create_logs_table();
+
+		// Programar la limpieza de logs
+		if (! wp_next_scheduled('bluex_clean_logs')) {
+			wp_schedule_event(time(), 'daily', 'bluex_clean_logs');
 		}
 	}
 
@@ -52,8 +94,13 @@ class WC_Correios
 	 */
 	private static function includes()
 	{
+		// Ensure API Client is loaded first as other classes depend on it.
+		include_once dirname(__FILE__) . '/class-bluex-api-client.php';
+
 		include_once dirname(__FILE__) . '/wc-correios-functions.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-install.php';
+		include_once dirname(__FILE__) . '/class-wc-correios-settings.php';
+		include_once dirname(__FILE__) . '/logger/helper.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-package.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice-international.php';
@@ -63,13 +110,14 @@ class WC_Correios
 		include_once dirname(__FILE__) . '/class-wc-correios-orders.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-cart.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-pudos-map.php';
-		include_once dirname(__FILE__) . '/class-wc-correios-webhook.php';
+		include_once dirname(__FILE__) . '/class-wc-correios-webhook.php'; // Depends on API Client
 		include_once dirname(__FILE__) . '/class-wc-correios-custom-order-status.php';
+		include_once dirname(__FILE__) . '/api/class-wc-correios-api.php'; // Loads endpoints which depend on API Client
 		// Districts
 		include_once dirname(__FILE__) . '/districts/class-wc-districts.php';
 
 		// Integration.
-		include_once dirname(__FILE__) . '/integrations/class-wc-correios-integration.php';
+		include_once dirname(__FILE__) . '/integrations/class-wc-correios-integration.php'; // Depends on API Client
 
 
 

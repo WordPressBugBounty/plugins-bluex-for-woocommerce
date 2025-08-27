@@ -13,7 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WC_Correios_RESTAPI class.
  */
 class WC_Correios_Install {
-
 	/**
 	 * Get version.
 	 *

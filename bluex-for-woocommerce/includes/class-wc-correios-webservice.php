@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Correios Webservice.
  *
@@ -188,6 +190,33 @@ class WC_Correios_Webservice
 	protected $_devMode;
 
 	/**
+	 * Settings handler.
+	 *
+	 * @var WC_Correios_Settings
+	 */
+	protected $settings_handler = null;
+
+	/**
+	 * API Client instance.
+	 *
+	 * @var BlueX_API_Client|null
+	 */
+	private $api_client = null;
+
+	/**
+	 * Get settings handler instance
+	 *
+	 * @return WC_Correios_Settings
+	 */
+	protected function get_settings_handler()
+	{
+		if ($this->settings_handler === null) {
+			$this->settings_handler = WC_Correios_Settings::get_instance();
+		}
+		return $this->settings_handler;
+	}
+
+	/**
 	 * Initialize webservice.
 	 *
 	 * @param string $id Method ID.
@@ -199,21 +228,17 @@ class WC_Correios_Webservice
 		$this->instance_id  = $instance_id;
 		$this->log          = new WC_Logger();
 		$this->setupConfig();
+		// Initialize API client
+		$this->api_client = new BlueX_API_Client();
 	}
 	private function setupConfig()
 	{
 		// Fetch configuration data from WooCommerce settings
-		$this->_configData = get_option('woocommerce_correios-integration_settings');
-		$this->_blueApikey = $this->_configData['tracking_bxkey'];
-		// Comprobación con isset para evitar el error:
-		$this->_devMode = isset($this->_configData['devOptions']) &&  $this->_configData['devOptions'] === "yes";
-
-		// Decide the base path URL based on the devMode status
-		if ($this->_devMode && !empty($this->_configData['alternativeBasePath'])) {
-			$this->_basePathUrl = $this->_configData['alternativeBasePath'];
-		} else {
-			$this->_basePathUrl = 'https://apigw.bluex.cl';
-		}
+		$this->_configData = $this->get_settings_handler()->get_settings();
+		// API Key and Base Path are now handled by the API Client, getting them here is redundant.
+		// $this->_blueApikey = $this->get_settings_handler()->get_tracking_bxkey();
+		$this->_devMode = $this->get_settings_handler()->get_dev_mode();
+		// $this->_basePathUrl = $this->get_settings_handler()->get_base_path();
 		$this->_pudoEnabled = $this->_configData['pudoEnable'] ?? 'no';
 	}
 
@@ -467,52 +492,70 @@ class WC_Correios_Webservice
 			parse_str($_POST['post_data'], $output);
 		}
 
-
 		// Extract the 'agencyId' value if present.
-		$agencyId = (isset($output['agencyId']) && $output['agencyId'] != "") ? $output['agencyId'] : null;
+		$agencyId = (isset($output['agencyId']) && $output['agencyId'] != "") ? sanitize_text_field($output['agencyId']) : null;
 
-		$result = json_decode('{"cServico":{"Codigo":"EX","Valor":"0,00","PrazoEntrega":"0","ValorSemAdicionais":"0,00","ValorMaoPropria":"0,00","ValorAvisoRecebimento":"0,00","ValorValorDeclarado":"0,00","EntregaDomiciliar":{},"EntregaSabado":{},"obsFim":{},"Erro":"-888","MsgErro":"Erro ao calcular tarifa. Tente novamente mais tarde. Servidores indispon\u00edveis."}}');
-		if (!$result || !isset($result->cServico)) {
-			return null;
-		}
-		$shipping = $result->cServico;
+		// Default fallback response structure
+		$default_shipping = (
+			(object) [
+				'Codigo'           => $this->service,
+				'Valor'            => '0,00',
+				'PrazoEntrega'     => '0',
+				'Erro'             => '-888',
+				'MsgErro'          => 'Erro ao calcular tarifa. Tente novamente mais tarde. Servidores indisponíveis.',
+				'nameService'      => '', // Add default for nameService
+				'isShipmentFree'   => false, // Add default for isShipmentFree
+			]
+		);
+
 		// Check if package contents exist
 		if (!isset($this->package['contents'])) {
-			return null;
+			return $default_shipping;
 		}
+
 		$bultos = [];
-		// Loop through package contents.
-		$price = 0;
+		$price = 0.0;
 		foreach ($this->package['contents'] as $indice => $items) {
-			// Extract item data.
 			$data = $items['data'];
-			$ancho = $data->get_width();
-			$largo = $data->get_length();
-			$alto = $data->get_height();
-			$peso = $data->get_weight();
-			$price += (float)$data->get_regular_price() * (int)$items['quantity'] ?? 0;
+			if (!$data instanceof WC_Product) continue; // Skip if not a product
 
+			$ancho = (float) $data->get_width();
+			$largo = (float) $data->get_length();
+			$alto = (float) $data->get_height();
+			$peso = (float) $data->get_weight();
+			$price += (float) $data->get_price * (int) $items['quantity']; // Use get_price for accuracy
 
-			$ancho = $this->isEmptyOrZero($ancho) ? 10 : $ancho;
-			$largo = $this->isEmptyOrZero($largo) ? 10 : $largo;
-			$alto = $this->isEmptyOrZero($alto) ? 10 : $alto;
-			$pesoFisico = $this->isEmptyOrZero($peso) ? '0.010' : $peso;
+			$ancho = $this->isEmptyOrZero($ancho) ? 10.0 : $ancho;
+			$largo = $this->isEmptyOrZero($largo) ? 10.0 : $largo;
+			$alto = $this->isEmptyOrZero($alto) ? 10.0 : $alto;
+			$pesoFisico = $this->isEmptyOrZero($peso) ? 0.010 : $peso;
 
-			// Add to 'bultos' array.
 			$bultos[] = [
-				"ancho" => (int) $ancho,
-				"largo" => (int) $largo,
-				"alto" => (int) $alto,
-				"pesoFisico" => floatval($pesoFisico),
-				"cantidad" => (int) $items['quantity']
+				"ancho"      => (int) $ancho, // API expects integer?
+				"largo"      => (int) $largo,
+				"alto"       => (int) $alto,
+				"pesoFisico" => (float) $pesoFisico,
+				"cantidad"   => (int) $items['quantity']
 			];
 		}
-		// Get user data
-		$userData = get_option('woocommerce_correios-integration_settings');
-		if (!$userData) {
-			return null;
+
+		// Get user data (origin info mainly)
+		$userData = $this->get_settings_handler()->get_settings();
+		if (empty($userData['districtCode'])) {
+			bluex_log('error', 'Origin districtCode not configured in settings.');
+			return $default_shipping;
 		}
-		$regionCodeToFormat = $this->package['destination']['state'];
+
+		// Destination details
+		$destination = $this->package['destination'] ?? [];
+		$regionCodeToFormat = $destination['state'] ?? '';
+		$city_normalized = $this->normalizeString($destination['city'] ?? '');
+
+		if (empty($regionCodeToFormat) || empty($city_normalized)) {
+			bluex_log('error', 'Destination state or city is missing in the package.');
+			return $default_shipping;
+		}
+
 		$regionCode = '';
 		$siglas = 'CL-';
 		if (strpos($regionCodeToFormat, $siglas) === 0) {
@@ -520,68 +563,87 @@ class WC_Correios_Webservice
 		} else {
 			$regionCode = $regionCodeToFormat;
 		}
-		//Busco la comuna seleccionada por el cliente 
-		// Normalize city string
-		$city_normalized = $this->normalizeString($this->package['destination']['city']);
-		$current_url = home_url();
-		$bxGeo = $this->getComunasGeo($city_normalized, $regionCode, $agencyId, $current_url);
 
-		if (!$bxGeo) {
-			return null;
+		// Get Geolocation data
+		$bxGeoResult = $this->getComunasGeo($city_normalized, $regionCode, $agencyId);
+
+		if (is_wp_error($bxGeoResult) || empty($bxGeoResult)) {
+			bluex_log('error', 'Failed to get geolocation data or bxGeo data is empty. Error: ' . (is_wp_error($bxGeoResult) ? $bxGeoResult->get_error_message() : 'Empty response'));
+			return $default_shipping;
 		}
-		if (isset($bxGeo["porcentageDeExito"])) {
-			$percentage = rtrim($bxGeo["porcentageDeExito"], "%");
-			$percentage = intval($percentage);
+
+		if (isset($bxGeoResult["porcentageDeExito"])) {
+			$percentage = (int) rtrim($bxGeoResult["porcentageDeExito"], "%");
 			if ($percentage < 80) {
-				return null;
+				bluex_log('warning', 'Geolocation match percentage too low ({$percentage}%). Aborting calculation.');
+				return $default_shipping;
 			}
 		}
 
+		$dadosGeo = [
+			'regionCode'   => $bxGeoResult['regionCode'] ?? null,
+			'cidadeName'   => $bxGeoResult['cidadeName'] ?? null,
+			'cidadeCode'   => $bxGeoResult['cidadeCode'] ?? null,
+			'districtCode' => $bxGeoResult['districtCode'] ?? null,
+		];
 
-		$dadosGeo = [];
-
-		$dadosGeo['regionCode'] 	= $bxGeo['regionCode'];
-		$dadosGeo['cidadeName'] 	= $bxGeo['cidadeName'];
-		$dadosGeo['cidadeCode'] 	= $bxGeo['cidadeCode'];
-		$dadosGeo['districtCode']   = $bxGeo['districtCode'];
-
-		if (empty($dadosGeo)) {
-			return null;
+		if (empty($dadosGeo['regionCode']) || empty($dadosGeo['districtCode'])) {
+			bluex_log('error', 'Geolocation data missing regionCode or districtCode after processing bxGeo response.');
+			return $default_shipping;
 		}
 
-		// Fetch the price for the selected comuna
-		$familiaProducto = 'PAQU';
+		// Fetch the price
+		$familiaProducto = $agencyId ? 'PUDO' : 'PAQU';
 		$nameService = "";
 		if ($agencyId) {
-			$familiaProducto = 'PUDO';
-			if (empty($bxGeo['pickupInfo']['agency_name'])) {
-				return null; // Early return if agency_name does not exist or is empty
+			if (empty($bxGeoResult['pickupInfo']['agency_name'])) {
+				bluex_log('warning', 'PUDO selected but agency name is missing in geolocation response.');
+				// Continue without agency name or return default? For now, continue.
+			} else {
+				$nameService = $bxGeoResult['pickupInfo']['agency_name'];
 			}
-			$nameService = $bxGeo['pickupInfo']['agency_name'];
 		}
-		$response = $this->fetchPrice($userData, $dadosGeo, $bultos, $current_url, $familiaProducto, $price);
 
-		if (!$response) {
-			return null;
+		if (WC()->cart) {
+			$total_descuento = WC()->cart->get_discount_total();
+			$price = $price - $total_descuento;
 		}
+		bluex_log('info', "Log de precio enviado al pricing" . $price);
+
+		$pricingResponse = $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
+
+		if (is_wp_error($pricingResponse) || empty($pricingResponse['data'])) {
+			bluex_log('error', 'Failed to fetch pricing. Error: ' . (is_wp_error($pricingResponse) ? $pricingResponse->get_error_message() : 'Empty data in response'));
+			return $default_shipping;
+		}
+
+		$pricingData = $pricingResponse['data'];
+
 		// Update shipping details based on response
-		if ($response->code == "00" || $response->code == "01") {
+		if (($pricingResponse['code'] ?? null) == "00" || ($pricingResponse['code'] ?? null) == "01") {
+			$shipping = $default_shipping; // Start with default structure
 			$shipping->Codigo = $this->service;
-			$shipping->Valor = (int) $response->data->total;
-			$shipping->PrazoEntrega = $response->data->promiseDay;
-			$shipping->nameService = (empty($nameService)) ? $response->data->nameService : $nameService;
-			$shipping->isShipmentFree = $response->data->isShipmentFree;
+			$shipping->Valor = (int) ($pricingData['total'] ?? 0);
+			$shipping->PrazoEntrega = (string) ($pricingData['promiseDay'] ?? '0');
+			$shipping->nameService = empty($nameService) ? ($pricingData['nameService'] ?? '') : $nameService;
+			$shipping->isShipmentFree = (bool) ($pricingData['isShipmentFree'] ?? false);
 			$shipping->Erro = 0;
 			$shipping->MsgErro = '';
 
 			if ($shipping->isShipmentFree) {
 				$shipping->nameService .= " - Envío gratis";
 			}
+		} else {
+			// Use default error if API response code is not 00 or 01
+			bluex_log('error', 'Pricing API returned non-success code: ' . ($pricingResponse['code'] ?? 'N/A') . ' - Message: ' . ($pricingResponse['message'] ?? 'N/A'));
+			$shipping = $default_shipping;
+			$shipping->MsgErro = $pricingResponse['message'] ?? $default_shipping->MsgErro;
+			$shipping->Erro = $pricingResponse['code'] ?? $default_shipping->Erro;
 		}
 
-		// Cleanup
+		// Cleanup unnecessary properties from default structure (they are not used by WC)
 		unset(
-			$shipping->EntregaDomiciliar,
+			$shipping->EntregaDomiciliar, // These were from the old hardcoded json
 			$shipping->EntregaSabado,
 			$shipping->obsFim,
 			$shipping->ValorSemAdicionais,
@@ -607,101 +669,64 @@ class WC_Correios_Webservice
 
 	private function get_tracking_bxkey($userData)
 	{
-		$devMode = defined('DEV_OPTIONS') && DEV_OPTIONS && $userData['devOptions'] === 'yes';
-		$bxkey = $devMode ? $userData['tracking_bxkey'] : 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
-		return $bxkey;
+		return $this->get_settings_handler()->get_tracking_bxkey();
 	}
 
 	/**
-	 * Fetch the price for a given shipping.
+	 * Fetch the price for a given shipping using BlueX_API_Client.
 	 * 
-	 * @param array $userData User-specific settings/data.
-	 * @param array $dadosGeo Geographical details.
+	 * @param array $userData Origin user settings.
+	 * @param array $dadosGeo Destination geographical details.
 	 * @param array $bultos Package contents.
-	 * @param string $current_url Current URL.
-	 * @param string $familiaProducto Product family type.
-	 * @return object|null The fetched price or null if an error occurs.
+	 * @param string $familiaProducto Product family type ('PAQU' or 'PUDO').
+	 * @param float $price Declared value (total price of items).
+	 * @return array|WP_Error API response array or WP_Error on failure.
 	 */
-	private function fetchPrice($userData, $dadosGeo, $bultos, $current_url, $familiaProducto, $price)
+	private function fetchPrice(array $userData, array $dadosGeo, array $bultos, string $familiaProducto, float $price): array|WP_Error
 	{
-		$headers = [
-			'Content-Type' => 'application/json',
-			'apikey' => $this->get_tracking_bxkey($userData),
-			'price' => $price
+		if (!$this->api_client) {
+			bluex_log('error', 'API Client not initialized in fetchPrice');
+			return new WP_Error('client_error', 'API Client not initialized.');
+		}
+
+		$from = [
+			"country" => "CL",
+			"district" => $userData['districtCode'] ?? 'SCL' // Default to SCL if not set
 		];
-		$body = json_encode([
-			"from" => [
-				"country" => "CL",
-				"district" => $userData['districtCode']
-			],
-			"to" => [
-				"country" => "CL",
-				"state" => $dadosGeo['regionCode'],
-				"district" => $dadosGeo['districtCode']
-			],
-			"serviceType" => $this->service,
-			"domain" => $current_url . "/",
-			"datosProducto" => [
-				"producto" => "P",
-				"familiaProducto" => $familiaProducto,
-				"bultos" => $bultos
-			]
-		]);
-		$postUrl = $this->_basePathUrl . '/api/ecommerce/pricing/v1';
 
-		$postPrice = wp_remote_post($postUrl, [
-			'method'  => 'POST',
-			'headers' => $headers,
-			'body'    => $body
-		]);
+		$to = [
+			"country" => "CL",
+			"state" => $dadosGeo['regionCode'] ?? null,
+			"district" => $dadosGeo['districtCode'] ?? null
+		];
 
-		if (is_wp_error($postPrice)) {
-			return null;
+		if (empty($to['state']) || empty($to['district'])) {
+			bluex_log('error', 'Missing state or district code in destination for pricing request.');
+			return new WP_Error('param_error', 'Missing destination state or district.');
 		}
 
-		$response = json_decode($postPrice['body']);
-
-		if (!$response || !property_exists($response, 'data')) {
-			return null;
-		}
-
-		return $response;
+		// Pass $userData to get_pricing for potential user-specific API key logic
+		return $this->api_client->get_pricing($from, $to, $this->service, $bultos, $price, $familiaProducto, $userData);
 	}
+
 	/**
-	 * Get geographical details for a 'comuna' (community or district).
+	 * Get geographical details for a 'comuna' using BlueX_API_Client.
 	 * 
 	 * @param string $city_normalized Normalized city name.
 	 * @param string $regionCode Region code.
-	 * @param string $agencyId Agency ID.
-	 * @return array|null The geographical details or null if an error occurs.
+	 * @param string|null $agencyId Agency ID (optional, for PUDO).
+	 * @return array|WP_Error API response array or WP_Error on failure.
 	 */
-	private function getComunasGeo($city_normalized, $regionCode, $agencyId,  $current_url)
+	private function getComunasGeo(string $city_normalized, string $regionCode, ?string $agencyId): array|WP_Error
 	{
-		$geoEndpoint = '/api/ecommerce/comunas/v1/bxgeo';
-		if ($this->_pudoEnabled === 'yes') {
-			$geoEndpoint .= '/v2';
-		}
-		$postUrl = $this->_basePathUrl . $geoEndpoint;
-		$comunasGeo = wp_remote_post($postUrl, array(
-			'method'  => 'POST',
-			'headers' => array(
-				'Content-Type' => 'application/json'
-			),
-			'body'        => '{
-            "address": "' . $city_normalized . '",
-            "type": "woocommerce",
-            "shop": "' . $current_url . '/",
-            "regionCode": "' . $regionCode . '",
-            "agencyId": "' . $agencyId . '"
-        }'
-		));
-
-
-		if (is_wp_error($comunasGeo)) {
-			return null;
+		if (!$this->api_client) {
+			bluex_log('error', 'API Client not initialized in getComunasGeo');
+			return new WP_Error('client_error', 'API Client not initialized.');
 		}
 
-		return json_decode(wp_remote_retrieve_body($comunasGeo), true);
+		$is_pudo = ($this->_pudoEnabled === 'yes');
+
+		return $this->api_client->get_geolocation($city_normalized, $regionCode, $agencyId, $is_pudo);
 	}
 	/**
 	 * Retrieves the current URL details.

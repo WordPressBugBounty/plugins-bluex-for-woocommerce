@@ -682,7 +682,7 @@ class WC_Correios_Webservice
 	 * @param float $price Declared value (total price of items).
 	 * @return array|WP_Error API response array or WP_Error on failure.
 	 */
-	private function fetchPrice(array $userData, array $dadosGeo, array $bultos, string $familiaProducto, float $price): array|WP_Error
+	private function fetchPrice(array $userData, array $dadosGeo, array $bultos, string $familiaProducto, float $price)
 	{
 		if (!$this->api_client) {
 			bluex_log('error', 'API Client not initialized in fetchPrice');
@@ -717,7 +717,7 @@ class WC_Correios_Webservice
 	 * @param string|null $agencyId Agency ID (optional, for PUDO).
 	 * @return array|WP_Error API response array or WP_Error on failure.
 	 */
-	private function getComunasGeo(string $city_normalized, string $regionCode, ?string $agencyId): array|WP_Error
+	private function getComunasGeo(string $city_normalized, string $regionCode, ?string $agencyId)
 	{
 		if (!$this->api_client) {
 			bluex_log('error', 'API Client not initialized in getComunasGeo');

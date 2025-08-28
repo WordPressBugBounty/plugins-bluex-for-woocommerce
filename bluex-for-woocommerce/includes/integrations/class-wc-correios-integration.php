@@ -471,7 +471,7 @@ class WC_Correios_Integration extends WC_Integration
 	 *
 	 * @return array|WP_Error Formatted result array or WP_Error.
 	 */
-	public function validate_integration_status(): array|WP_Error
+	public function validate_integration_status()
 	{
 		if (!$this->api_client) {
 			return new WP_Error('client_error', 'API Client not initialized.');
@@ -514,7 +514,7 @@ class WC_Correios_Integration extends WC_Integration
 	 * @param array $credentials Array containing clientKey and clientSecret.
 	 * @return array|WP_Error Result array or WP_Error.
 	 */
-	public function update_integration_credentials(string $storeId, array $credentials): array|WP_Error
+	public function update_integration_credentials(string $storeId, array $credentials)
 	{
 		if (!$this->api_client) {
 			return new WP_Error('client_error', 'API Client not initialized.');

@@ -136,7 +136,7 @@ class BlueX_API_Client
      * @param array|null $userData User-specific settings for API key retrieval.
      * @return array|WP_Error Pricing data or WP_Error.
      */
-    public function get_pricing(array $from, array $to, string $service_type, array $bultos, float $declared_value, string $familia_producto, ?array $userData = null): array|WP_Error
+    public function get_pricing(array $from, array $to, string $service_type, array $bultos, float $declared_value, string $familia_producto, ?array $userData = null)
     {
         $endpoint = '/api/ecommerce/pricing/v1';
         $data = [
@@ -166,7 +166,7 @@ class BlueX_API_Client
      * @param bool $is_pudo Whether PUDO is enabled.
      * @return array|WP_Error Geolocation data or WP_Error.
      */
-    public function get_geolocation(string $address, string $region_code, ?string $agency_id, bool $is_pudo): array|WP_Error
+    public function get_geolocation(string $address, string $region_code, ?string $agency_id, bool $is_pudo)
     {
         $endpoint = '/api/ecommerce/comunas/v1/bxgeo';
         if ($is_pudo) {
@@ -197,7 +197,7 @@ class BlueX_API_Client
      *
      * @return array|WP_Error Integration status data or WP_Error.
      */
-    public function validate_integration_status(): array|WP_Error
+    public function validate_integration_status()
     {
         $endpoint = '/api/ecommerce/token/v1/ecommerce/integration-status';
         $data = [
@@ -214,7 +214,7 @@ class BlueX_API_Client
      * @param array $credentials ['clientKey' => ..., 'clientSecret' => ...].
      * @return array|WP_Error Update result or WP_Error.
      */
-    public function update_integration_credentials(string $store_id, array $credentials): array|WP_Error
+    public function update_integration_credentials(string $store_id, array $credentials)
     {
         $endpoint = '/api/ecommerce/token/v1/ecommerce/update-tokens';
         $data = [
@@ -235,7 +235,7 @@ class BlueX_API_Client
      * @param array $order_data Mapped order data.
      * @return array|WP_Error Webhook response or WP_Error.
      */
-    public function send_order_webhook(array $order_data): array|WP_Error
+    public function send_order_webhook(array $order_data)
     {
         $endpoint = '/api/integr/woocommerce-wh/v1/order';
         // The webhook expects the raw mapped order data as the body
@@ -249,7 +249,7 @@ class BlueX_API_Client
      * @param array $payload Order payload associated with the error.
      * @return array|WP_Error Webhook response or WP_Error.
      */
-    public function send_log_webhook(string $error_message, array $payload): array|WP_Error
+    public function send_log_webhook(string $error_message, array $payload)
     {
         $endpoint = '/api/ecommerce/custom/logs/v1';
         $data = [

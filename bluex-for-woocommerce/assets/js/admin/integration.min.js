@@ -7057,7 +7057,7 @@ const root = "_root_1wcjp_1";
 const appLayout = "_appLayout_1wcjp_11";
 const content = "_content_1wcjp_24";
 const developerTools = "_developerTools_1wcjp_31";
-const styles$b = {
+const styles$c = {
   root,
   appLayout,
   content,
@@ -7139,7 +7139,7 @@ function requirePropTypes() {
 var propTypesExports = /* @__PURE__ */ requirePropTypes();
 const PropTypes = /* @__PURE__ */ getDefaultExportFromCjs(propTypesExports);
 const Loading = () => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$a.container, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$b.container, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
         div.lds-ripple {
           scale: 4;
@@ -7204,7 +7204,7 @@ const Loading = () => {
 Loading.propTypes = {
   size: PropTypes.number
 };
-const styles$a = {
+const styles$b = {
   container: {
     display: "flex",
     flexDirection: "column",
@@ -8705,7 +8705,7 @@ const info$1 = "_info_kwt6m_35";
 const warning = "_warning_kwt6m_39";
 const icon = "_icon_kwt6m_43";
 const message = "_message_kwt6m_64";
-const styles$9 = {
+const styles$a = {
   toast,
   visible,
   hidden,
@@ -8730,20 +8730,20 @@ const Toast = ({ message: message2, type = "success", duration = 3e3, onClose })
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: `${styles$9.toast} ${styles$9[type]} ${visible2 ? styles$9.visible : styles$9.hidden}`,
+      className: `${styles$a.toast} ${styles$a[type]} ${visible2 ? styles$a.visible : styles$a.hidden}`,
       children: [
-        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "✓" }),
-        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "✕" }),
-        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "ℹ" }),
-        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.icon, children: "⚠" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.message, children: message2 })
+        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "✓" }),
+        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "✕" }),
+        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "ℹ" }),
+        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "⚠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$a.message, children: message2 })
       ]
     }
   );
 };
 const select__container = "_select__container_1opku_1";
 const select = "_select_1opku_1";
-const styles$8 = {
+const styles$9 = {
   select__container,
   select
 };
@@ -8755,13 +8755,13 @@ const Select = ({
   disabled = false,
   defaultValue = ""
 }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "select",
     {
       ...register(name),
       disabled,
       defaultValue,
-      className: styles$8.select,
+      className: styles$9.select,
       children: [
         placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
         options.map((option) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option.value, children: option.label }, option.value))
@@ -8771,34 +8771,34 @@ const Select = ({
 };
 const input__container = "_input__container_wmv4y_1";
 const input$1 = "_input_wmv4y_1";
-const styles$7 = {
+const styles$8 = {
   input__container,
   input: input$1
 };
 const Input = ({ register, name, placeholder, type = "text", disabled = false }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.input__container, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.input__container, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     "input",
     {
       ...register(name),
       type,
       disabled,
       placeholder,
-      className: styles$7.input
+      className: styles$8.input
     }
   ) });
 };
 const label$1 = "_label_66y8x_1";
-const styles$6 = {
+const styles$7 = {
   label: label$1
 };
 const Label = ({ children }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.label, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$7.label, children });
 };
 const checkboxContainer = "_checkboxContainer_154vz_1";
 const checkboxInput = "_checkboxInput_154vz_13";
 const checkmark = "_checkmark_154vz_21";
 const label = "_label_154vz_60";
-const styles$5 = {
+const styles$6 = {
   checkboxContainer,
   checkboxInput,
   checkmark,
@@ -8811,41 +8811,42 @@ const Checkbox = ({
   className = "",
   register
 }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$5.checkboxContainer} ${className}`, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$6.checkboxContainer} ${className}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "checkbox",
-        className: styles$5.checkboxInput,
+        className: styles$6.checkboxInput,
         ...register(name),
         disabled,
         name
       }
     ),
     label2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: label2 }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.checkmark })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.checkmark })
   ] });
 };
-const formContainer$1 = "_formContainer_1g0ah_1";
-const form$1 = "_form_1g0ah_1";
-const formTitle$1 = "_formTitle_1g0ah_16";
-const subTitle$1 = "_subTitle_1g0ah_23";
-const notificationBanner = "_notificationBanner_1g0ah_31";
-const notificationText = "_notificationText_1g0ah_42";
-const errorText$1 = "_errorText_1g0ah_48";
-const successText$1 = "_successText_1g0ah_56";
-const checkboxSection = "_checkboxSection_1g0ah_64";
-const checkboxSectionTitle = "_checkboxSectionTitle_1g0ah_72";
-const button$1 = "_button_1g0ah_79";
-const rowControls$1 = "_rowControls_1g0ah_102";
-const rowControlsItem$1 = "_rowControlsItem_1g0ah_111";
-const rowControlsItemLabel$1 = "_rowControlsItemLabel_1g0ah_119";
-const inputContainer = "_inputContainer_1g0ah_126";
-const buttonTest = "_buttonTest_1g0ah_130";
-const link$1 = "_link_1g0ah_142";
-const inputDisabled = "_inputDisabled_1g0ah_147";
-const labelWithMargin = "_labelWithMargin_1g0ah_152";
-const styles$4 = {
+const formContainer$1 = "_formContainer_v0ptl_1";
+const form$1 = "_form_v0ptl_1";
+const formTitle$1 = "_formTitle_v0ptl_16";
+const subTitle$1 = "_subTitle_v0ptl_23";
+const notificationBanner = "_notificationBanner_v0ptl_31";
+const notificationText = "_notificationText_v0ptl_42";
+const errorText$1 = "_errorText_v0ptl_48";
+const successText$1 = "_successText_v0ptl_56";
+const checkboxSection = "_checkboxSection_v0ptl_64";
+const checkboxSectionTitle = "_checkboxSectionTitle_v0ptl_72";
+const button$2 = "_button_v0ptl_79";
+const rowControls$1 = "_rowControls_v0ptl_102";
+const rowControlsItem$1 = "_rowControlsItem_v0ptl_111";
+const buttonSecondary = "_buttonSecondary_v0ptl_119";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_v0ptl_138";
+const inputContainer = "_inputContainer_v0ptl_145";
+const buttonTest = "_buttonTest_v0ptl_149";
+const link$1 = "_link_v0ptl_161";
+const inputDisabled = "_inputDisabled_v0ptl_166";
+const labelWithMargin = "_labelWithMargin_v0ptl_171";
+const styles$5 = {
   formContainer: formContainer$1,
   form: form$1,
   formTitle: formTitle$1,
@@ -8856,9 +8857,10 @@ const styles$4 = {
   successText: successText$1,
   checkboxSection,
   checkboxSectionTitle,
-  button: button$1,
+  button: button$2,
   rowControls: rowControls$1,
   rowControlsItem: rowControlsItem$1,
+  buttonSecondary,
   rowControlsItemLabel: rowControlsItemLabel$1,
   inputContainer,
   buttonTest,
@@ -9005,10 +9007,17 @@ const FormConfig = ({
   storeId,
   errorValidation,
   settings,
-  optionsEmissionOs = []
+  optionsEmissionOs = [],
+  setActiveSection,
+  setDeveloperToolsOpen
 }) => {
   const [toast2, setToast] = reactExports.useState(null);
-  const { register, handleSubmit, watch, formState: { isSubmitting } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { isSubmitting }
+  } = useForm({
     defaultValues: {
       storeId,
       ...settings,
@@ -9043,7 +9052,8 @@ const FormConfig = ({
     }
   };
   const isEnabledPudo = watch("pudoEnable");
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.formContainer, children: [
+  const isEnabledLogs = watch("active_logs");
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -9052,12 +9062,12 @@ const FormConfig = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$4.formTitle, children: "Configuración" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$4.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$4.subTitle, children: "Configura tu tienda" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$5.formTitle, children: "Configuración" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$5.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$5.subTitle, children: "Configura tu tienda" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Código de la comuna de origen" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Input,
@@ -9069,8 +9079,8 @@ const FormConfig = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Estado para crear orden en Blue" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Estado para crear orden en Ecommerce Blue Express" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
@@ -9081,10 +9091,10 @@ const FormConfig = ({
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$4.checkboxSectionTitle, children: "Opciones generales" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$5.checkboxSectionTitle, children: "Opciones generales" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             Checkbox,
             {
               register,
@@ -9092,7 +9102,7 @@ const FormConfig = ({
               label: "Habilitar Puntos de retiro Blue Express"
             }
           ) }),
-          isEnabledPudo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+          isEnabledPudo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Clave API de Google Maps" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Input,
@@ -9106,28 +9116,40 @@ const FormConfig = ({
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$4.checkboxSectionTitle, children: "Activar Logs" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$5.checkboxSectionTitle, children: "Logs y Soporte" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Checkbox,
           {
             register,
             name: "active_logs",
             label: "Habilitar logs"
           }
-        ) }) })
+        ) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
+          isEnabledLogs && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: styles$5.buttonSecondary,
+              onClick: () => setActiveSection("logs"),
+              children: "Logs de sistema"
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: styles$5.buttonSecondary,
+              onClick: () => setDeveloperToolsOpen(true),
+              children: "Herramientas de desarrollo"
+            }
+          ) })
+        ] })
       ] }),
-      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.errorText, children: errorValidation }),
-      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.errorText, children: error2 }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          type: "submit",
-          disabled: isSubmitting,
-          className: styles$4.button,
-          children: "Guardar configuración"
-        }
-      )
+      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$5.errorText, children: errorValidation }),
+      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$5.errorText, children: error2 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$5.button, children: "Guardar configuración" })
     ] })
   ] });
 };
@@ -9143,14 +9165,14 @@ const tooltipText = "_tooltipText_ecg4b_74";
 const errorText = "_errorText_ecg4b_110";
 const successText = "_successText_ecg4b_118";
 const input = "_input_ecg4b_126";
-const button = "_button_ecg4b_144";
+const button$1 = "_button_ecg4b_144";
 const link = "_link_ecg4b_167";
 const rowControls = "_rowControls_ecg4b_179";
 const rowControlsItem = "_rowControlsItem_ecg4b_187";
 const rowControlsItemLabel = "_rowControlsItemLabel_ecg4b_194";
 const createAccountText = "_createAccountText_ecg4b_201";
 const helperText = "_helperText_ecg4b_208";
-const styles$3 = {
+const styles$4 = {
   formContainer,
   form,
   formTitle,
@@ -9163,7 +9185,7 @@ const styles$3 = {
   errorText,
   successText,
   input,
-  button,
+  button: button$1,
   link,
   rowControls,
   rowControlsItem,
@@ -9179,7 +9201,11 @@ const FormNewIntegrate = ({
   isActiveIntegration
 }) => {
   const [toast2, setToast] = reactExports.useState(null);
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = useForm({
     defaultValues: {
       storeId: storeId || "",
       clientKey: "",
@@ -9229,13 +9255,24 @@ const FormNewIntegrate = ({
     if (errorMsg.includes("404") || errorMsg.toLowerCase().includes("no encontramos tu dominio")) {
       return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
         "¿Aún no estás registrado? Ingresa a",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", className: styles$3.link, target: "_blank", rel: "noopener noreferrer", children: "ecommerce.blue.cl" }),
+        " ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "a",
+          {
+            href: "https://ecommerce.blue.cl",
+            className: styles$4.link,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            children: "ecommerce.blue.cl"
+          }
+        ),
+        " ",
         "y regístrate para empezar a disfrutar de nuestros beneficios."
       ] });
     }
     return errorMsg;
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.formContainer, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -9244,29 +9281,29 @@ const FormNewIntegrate = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$3.formTitle, children: "Conexión con Blue Express" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$3.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "ID de Seller" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.helperText, children: "Ingresa el ID Seller que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$4.formTitle, children: "Conexión con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$4.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "ID de integración" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.helperText, children: "Ingresa el ID de integración que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             type: "text",
-            placeholder: "ID de Seller",
+            placeholder: "ID de integración",
             ...register("storeId"),
-            className: styles$3.storeIdInput
+            className: styles$4.storeIdInput
           }
         )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.errorText, children: renderText(error2) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.subTitle, children: [
+        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.errorText, children: renderText(error2) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.subTitle, children: [
           "Credenciales de Woocommerce",
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.tooltip, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.tooltipIcon, children: "?" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$3.tooltipText, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.tooltip, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.tooltipIcon, children: "?" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$4.tooltipText, children: [
               "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes → Avanzado → API REST → Añadir clave.",
               /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
               "Clave del cliente inicia con “ck_“",
@@ -9275,49 +9312,70 @@ const FormNewIntegrate = ({
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "Clave del cliente" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "Clave del cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
                 placeholder: "Ingrese la clave del cliente",
                 ...register("clientKey"),
-                className: styles$3.input
+                className: styles$4.input
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$3.rowControlsItemLabel, children: "Clave secreta de cliente" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "Clave secreta de cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
                 placeholder: "Ingrese la clave secreta del cliente",
                 ...register("clientSecret"),
-                className: styles$3.input
+                className: styles$4.input
               }
             )
           ] })
         ] })
       ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$4.button, children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$4.createAccountText, children: [
+      "¿No tienes un ID de integración?",
+      " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        "a",
         {
-          type: "submit",
-          disabled: isSubmitting,
-          className: styles$3.button,
-          children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración"
+          href: "https://ecommerce.blue.cl",
+          className: styles$4.link,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          children: "Crea tu cuenta aquí"
         }
       )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$3.createAccountText, children: [
-      "¿No tienes un ID de Seller?",
-      " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://ecommerce.blue.cl", className: styles$3.link, target: "_blank", rel: "noopener noreferrer", children: "Crea tu cuenta aquí" })
     ] })
   ] });
+};
+const modalOverlay = "_modalOverlay_111a3_1";
+const modalContent = "_modalContent_111a3_14";
+const warningBox = "_warningBox_111a3_31";
+const formFields = "_formFields_111a3_41";
+const fieldGroup = "_fieldGroup_111a3_48";
+const buttonGroup = "_buttonGroup_111a3_73";
+const button = "_button_111a3_73";
+const primaryButton = "_primaryButton_111a3_89";
+const secondaryButton = "_secondaryButton_111a3_103";
+const styles$3 = {
+  modalOverlay,
+  modalContent,
+  warningBox,
+  formFields,
+  fieldGroup,
+  buttonGroup,
+  button,
+  primaryButton,
+  secondaryButton
 };
 const DeveloperToolsForm = ({
   open,
@@ -9350,142 +9408,90 @@ const DeveloperToolsForm = ({
     }
   };
   if (!open) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "div",
-    {
-      style: {
-        position: "absolute",
-        height: "100%",
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: 1e3,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-      },
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        "div",
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.modalOverlay, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.modalContent, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Herramientas de desarrollo" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.warningBox, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Advertencia:" }),
+      " No modifique estas configuraciones a menos que tenga un conocimiento claro de lo que está haciendo. Una mala configuración puede provocar que su plugin deje de funcionar."
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.formFields, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "dev-enabled-checkbox", children: "Habilitar opciones de desarrollo" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            id: "dev-enabled-checkbox",
+            type: "checkbox",
+            checked: isEnabled,
+            onChange: (e) => setIsEnabled(e.target.checked)
+          }
+        )
+      ] }),
+      isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "alternative-url-input", children: "URL alternativa" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              id: "alternative-url-input",
+              type: "text",
+              value: url,
+              onChange: (e) => setUrl(e.target.value)
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "tracking-key-input", children: "Tracking BX key" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              id: "tracking-key-input",
+              type: "text",
+              value: bxKey,
+              onChange: (e) => setBxKey(e.target.value)
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.buttonGroup, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
         {
-          style: {
-            backgroundColor: "white",
-            padding: "20px",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-            zIndex: 1e3,
-            width: "500px",
-            height: "420px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
-          },
-          children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Developer tools" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "div",
-              {
-                style: {
-                  backgroundColor: "#fffbe6",
-                  border: "1px solid #ffe58f",
-                  padding: "10px",
-                  marginBottom: "15px",
-                  borderRadius: "3px",
-                  color: "#8a6d3b"
-                },
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Advertencia:" }),
-                  " No modifique estas configuraciones a menos que tenga un conocimiento claro de lo que está haciendo. Una mala configuración puede provocar que su plugin deje de funcionar."
-                ]
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "div",
-              {
-                style: {
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-evenly",
-                  alignItems: "flex-start",
-                  height: "100%"
-                },
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
-                    "Is enabled:",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "input",
-                      {
-                        type: "checkbox",
-                        checked: isEnabled,
-                        onChange: (e) => setIsEnabled(e.target.checked),
-                        style: { marginLeft: "10px" }
-                      }
-                    )
-                  ] }) }),
-                  isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
-                    "URL alternative:",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "input",
-                      {
-                        type: "text",
-                        value: url,
-                        onChange: (e) => setUrl(e.target.value),
-                        style: { marginLeft: "10px", padding: "5px", width: "100%" }
-                      }
-                    )
-                  ] }) }),
-                  isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { marginBottom: "10px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
-                    "Tracking BX key:",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "input",
-                      {
-                        type: "text",
-                        value: bxKey,
-                        onChange: (e) => setBxKey(e.target.value),
-                        style: { marginLeft: "10px", padding: "5px", width: "100%" }
-                      }
-                    )
-                  ] }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", justifyContent: "flex-end" }, children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: onClose,
-                        style: { marginRight: "10px", padding: "5px 10px" },
-                        children: "Cancel"
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "button",
-                      {
-                        type: "button",
-                        disabled: loading,
-                        style: { padding: "5px 10px" },
-                        onClick: handleSave,
-                        children: loading ? "Saving..." : "Save"
-                      }
-                    )
-                  ] })
-                ]
-              }
-            )
-          ]
+          type: "button",
+          onClick: onClose,
+          className: `${styles$3.button} ${styles$3.secondaryButton}`,
+          children: "Cancelar"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          disabled: loading,
+          onClick: handleSave,
+          className: `${styles$3.button} ${styles$3.primaryButton}`,
+          children: loading ? "Guardando..." : "Guardar"
         }
       )
-    }
-  );
+    ] })
+  ] }) });
 };
-const logsContainer = "_logsContainer_hrvv2_1";
-const logsTable = "_logsTable_hrvv2_6";
-const tableRow = "_tableRow_hrvv2_26";
-const selected = "_selected_hrvv2_35";
-const logType = "_logType_hrvv2_39";
-const error = "_error_hrvv2_46";
-const info = "_info_hrvv2_51";
-const logDetail = "_logDetail_hrvv2_56";
-const pagination = "_pagination_hrvv2_88";
-const logsDisabledContainer = "_logsDisabledContainer_hrvv2_119";
-const logsDisabledMessage = "_logsDisabledMessage_hrvv2_129";
+const logsContainer = "_logsContainer_171sx_1";
+const backButton = "_backButton_171sx_10";
+const logsTable = "_logsTable_171sx_22";
+const tableRow = "_tableRow_171sx_42";
+const selected = "_selected_171sx_51";
+const logType = "_logType_171sx_55";
+const error = "_error_171sx_62";
+const info = "_info_171sx_67";
+const logDetail = "_logDetail_171sx_72";
+const pagination = "_pagination_171sx_104";
+const logsDisabledContainer = "_logsDisabledContainer_171sx_135";
+const logsDisabledMessage = "_logsDisabledMessage_171sx_145";
 const styles$2 = {
   logsContainer,
+  backButton,
   logsTable,
   tableRow,
   selected,
@@ -9655,6 +9661,15 @@ const Logs = ({ settings, setActiveSection }) => {
     setActiveSection("configuracion");
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.logsContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        type: "button",
+        className: styles$2.backButton,
+        onClick: () => setActiveSection("configuracion"),
+        children: "← Volver"
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Logs del Sistema" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Visualiza registros del funcionamiento del plugin. Uso exclusivo para soporte y monitoreo. No realices cambios sin la asesoría de Blue." }),
     !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$2.logsDisabledMessage, children: [
@@ -9776,15 +9791,6 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
           type: "button",
           children: "Conexión"
         }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          className: `${styles$1.menu__item} ${activeSection === "logs" ? styles$1.menu__item_active : ""}`,
-          onClick: () => setActiveSection("logs"),
-          type: "button",
-          children: "Logs"
-        }
       )
     ] })
   ] });
@@ -9845,12 +9851,28 @@ const Home = ({
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles.description, children: [
-      "Con la aplicación oficial de Blue Express podrás",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.highlight, children: " gestionar tus envíos " }),
-      " de manera eficiente, cotizar precios, generar envíos y descargar etiquetas para enviar tus pedidos con Blue Express."
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.description, children: "Primero realiza las configuraciones, luego conecta tu tienda y entonces podrás realizar el envío de tus pedidos con Blue Express" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.cards, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Resumen de la configuración" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles.configList, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Código de la comuna de origen:" }),
+            " ",
+            config.districtCode || "No configurado"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Estado para crear orden en Ecommerce Blue Express:" }),
+            " ",
+            getStatusLabel(config.noBlueStatus)
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Puntos de retiro Blue Express?:" }),
+            " ",
+            config.pudoEnable === "yes" ? "Sí" : "No"
+          ] })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay configuración disponible" }) })
+      ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Estado de la conexión" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusSuccess, children: [
@@ -9870,26 +9892,6 @@ const Home = ({
             }
           )
         ] }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Resumen de la configuración" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles.configList, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Código de la comuna de origen:" }),
-            " ",
-            config.districtCode || "No configurado"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Estado para crear orden en Blue:" }),
-            " ",
-            getStatusLabel(config.noBlueStatus)
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Puntos de retiro Blue Express?:" }),
-            " ",
-            config.pudoEnable === "yes" ? "Sí" : "No"
-          ] })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay configuración disponible" }) })
       ] })
     ] })
   ] });
@@ -9985,7 +9987,9 @@ const App = () => {
             setLoading,
             settings,
             testPricing,
-            optionsEmissionOs
+            optionsEmissionOs,
+            setActiveSection,
+            setDeveloperToolsOpen
           }
         );
       case "conexion":
@@ -10005,8 +10009,8 @@ const App = () => {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Home, { connectionStatus: activeIntegration, config: settings, setActiveSection, optionsEmissionOs });
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.root, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.appLayout, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$c.root, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$c.appLayout, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar$1,
         {
@@ -10014,9 +10018,8 @@ const App = () => {
           setActiveSection
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$b.content, children: renderContent() })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$c.content, children: renderContent() })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$b.developerTools, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setDeveloperToolsOpen(true), children: "</>" }) }),
     DeveloperToolsMemo,
     loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })
   ] });

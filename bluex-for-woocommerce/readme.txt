@@ -2,9 +2,8 @@
 Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
-Tested up to: 6.4.1
-Stable tag: 3.1.0
-Requires PHP: 7.2
+Tested up to: 6.8.2
+Stable tag: 3.1.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -80,5 +79,7 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Fix Blue Express in Checkout
 = 3.0.2 – 2025-02-19
 * fix api key integration
-= 3.1.0 - 2025-06-09
+= 3.1.0 - 2025-08-27
 * Changes on UI. More simple integration.
+= 3.1.1 - 2025-08-28
+* Changes for compatibility with old php versions

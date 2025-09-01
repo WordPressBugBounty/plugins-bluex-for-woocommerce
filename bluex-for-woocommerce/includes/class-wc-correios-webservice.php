@@ -523,7 +523,7 @@ class WC_Correios_Webservice
 			$largo = (float) $data->get_length();
 			$alto = (float) $data->get_height();
 			$peso = (float) $data->get_weight();
-			$price += (float) $data->get_price * (int) $items['quantity']; // Use get_price for accuracy
+			$price += (float) $data->get_price('edit') * (int) $items['quantity']; // Use get_price for accuracy
 
 			$ancho = $this->isEmptyOrZero($ancho) ? 10.0 : $ancho;
 			$largo = $this->isEmptyOrZero($largo) ? 10.0 : $largo;

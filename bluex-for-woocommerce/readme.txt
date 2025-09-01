@@ -83,3 +83,5 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Changes on UI. More simple integration.
 = 3.1.1 - 2025-08-28
 * Changes for compatibility with old php versions
+= 3.1.2 - 2025-09-01
+* Improve

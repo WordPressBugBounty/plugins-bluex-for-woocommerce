@@ -6,7 +6,7 @@
  * Description:          Add Blue Express shipping methods to your WooCommerce store.
  * Author:               Blue Express
  * Author URI:           https://bluex.cl/
- * Version:              3.1.1
+ * Version:              3.1.2
  * License:              GPLv2 or later
  * Text Domain:          woocommerce-bluex
  * Domain Path:          /languages
@@ -17,7 +17,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_CORREIOS_VERSION', '3.1.1');
+define('WC_CORREIOS_VERSION', '3.1.2');
 define('WC_CORREIOS_PLUGIN_FILE', __FILE__);
 //HPOS compatibility
 use \Automattic\WooCommerce\Utilities\FeaturesUtil;

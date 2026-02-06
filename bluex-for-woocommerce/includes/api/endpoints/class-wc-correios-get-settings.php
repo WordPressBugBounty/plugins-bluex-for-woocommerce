@@ -39,6 +39,7 @@ class WC_Correios_Get_Settings_Endpoint
                 'optionsEmissionOs' => $options_emission_os,
                 'account_name' => $account_name,
                 'getBasePath' => $base_path,
+                'debug' => (defined('BLUEX_DEBUG') && BLUEX_DEBUG),
                 'plugin_version' => WC_CORREIOS_VERSION
             ), 200);
         } catch (Exception $e) {

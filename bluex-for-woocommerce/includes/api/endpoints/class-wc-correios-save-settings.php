@@ -31,7 +31,6 @@ class WC_Correios_Save_Settings_Endpoint
             // Procesa y guarda cada opción individualmente
             $settings_data['noBlueStatus'] = $request->get_param('noBlueStatus');
             $settings_data['districtCode'] = $request->get_param('districtCode');
-            $settings_data['googleKey'] = $request->get_param('googleKey');
             $settings_data['pudoEnable'] = $request->get_param('pudoEnable');
             $settings_data['districtsEnable'] = $request->get_param('districtsEnable');
             $settings_data['active_logs'] = $request->get_param('active_logs');

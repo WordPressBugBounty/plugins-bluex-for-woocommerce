@@ -38,6 +38,26 @@ class WC_Correios
 			// Inicializar la API
 			add_action('rest_api_init', array('WC_Correios_API', 'init'));
 
+			// Inicializar Blue Express Quick Checker
+			if (class_exists('WC_Bluex_Quick_Checker')) {
+				WC_Bluex_Quick_Checker::init();
+			}
+
+			// Inicializar Blue Express Zones Validator
+			if (class_exists('WC_BlueX_Zones_Validator')) {
+				WC_BlueX_Zones_Validator::init();
+			}
+
+			// Inicializar Blue Express Granular Zones Configuration
+			if (class_exists('WC_BlueX_Granular_Zones_Config')) {
+				WC_BlueX_Granular_Zones_Config::init();
+			}
+
+			// Inicializar Blue Express City Zone Matcher
+			if (class_exists('WC_BlueX_City_Zone_Matcher')) {
+				WC_BlueX_City_Zone_Matcher::init();
+			}
+
 			add_filter('woocommerce_integrations', array(__CLASS__, 'include_integrations'));
 			add_filter('woocommerce_shipping_methods', array(__CLASS__, 'include_methods'));
 			add_filter('woocommerce_email_classes', array(__CLASS__, 'include_emails'));
@@ -109,10 +129,33 @@ class WC_Correios
 		include_once dirname(__FILE__) . '/class-wc-correios-rest-api.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-orders.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-cart.php';
+		include_once dirname(__FILE__) . '/class-wc-correios-blocks-integration.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-pudos-map.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webhook.php'; // Depends on API Client
 		include_once dirname(__FILE__) . '/class-wc-correios-custom-order-status.php';
 		include_once dirname(__FILE__) . '/api/class-wc-correios-api.php'; // Loads endpoints which depend on API Client
+
+		// Blue Express Data
+		include_once dirname(__FILE__) . '/data/bluex-exclusion-profiles.php';
+
+		// Blue Express Shipping Zone Automation
+		include_once dirname(__FILE__) . '/class-wc-bluex-shipping-zone-automation.php';
+
+		// Blue Express Quick Checker
+		include_once dirname(__FILE__) . '/class-bluex-quick-checker.php';
+
+		// Blue Express Zones Validator
+        if (is_admin()) {
+            include_once dirname(__FILE__) . '/data/chile-communes.php';
+        }
+		include_once dirname(__FILE__) . '/class-bluex-zones-validator.php';
+
+		// Blue Express Granular Zones Configuration
+		include_once dirname(__FILE__) . '/class-bluex-granular-zones-config.php';
+
+		// Blue Express City Zone Matcher
+		include_once dirname(__FILE__) . '/class-wc-bluex-city-zone-matcher.php';
+
 		// Districts
 		include_once dirname(__FILE__) . '/districts/class-wc-districts.php';
 

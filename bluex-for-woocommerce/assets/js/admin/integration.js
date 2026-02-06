@@ -7057,7 +7057,7 @@ const root = "_root_1wcjp_1";
 const appLayout = "_appLayout_1wcjp_11";
 const content = "_content_1wcjp_24";
 const developerTools = "_developerTools_1wcjp_31";
-const styles$c = {
+const styles$e = {
   root,
   appLayout,
   content,
@@ -7139,7 +7139,7 @@ function requirePropTypes() {
 var propTypesExports = /* @__PURE__ */ requirePropTypes();
 const PropTypes = /* @__PURE__ */ getDefaultExportFromCjs(propTypesExports);
 const Loading = () => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$b.container, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$d.container, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
         div.lds-ripple {
           scale: 4;
@@ -7204,7 +7204,7 @@ const Loading = () => {
 Loading.propTypes = {
   size: PropTypes.number
 };
-const styles$b = {
+const styles$d = {
   container: {
     display: "flex",
     flexDirection: "column",
@@ -7424,7 +7424,7 @@ const validResult = { value: true, isValid: true };
 var getCheckboxValue = (options) => {
   if (Array.isArray(options)) {
     if (options.length > 1) {
-      const values = options.filter((option) => option && option.checked && !option.disabled).map((option) => option.value);
+      const values = options.filter((option2) => option2 && option2.checked && !option2.disabled).map((option2) => option2.value);
       return { value: values, isValid: !!values.length };
     }
     return options[0].checked && !options[0].disabled ? (
@@ -7438,9 +7438,9 @@ const defaultReturn = {
   isValid: false,
   value: null
 };
-var getRadioValue = (options) => Array.isArray(options) ? options.reduce((previous, option) => option && option.checked && !option.disabled ? {
+var getRadioValue = (options) => Array.isArray(options) ? options.reduce((previous, option2) => option2 && option2.checked && !option2.disabled ? {
   isValid: true,
-  value: option.value
+  value: option2.value
 } : previous, defaultReturn) : defaultReturn;
 function getValidateError(result, ref, type = "validate") {
   if (isMessage(result) || Array.isArray(result) && result.every(isMessage) || isBoolean(result) && !result) {
@@ -8338,7 +8338,7 @@ function createFormControl(props = {}) {
           const fieldRef = isUndefined(ref.value) ? ref.querySelectorAll ? ref.querySelectorAll("input,select,textarea")[0] || ref : ref : ref;
           const radioOrCheckbox = isRadioOrCheckbox(fieldRef);
           const refs = field._f.refs || [];
-          if (radioOrCheckbox ? refs.find((option) => option === fieldRef) : fieldRef === field._f.ref) {
+          if (radioOrCheckbox ? refs.find((option2) => option2 === fieldRef) : fieldRef === field._f.ref) {
             return;
           }
           set(_fields, name, {
@@ -8705,7 +8705,7 @@ const info$1 = "_info_kwt6m_35";
 const warning = "_warning_kwt6m_39";
 const icon = "_icon_kwt6m_43";
 const message = "_message_kwt6m_64";
-const styles$a = {
+const styles$c = {
   toast,
   visible,
   hidden,
@@ -8730,75 +8730,29 @@ const Toast = ({ message: message2, type = "success", duration = 3e3, onClose })
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: `${styles$a.toast} ${styles$a[type]} ${visible2 ? styles$a.visible : styles$a.hidden}`,
+      className: `${styles$c.toast} ${styles$c[type]} ${visible2 ? styles$c.visible : styles$c.hidden}`,
       children: [
-        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "✓" }),
-        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "✕" }),
-        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "ℹ" }),
-        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, children: "⚠" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$a.message, children: message2 })
+        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "✓" }),
+        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "✕" }),
+        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "ℹ" }),
+        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "⚠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$c.message, children: message2 })
       ]
     }
   );
 };
-const select__container = "_select__container_1opku_1";
-const select = "_select_1opku_1";
-const styles$9 = {
-  select__container,
-  select
-};
-const Select = ({
-  register,
-  name,
-  placeholder,
-  options = [],
-  disabled = false,
-  defaultValue = ""
-}) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "select",
-    {
-      ...register(name),
-      disabled,
-      defaultValue,
-      className: styles$9.select,
-      children: [
-        placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
-        options.map((option) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option.value, children: option.label }, option.value))
-      ]
-    }
-  ) });
-};
-const input__container = "_input__container_wmv4y_1";
-const input$1 = "_input_wmv4y_1";
-const styles$8 = {
-  input__container,
-  input: input$1
-};
-const Input = ({ register, name, placeholder, type = "text", disabled = false }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.input__container, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "input",
-    {
-      ...register(name),
-      type,
-      disabled,
-      placeholder,
-      className: styles$8.input
-    }
-  ) });
-};
 const label$1 = "_label_66y8x_1";
-const styles$7 = {
+const styles$b = {
   label: label$1
 };
 const Label = ({ children }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$7.label, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$b.label, children });
 };
 const checkboxContainer = "_checkboxContainer_154vz_1";
 const checkboxInput = "_checkboxInput_154vz_13";
 const checkmark = "_checkmark_154vz_21";
 const label = "_label_154vz_60";
-const styles$6 = {
+const styles$a = {
   checkboxContainer,
   checkboxInput,
   checkmark,
@@ -8808,47 +8762,52 @@ const Checkbox = ({
   label: label2,
   disabled = false,
   name,
+  value,
   className = "",
-  register
+  register,
+  ...rest
 }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$6.checkboxContainer} ${className}`, children: [
+  const registration = register ? register(name) : {};
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$a.checkboxContainer} ${className}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "checkbox",
-        className: styles$6.checkboxInput,
-        ...register(name),
+        className: styles$a.checkboxInput,
         disabled,
-        name
+        ...registration,
+        ...rest,
+        value
       }
     ),
     label2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: label2 }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.checkmark })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.checkmark })
   ] });
 };
-const formContainer$1 = "_formContainer_v0ptl_1";
-const form$1 = "_form_v0ptl_1";
-const formTitle$1 = "_formTitle_v0ptl_16";
-const subTitle$1 = "_subTitle_v0ptl_23";
-const notificationBanner = "_notificationBanner_v0ptl_31";
-const notificationText = "_notificationText_v0ptl_42";
-const errorText$1 = "_errorText_v0ptl_48";
-const successText$1 = "_successText_v0ptl_56";
-const checkboxSection = "_checkboxSection_v0ptl_64";
-const checkboxSectionTitle = "_checkboxSectionTitle_v0ptl_72";
-const button$2 = "_button_v0ptl_79";
-const rowControls$1 = "_rowControls_v0ptl_102";
-const rowControlsItem$1 = "_rowControlsItem_v0ptl_111";
-const buttonSecondary = "_buttonSecondary_v0ptl_119";
-const rowControlsItemLabel$1 = "_rowControlsItemLabel_v0ptl_138";
-const inputContainer = "_inputContainer_v0ptl_145";
-const buttonTest = "_buttonTest_v0ptl_149";
-const link$1 = "_link_v0ptl_161";
-const inputDisabled = "_inputDisabled_v0ptl_166";
-const labelWithMargin = "_labelWithMargin_v0ptl_171";
-const styles$5 = {
+const formContainer$1 = "_formContainer_1huci_1";
+const form$2 = "_form_1huci_1";
+const formTitle$1 = "_formTitle_1huci_16";
+const subTitle$1 = "_subTitle_1huci_23";
+const notificationBanner = "_notificationBanner_1huci_31";
+const notificationText = "_notificationText_1huci_42";
+const errorText$1 = "_errorText_1huci_48";
+const successText$1 = "_successText_1huci_56";
+const checkboxSection = "_checkboxSection_1huci_64";
+const checkboxSectionTitle = "_checkboxSectionTitle_1huci_72";
+const button$2 = "_button_1huci_79";
+const rowControls$1 = "_rowControls_1huci_102";
+const rowControlsItem$1 = "_rowControlsItem_1huci_111";
+const buttonSecondary = "_buttonSecondary_1huci_119";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_1huci_138";
+const inputContainer = "_inputContainer_1huci_145";
+const buttonTest = "_buttonTest_1huci_149";
+const link$1 = "_link_1huci_161";
+const inputDisabled = "_inputDisabled_1huci_166";
+const labelWithMargin = "_labelWithMargin_1huci_171";
+const helpText$1 = "_helpText_1huci_175";
+const styles$9 = {
   formContainer: formContainer$1,
-  form: form$1,
+  form: form$2,
   formTitle: formTitle$1,
   subTitle: subTitle$1,
   notificationBanner,
@@ -8866,7 +8825,8 @@ const styles$5 = {
   buttonTest,
   link: link$1,
   inputDisabled,
-  labelWithMargin
+  labelWithMargin,
+  helpText: helpText$1
 };
 async function validateIntegrationStatus() {
   try {
@@ -8964,7 +8924,6 @@ async function saveSettings(settings) {
           nonce: WCCorreiosIntegrationAdminParams.nonce,
           districtsEnable: settings.districtsEnable,
           pudoEnable: settings.pudoEnable,
-          googleKey: settings.googleKey,
           districtCode: settings.districtCode,
           noBlueStatus: settings.noBlueStatus,
           active_logs: settings.active_logs
@@ -9003,19 +8962,9576 @@ async function testPricingService() {
     throw error2;
   }
 }
+async function shippingZonesCreate(params) {
+  try {
+    const restUrl = WCCorreiosIntegrationAdminParams.rest_url || "/wp-json/wc-bluex/v1/";
+    const restNonce = WCCorreiosIntegrationAdminParams.rest_nonce;
+    const response = await fetch(
+      `${restUrl}shipping-zones-automation/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": restNonce
+        },
+        body: JSON.stringify(params)
+      }
+    );
+    const data = await response.json();
+    console.log("Shipping Zones Create Response:", data);
+    if (!response.ok) {
+      throw new Error(data.message || "Error al crear zonas de envío");
+    }
+    return data;
+  } catch (error2) {
+    console.error("Error creating shipping zones:", error2);
+    throw error2;
+  }
+}
+async function shippingZonesStatus() {
+  try {
+    const restUrl = WCCorreiosIntegrationAdminParams.rest_url || "/wp-json/wc-bluex/v1/";
+    const restNonce = WCCorreiosIntegrationAdminParams.rest_nonce;
+    const response = await fetch(
+      `${restUrl}shipping-zones-automation/status`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": restNonce
+        }
+      }
+    );
+    const data = await response.json();
+    console.log("Shipping Zones Status Response:", data);
+    if (!response.ok) {
+      throw new Error(data.message || "Error al obtener estado de zonas");
+    }
+    return data;
+  } catch (error2) {
+    console.error("Error getting shipping zones status:", error2);
+    throw error2;
+  }
+}
+const container$2 = "_container_qzsko_1";
+const inputWrapper = "_inputWrapper_qzsko_11";
+const input$1 = "_input_qzsko_11";
+const toggle = "_toggle_qzsko_38";
+const clear = "_clear_qzsko_51";
+const dropdown = "_dropdown_qzsko_75";
+const option = "_option_qzsko_89";
+const highlight$1 = "_highlight_qzsko_95";
+const empty = "_empty_qzsko_99";
+const styles$8 = {
+  container: container$2,
+  inputWrapper,
+  input: input$1,
+  toggle,
+  clear,
+  dropdown,
+  option,
+  highlight: highlight$1,
+  empty
+};
+const SearchableSelect = ({
+  value,
+  onChange,
+  options = [],
+  placeholder = "Seleccione una opción",
+  disabled = false
+}) => {
+  const containerRef = reactExports.useRef(null);
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  const [query, setQuery] = reactExports.useState("");
+  const [highlightIndex, setHighlightIndex] = reactExports.useState(0);
+  const selectedOption = reactExports.useMemo(
+    () => options.find((opt) => opt.value === value) || null,
+    [options, value]
+  );
+  reactExports.useEffect(() => {
+    if (selectedOption) {
+      setQuery(selectedOption.label);
+    } else if (!isOpen) {
+      setQuery("");
+    }
+  }, [selectedOption, isOpen]);
+  const filteredOptions = reactExports.useMemo(() => {
+    if (!query) return options;
+    const q = query.toLowerCase();
+    return options.filter(
+      (opt) => opt.label.toLowerCase().includes(q) || opt.value.toLowerCase().includes(q)
+    );
+  }, [options, query]);
+  reactExports.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const handleSelect = (opt) => {
+    setIsOpen(false);
+    setQuery(opt.label);
+    if (onChange) {
+      onChange({ target: { value: opt.value } });
+    }
+  };
+  const handleClear = () => {
+    setQuery("");
+    setIsOpen(false);
+    if (onChange) {
+      onChange({ target: { value: "" } });
+    }
+  };
+  const onKeyDown = (e) => {
+    if (!isOpen) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        setIsOpen(true);
+        e.preventDefault();
+      }
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightIndex(
+        (prev) => Math.min(prev + 1, filteredOptions.length - 1)
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightIndex((prev) => Math.max(prev - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const opt = filteredOptions[highlightIndex];
+      if (opt) handleSelect(opt);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setIsOpen(false);
+    }
+  };
+  reactExports.useEffect(() => {
+    setHighlightIndex(0);
+  }, [query, isOpen]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: containerRef, className: styles$8.container, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.inputWrapper, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "input",
+        {
+          type: "text",
+          className: styles$8.input,
+          placeholder,
+          disabled,
+          value: query,
+          onChange: (e) => {
+            setQuery(e.target.value);
+            setIsOpen(true);
+          },
+          onFocus: () => setIsOpen(true),
+          onKeyDown
+        }
+      ),
+      isOpen && !disabled && (value || query) && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          className: styles$8.clear,
+          onClick: handleClear,
+          "aria-label": "Limpiar selección",
+          children: "×"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          className: styles$8.toggle,
+          onClick: () => !disabled && setIsOpen((o) => !o),
+          "aria-label": "Toggle",
+          disabled,
+          children: "▾"
+        }
+      )
+    ] }),
+    isOpen && !disabled && /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$8.dropdown, role: "listbox", children: [
+      filteredOptions.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: styles$8.empty, children: "Sin resultados" }),
+      filteredOptions.map((opt, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "li",
+        {
+          className: `${styles$8.option} ${idx === highlightIndex ? styles$8.highlight : ""}`,
+          onMouseDown: (e) => e.preventDefault(),
+          onClick: () => handleSelect(opt),
+          role: "option",
+          "aria-selected": opt.value === value,
+          children: opt.label
+        },
+        opt.value
+      ))
+    ] })
+  ] });
+};
+const comunas = [
+  {
+    "name": "Arica y Parinacota",
+    "code": 15,
+    "isocode": "AP",
+    "ciudades": [
+      {
+        "name": "ARICA",
+        "code": 15101,
+        "defaultDistrict": "ARI",
+        "districts": [
+          {
+            "name": "CODPA",
+            "code": "ACZ"
+          },
+          {
+            "name": "GUANACAHUA",
+            "code": "AGN"
+          },
+          {
+            "name": "MOLINOS",
+            "code": "AMO"
+          },
+          {
+            "name": "ARICA",
+            "code": "ARI"
+          },
+          {
+            "name": "ESQUINA",
+            "code": "AQE"
+          },
+          {
+            "name": "AUSIPAR",
+            "code": "APR"
+          },
+          {
+            "name": "ALTO RAMIREZ",
+            "code": "ARZ"
+          },
+          {
+            "name": "TIMAR",
+            "code": "ATI"
+          },
+          {
+            "name": "SOBRAYA",
+            "code": "AYA"
+          },
+          {
+            "name": "SORA",
+            "code": "SOR"
+          },
+          {
+            "name": "RANCHO ARICA",
+            "code": "RAR"
+          },
+          {
+            "name": "POCONCHILE",
+            "code": "POC"
+          },
+          {
+            "name": "CUZ CUZ - ARICA",
+            "code": "CZZ"
+          },
+          {
+            "name": "AZAPA",
+            "code": "AZA"
+          },
+          {
+            "name": "VILLA FRONTERA",
+            "code": "AVF"
+          }
+        ]
+      },
+      {
+        "name": "CAMARONES",
+        "code": 15102,
+        "defaultDistrict": "CAM",
+        "districts": [
+          {
+            "name": "CAMARONES - ARICA",
+            "code": "CAM"
+          },
+          {
+            "name": "CUYA",
+            "code": "ZYA"
+          },
+          {
+            "name": "SUCA",
+            "code": "UCA"
+          },
+          {
+            "name": "QUIPINTA",
+            "code": "QPT"
+          },
+          {
+            "name": "MINIMINE",
+            "code": "MMN"
+          },
+          {
+            "name": "MINITA",
+            "code": "MIY"
+          },
+          {
+            "name": "CALETA CAMARONES",
+            "code": "CTM"
+          },
+          {
+            "name": "CALETA CHICA",
+            "code": "ICC"
+          }
+        ]
+      },
+      {
+        "name": "GENERAL LAGOS",
+        "code": 15202,
+        "defaultDistrict": "LGR",
+        "districts": [
+          {
+            "name": "COSAPILLA",
+            "code": "ACI"
+          },
+          {
+            "name": "GENERAL LAGOS",
+            "code": "LGR"
+          },
+          {
+            "name": "VISVIRI",
+            "code": "VIV"
+          },
+          {
+            "name": "VILLA INDUSTRIAL",
+            "code": "VIU"
+          },
+          {
+            "name": "NASAHUENTO",
+            "code": "NSH"
+          },
+          {
+            "name": "GUACOLLO",
+            "code": "GLL"
+          },
+          {
+            "name": "AGUAS CALIENTES ",
+            "code": "ATS"
+          },
+          {
+            "name": "AZUFRERA TACORA",
+            "code": "AZT"
+          }
+        ]
+      },
+      {
+        "name": "PUTRE",
+        "code": 15201,
+        "defaultDistrict": "PTR",
+        "districts": [
+          {
+            "name": "BRITANIA",
+            "code": "ABT"
+          },
+          {
+            "name": "CHOQUELIMPIE",
+            "code": "ACL"
+          },
+          {
+            "name": "CORONEL ALCERRECA",
+            "code": "ACN"
+          },
+          {
+            "name": "GUALLATIRI",
+            "code": "ALL"
+          },
+          {
+            "name": "PARINACOTA",
+            "code": "API"
+          },
+          {
+            "name": "TARUGUIRE",
+            "code": "TRG"
+          },
+          {
+            "name": "TIMALCHACA",
+            "code": "TCA"
+          },
+          {
+            "name": "PUTRE",
+            "code": "PTR"
+          },
+          {
+            "name": "JURASI",
+            "code": "JRI"
+          },
+          {
+            "name": "ITISA",
+            "code": "ITT"
+          },
+          {
+            "name": "LAGO CHUNGARA",
+            "code": "CGA"
+          },
+          {
+            "name": "BELEN",
+            "code": "BNN"
+          },
+          {
+            "name": "TERMAS DE CHITUNE",
+            "code": "ATQ"
+          },
+          {
+            "name": "TIGNAMAR",
+            "code": "ATG"
+          },
+          {
+            "name": "SOCOROMA",
+            "code": "ASO"
+          },
+          {
+            "name": "PACHAMA",
+            "code": "APH"
+          },
+          {
+            "name": "CHACUYO",
+            "code": "ACC"
+          },
+          {
+            "name": "CHAPIQUINA",
+            "code": "ACP"
+          },
+          {
+            "name": "PUQUISA",
+            "code": "PQS"
+          },
+          {
+            "name": "MAILLKU",
+            "code": "MKU"
+          },
+          {
+            "name": "CHICAYA",
+            "code": "CYH"
+          },
+          {
+            "name": "COPAQUILLA",
+            "code": "CQY"
+          },
+          {
+            "name": "CAQUENA",
+            "code": "ACQ"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Tarapacá",
+    "code": 1,
+    "isocode": "TA",
+    "ciudades": [
+      {
+        "name": "ALTO HOSPICIO",
+        "code": 1107,
+        "defaultDistrict": "AHP",
+        "districts": [
+          {
+            "name": "ALTO HOSPICIO",
+            "code": "AHP"
+          }
+        ]
+      },
+      {
+        "name": "CAMINA",
+        "code": 1402,
+        "defaultDistrict": "CMN",
+        "districts": [
+          {
+            "name": "CAMINA",
+            "code": "CMN"
+          },
+          {
+            "name": "ALPAJERES",
+            "code": "PJR"
+          },
+          {
+            "name": "CARITAYA",
+            "code": "RTA"
+          },
+          {
+            "name": "CORSA",
+            "code": "QCR"
+          },
+          {
+            "name": "PALCA",
+            "code": "PKA"
+          },
+          {
+            "name": "PISAGUA",
+            "code": "PIS"
+          },
+          {
+            "name": "ALTUZA",
+            "code": "IAL"
+          },
+          {
+            "name": "CHAPIQUITA",
+            "code": "ICY"
+          },
+          {
+            "name": "NAMA",
+            "code": "NMA"
+          },
+          {
+            "name": "VILAVILA",
+            "code": "IVV"
+          },
+          {
+            "name": "CALATAMBO",
+            "code": "CTA"
+          }
+        ]
+      },
+      {
+        "name": "COLCHANE",
+        "code": 1403,
+        "defaultDistrict": "COE",
+        "districts": [
+          {
+            "name": "ANAGUANI",
+            "code": "ANG"
+          },
+          {
+            "name": "SOTOCA",
+            "code": "STA"
+          },
+          {
+            "name": "ENQUELGA",
+            "code": "QEP"
+          },
+          {
+            "name": "MOCOMUCANE",
+            "code": "MCL"
+          },
+          {
+            "name": "ISLUGA",
+            "code": "IIS"
+          },
+          {
+            "name": "CARIQUIMA",
+            "code": "ICQ"
+          },
+          {
+            "name": "CHIAPA",
+            "code": "ICI"
+          },
+          {
+            "name": "COLCHANE",
+            "code": "COE"
+          },
+          {
+            "name": "ANCUAQUE",
+            "code": "ANQ"
+          },
+          {
+            "name": "ANCOVINTO",
+            "code": "CVT"
+          }
+        ]
+      },
+      {
+        "name": "HUARA",
+        "code": 1404,
+        "defaultDistrict": "HRA",
+        "districts": [
+          {
+            "name": "HUARA",
+            "code": "HRA"
+          },
+          {
+            "name": "LIRIMA",
+            "code": "ILI"
+          },
+          {
+            "name": "POROMA",
+            "code": "QPR"
+          },
+          {
+            "name": "COLLACAGUA",
+            "code": "QLG"
+          },
+          {
+            "name": "TARAPACA",
+            "code": "ITP"
+          },
+          {
+            "name": "PACHICA",
+            "code": "IPH"
+          },
+          {
+            "name": "MOCHA",
+            "code": "IMO"
+          },
+          {
+            "name": "CANCOSA",
+            "code": "ICO"
+          },
+          {
+            "name": "CHUSMISA",
+            "code": "ICA"
+          }
+        ]
+      },
+      {
+        "name": "IQUIQUE",
+        "code": 1101,
+        "defaultDistrict": "IQQ",
+        "districts": [
+          {
+            "name": "CALETA BUENA - IQUIQ",
+            "code": "ICB"
+          },
+          {
+            "name": "MINA FAKIR",
+            "code": "IMF"
+          },
+          {
+            "name": "MINA LOBOS",
+            "code": "IML"
+          },
+          {
+            "name": "IQUIQUE",
+            "code": "IQQ"
+          },
+          {
+            "name": "PLAYA BLANCA",
+            "code": "ZPL"
+          },
+          {
+            "name": "RIO SECO",
+            "code": "RSC"
+          },
+          {
+            "name": "SAN MARCOS - IQUIQUE",
+            "code": "RFO"
+          },
+          {
+            "name": "PUNTA LOBOS",
+            "code": "QLB"
+          },
+          {
+            "name": "CHIPANA",
+            "code": "PQA"
+          },
+          {
+            "name": "PUERTO PATILLOS",
+            "code": "IPP"
+          }
+        ]
+      },
+      {
+        "name": "PICA",
+        "code": 1405,
+        "defaultDistrict": "OPC",
+        "districts": [
+          {
+            "name": "MINERA QUEBRADA BLAN",
+            "code": "BQM"
+          },
+          {
+            "name": "COLLAHUASI",
+            "code": "CLH"
+          },
+          {
+            "name": "COLONIA PINTADOS",
+            "code": "ICP"
+          },
+          {
+            "name": "LA HUAICA",
+            "code": "LGC"
+          },
+          {
+            "name": "OFICINA VICTORIA",
+            "code": "IOV"
+          },
+          {
+            "name": "PICA",
+            "code": "OPC"
+          },
+          {
+            "name": "GUATACONDO",
+            "code": "ZRC"
+          },
+          {
+            "name": "PUQUIOS - IQUIQUE",
+            "code": "PQU"
+          },
+          {
+            "name": "MATILLA",
+            "code": "MTA"
+          }
+        ]
+      },
+      {
+        "name": "POZO ALMONTE",
+        "code": 1401,
+        "defaultDistrict": "PAM",
+        "districts": [
+          {
+            "name": "FUERTE BAQUEDANO",
+            "code": "IFB"
+          },
+          {
+            "name": "TAMBILLO",
+            "code": "IUJ"
+          },
+          {
+            "name": "MAMINA",
+            "code": "MAN"
+          },
+          {
+            "name": "POZO ALMONTE",
+            "code": "PAM"
+          },
+          {
+            "name": "LA TIRANA",
+            "code": "LTI"
+          },
+          {
+            "name": "MACAYA",
+            "code": "IMA"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Antofagasta",
+    "code": 2,
+    "isocode": "AN",
+    "ciudades": [
+      {
+        "name": "ANTOFAGASTA",
+        "code": 2101,
+        "defaultDistrict": "ANF",
+        "districts": [
+          {
+            "name": "AGUA VERDE",
+            "code": "AAV"
+          },
+          {
+            "name": "ISLA SANTA MARIA",
+            "code": "ZSM"
+          },
+          {
+            "name": "RANCHO ANTOFAGASTA",
+            "code": "RAN"
+          },
+          {
+            "name": "PARANAL",
+            "code": "PRL"
+          },
+          {
+            "name": "MANTOS BLANCOS",
+            "code": "MTB"
+          },
+          {
+            "name": "MINA LOMAS BAYAS",
+            "code": "MIN"
+          },
+          {
+            "name": "LA NEGRA",
+            "code": "LNA"
+          },
+          {
+            "name": "ESTACION AGUAS BLANC",
+            "code": "AGC"
+          },
+          {
+            "name": "EL WAY",
+            "code": "AEW"
+          },
+          {
+            "name": "ESTACION AUGUSTA VIC",
+            "code": "AEV"
+          },
+          {
+            "name": "ENSUENO",
+            "code": "AEO"
+          },
+          {
+            "name": "EL MEDANO",
+            "code": "AEM"
+          },
+          {
+            "name": "ESTACION LOS VIENTOS",
+            "code": "AEL"
+          },
+          {
+            "name": "ESTACION LA RIOJA",
+            "code": "AEJ"
+          },
+          {
+            "name": "ESTACION O`HIGGINS",
+            "code": "AEH"
+          },
+          {
+            "name": "BLANCO ENCALADA",
+            "code": "ABL"
+          },
+          {
+            "name": "CERRO PARANAL",
+            "code": "CPL"
+          },
+          {
+            "name": "CARMEN ALTO",
+            "code": "CIN"
+          },
+          {
+            "name": "PAPOSO",
+            "code": "APP"
+          },
+          {
+            "name": "ESTACION PALESTINA",
+            "code": "APE"
+          },
+          {
+            "name": "PUERTO COLOSO",
+            "code": "APC"
+          },
+          {
+            "name": "ANTOFAGASTA",
+            "code": "ANF"
+          },
+          {
+            "name": "ESTACION MONTURAQUI",
+            "code": "AMQ"
+          },
+          {
+            "name": "JUAN LOPEZ",
+            "code": "AJL"
+          },
+          {
+            "name": "CALETA BOTIJA",
+            "code": "AJJ"
+          },
+          {
+            "name": "ESTACION AGUA BUENA",
+            "code": "AEB"
+          },
+          {
+            "name": "ESTACION CATALINA",
+            "code": "AEC"
+          },
+          {
+            "name": "EL GUANACO",
+            "code": "AEG"
+          },
+          {
+            "name": "CALETA EL COBRE",
+            "code": "AEE"
+          },
+          {
+            "name": "ESTACION SOCOMPA",
+            "code": "ESA"
+          },
+          {
+            "name": "AZUFRERA",
+            "code": "AZF"
+          },
+          {
+            "name": "EX OFICINA FLOR DE C",
+            "code": "AXF"
+          },
+          {
+            "name": "EX OFICINA CHILE",
+            "code": "AXC"
+          },
+          {
+            "name": "EX OFICINA ALEMANIA",
+            "code": "AXA"
+          },
+          {
+            "name": "ESTACION VARILLA",
+            "code": "AVE"
+          },
+          {
+            "name": "AZUFRERA PLATO DE SO",
+            "code": "ATM"
+          },
+          {
+            "name": "SAN CRISTOBAL",
+            "code": "ASC"
+          },
+          {
+            "name": "ESTACION PAN DE AZUC",
+            "code": "APZ"
+          },
+          {
+            "name": "CERRO MORENO",
+            "code": "ACM"
+          },
+          {
+            "name": "BAQUEDANO",
+            "code": "BQO"
+          }
+        ]
+      },
+      {
+        "name": "CALAMA",
+        "code": 2201,
+        "defaultDistrict": "CJC",
+        "districts": [
+          {
+            "name": "CASPANA",
+            "code": "CAP"
+          },
+          {
+            "name": "AYQUINA",
+            "code": "CAY"
+          },
+          {
+            "name": "CONCHI   ",
+            "code": "CCI"
+          },
+          {
+            "name": "CUPO",
+            "code": "CEY"
+          },
+          {
+            "name": "CALAMA",
+            "code": "CJC"
+          },
+          {
+            "name": "TOCONCE",
+            "code": "COV"
+          },
+          {
+            "name": "TUINA",
+            "code": "CTN"
+          },
+          {
+            "name": "CHUQUICAMATA",
+            "code": "QUI"
+          },
+          {
+            "name": "MINA RADOMIRO TOMIC",
+            "code": "MRT"
+          },
+          {
+            "name": "MINA EL LITIO",
+            "code": "MLT"
+          },
+          {
+            "name": "MINA GABY",
+            "code": "MGY"
+          },
+          {
+            "name": "MINA FARIDE",
+            "code": "MFD"
+          },
+          {
+            "name": "MINA CERRO DOMINADOR",
+            "code": "MCD"
+          },
+          {
+            "name": "LINZOR",
+            "code": "LZR"
+          },
+          {
+            "name": "MINA EL ABRA",
+            "code": "ELA"
+          },
+          {
+            "name": "LASANA",
+            "code": "CXL"
+          },
+          {
+            "name": "TURI",
+            "code": "TTR"
+          },
+          {
+            "name": "MINERA SPENCER",
+            "code": "SPM"
+          },
+          {
+            "name": "SAN JOSE  ",
+            "code": "SJE"
+          },
+          {
+            "name": "SANTA ROSA - CALAMA",
+            "code": "CSR"
+          },
+          {
+            "name": "INCACALIRI",
+            "code": "CJI"
+          },
+          {
+            "name": "CHIUCHIU",
+            "code": "CHU"
+          },
+          {
+            "name": "CONCHI VIEJO",
+            "code": "CCV"
+          },
+          {
+            "name": "ESTACION CERRITOS BAYOS",
+            "code": "CCB"
+          },
+          {
+            "name": "BANOS DE TURI",
+            "code": "CBT"
+          }
+        ]
+      },
+      {
+        "name": "MARIA ELENA",
+        "code": 2302,
+        "defaultDistrict": "MAE",
+        "districts": [
+          {
+            "name": "ESTACION MIRAJE",
+            "code": "AET"
+          },
+          {
+            "name": "OFICINA PEDRO DE VAL",
+            "code": "ALQ"
+          },
+          {
+            "name": "OFICINA VERGARA",
+            "code": "OVR"
+          },
+          {
+            "name": "MARIA ELENA SOQUIMICH",
+            "code": "MEQ"
+          },
+          {
+            "name": "MARIA ELENA",
+            "code": "MAE"
+          },
+          {
+            "name": "QUILLAGUA",
+            "code": "CQG"
+          }
+        ]
+      },
+      {
+        "name": "MEJILLONES",
+        "code": 2102,
+        "defaultDistrict": "MJS",
+        "districts": [
+          {
+            "name": "HORNITOS - ANTOFAGAS",
+            "code": "AHO"
+          },
+          {
+            "name": "MEJILLONES",
+            "code": "MJS"
+          }
+        ]
+      },
+      {
+        "name": "OLLAGUE",
+        "code": 2202,
+        "defaultDistrict": "OLL",
+        "districts": [
+          {
+            "name": "AMINCHA",
+            "code": "AMC"
+          },
+          {
+            "name": "AUCANQUILCHA",
+            "code": "QCA"
+          },
+          {
+            "name": "SAN PEDRO DE ATACAMA",
+            "code": "SPD"
+          },
+          {
+            "name": "OLLAGUE",
+            "code": "OLL"
+          },
+          {
+            "name": "ESTACION CEBOLLAR",
+            "code": "CEB"
+          },
+          {
+            "name": "ESTACION CARCOTE",
+            "code": "ETC"
+          },
+          {
+            "name": "POLAN",
+            "code": "CXP"
+          },
+          {
+            "name": "LEQUENA",
+            "code": "CLQ"
+          },
+          {
+            "name": "CALACHUZ",
+            "code": "CCZ"
+          },
+          {
+            "name": "ASCOTAN",
+            "code": "ASN"
+          }
+        ]
+      },
+      {
+        "name": "SAN PEDRO DE ATACAMA",
+        "code": 2203,
+        "defaultDistrict": "SPX",
+        "districts": [
+          {
+            "name": "AGUAS BLANCAS",
+            "code": "CAA"
+          },
+          {
+            "name": "TOCONAO",
+            "code": "TCO"
+          },
+          {
+            "name": "SAN PEDRO DE ATACAMA",
+            "code": "SPX"
+          },
+          {
+            "name": "PURITAMA",
+            "code": "RMA"
+          },
+          {
+            "name": "RIO GRANDE - CALAMA",
+            "code": "RGS"
+          },
+          {
+            "name": "PEINE",
+            "code": "PNI"
+          },
+          {
+            "name": "ALITAR",
+            "code": "CTZ"
+          },
+          {
+            "name": "TILO POZO",
+            "code": "CTP"
+          },
+          {
+            "name": "TALABRE",
+            "code": "CTB"
+          },
+          {
+            "name": "SOCAIRE",
+            "code": "CSE"
+          },
+          {
+            "name": "SAN BARTOLO",
+            "code": "CSB"
+          },
+          {
+            "name": "CAMAR",
+            "code": "CMR"
+          },
+          {
+            "name": "TILOMONTE",
+            "code": "CIL"
+          }
+        ]
+      },
+      {
+        "name": "SIERRA GORDA",
+        "code": 2103,
+        "defaultDistrict": "SGD",
+        "districts": [
+          {
+            "name": "CARACOLES",
+            "code": "CCR"
+          },
+          {
+            "name": "SIERRA GORDA",
+            "code": "SGD"
+          },
+          {
+            "name": "MINERA ZALDIVAR",
+            "code": "MZL"
+          },
+          {
+            "name": "FLOR DEL DESIERTO",
+            "code": "FDT"
+          },
+          {
+            "name": "MELLIZOS",
+            "code": "MLZ"
+          },
+          {
+            "name": "CENTINELA",
+            "code": "CDQ"
+          }
+        ]
+      },
+      {
+        "name": "TALTAL",
+        "code": 2104,
+        "defaultDistrict": "TTL",
+        "districts": [
+          {
+            "name": "ALTAMIRA",
+            "code": "AMR"
+          },
+          {
+            "name": "LA POLVORA",
+            "code": "LPV"
+          },
+          {
+            "name": "CIFUNCHO",
+            "code": "CFI"
+          },
+          {
+            "name": "TALTAL",
+            "code": "TTL"
+          },
+          {
+            "name": "ESMERALDA",
+            "code": "SDA"
+          }
+        ]
+      },
+      {
+        "name": "TOCOPILLA",
+        "code": 2301,
+        "defaultDistrict": "TOC",
+        "districts": [
+          {
+            "name": "CALETA BOY",
+            "code": "ACB"
+          },
+          {
+            "name": "CALETA BUENA - ANTOF",
+            "code": "ACE"
+          },
+          {
+            "name": "TOCOPILLA",
+            "code": "TOC"
+          },
+          {
+            "name": "MINA MICHILLA",
+            "code": "MIC"
+          },
+          {
+            "name": "MICHILLA",
+            "code": "AMI"
+          },
+          {
+            "name": "COBIJA",
+            "code": "ACJ"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Atacama",
+    "code": 3,
+    "isocode": "AT",
+    "ciudades": [
+      {
+        "name": "ALTO DEL CARMEN",
+        "code": 3302,
+        "defaultDistrict": "ADC",
+        "districts": [
+          {
+            "name": "ALTO DEL CARMEN",
+            "code": "ADC"
+          },
+          {
+            "name": "LA HIGUERA",
+            "code": "LHI"
+          },
+          {
+            "name": "CONAY",
+            "code": "VCO"
+          },
+          {
+            "name": "JUNTA VALERIANO",
+            "code": "VJU"
+          },
+          {
+            "name": "LAGUNA GRANDE",
+            "code": "ZTA"
+          },
+          {
+            "name": "EL NEVADO",
+            "code": "ZMJ"
+          },
+          {
+            "name": "SAN FELIX",
+            "code": "VSA"
+          },
+          {
+            "name": "LA HIGUERITA",
+            "code": "VLH"
+          },
+          {
+            "name": "LA ARENA ",
+            "code": "VLA"
+          },
+          {
+            "name": "EL TRANSITO - SERENA",
+            "code": "VET"
+          },
+          {
+            "name": "EL RETAMO",
+            "code": "TMO"
+          }
+        ]
+      },
+      {
+        "name": "CALDERA",
+        "code": 3102,
+        "defaultDistrict": "CLR",
+        "districts": [
+          {
+            "name": "BAHIA INGLESA",
+            "code": "CBH"
+          },
+          {
+            "name": "CALDERA",
+            "code": "CLR"
+          },
+          {
+            "name": "PUERTO VIEJO",
+            "code": "CPV"
+          },
+          {
+            "name": "RANCHO CALDERA",
+            "code": "RCD"
+          }
+        ]
+      },
+      {
+        "name": "CHANARAL",
+        "code": 3201,
+        "defaultDistrict": "CHN",
+        "districts": [
+          {
+            "name": "FLAMENCO",
+            "code": "CFL"
+          },
+          {
+            "name": "PAN DE AZUCAR - COPI",
+            "code": "CPZ"
+          },
+          {
+            "name": "MINA ROSARIO",
+            "code": "RSO"
+          },
+          {
+            "name": "PLAYA REFUGIO",
+            "code": "QPO"
+          },
+          {
+            "name": "MINA LA ESTRELLA",
+            "code": "QME"
+          },
+          {
+            "name": "MINA DICHOSA",
+            "code": "QMD"
+          },
+          {
+            "name": "OBISPITO",
+            "code": "OBT"
+          },
+          {
+            "name": "CHANARAL - COPIAPO",
+            "code": "CHN"
+          },
+          {
+            "name": "PUERTO FINO",
+            "code": "CPF"
+          }
+        ]
+      },
+      {
+        "name": "COPIAPO",
+        "code": 3101,
+        "defaultDistrict": "CPO",
+        "districts": [
+          {
+            "name": "BARRANQUILLAS",
+            "code": "BQQ"
+          },
+          {
+            "name": "CALETA PAJONAL",
+            "code": "QCP"
+          },
+          {
+            "name": "TOTORAL",
+            "code": "CTX"
+          },
+          {
+            "name": "COPIAPO",
+            "code": "CPO"
+          },
+          {
+            "name": "HACIENDA CASTILLA",
+            "code": "CHX"
+          },
+          {
+            "name": "CALETA DEL MEDIO",
+            "code": "CCM"
+          }
+        ]
+      },
+      {
+        "name": "DIEGO DE ALMAGRO",
+        "code": 3202,
+        "defaultDistrict": "DAG",
+        "districts": [
+          {
+            "name": "FINCA DE CHANARAL",
+            "code": "CFC"
+          },
+          {
+            "name": "VEGAS DE CHANARAL AL",
+            "code": "QVC"
+          },
+          {
+            "name": "TERMAS DE RIO NEGRO",
+            "code": "QTR"
+          },
+          {
+            "name": "EL PINO",
+            "code": "QPN"
+          },
+          {
+            "name": "LA OLA",
+            "code": "QLA"
+          },
+          {
+            "name": "BOCAMINA",
+            "code": "QBQ"
+          },
+          {
+            "name": "POTRERILLOS",
+            "code": "PTS"
+          },
+          {
+            "name": "MONTANDON",
+            "code": "MNN"
+          },
+          {
+            "name": "LLANTA",
+            "code": "LLT"
+          },
+          {
+            "name": "INCA DE ORO",
+            "code": "IRO"
+          },
+          {
+            "name": "EL SALVADOR",
+            "code": "ESR"
+          },
+          {
+            "name": "EL SALADO",
+            "code": "ESL"
+          },
+          {
+            "name": "DIEGO DE ALMAGRO",
+            "code": "DAG"
+          },
+          {
+            "name": "MINA CHIVATO",
+            "code": "CLC"
+          }
+        ]
+      },
+      {
+        "name": "FREIRINA",
+        "code": 3303,
+        "defaultDistrict": "FRN",
+        "districts": [
+          {
+            "name": "FREIRINA",
+            "code": "FRN"
+          },
+          {
+            "name": "MINA ALGARROBO",
+            "code": "VMI"
+          },
+          {
+            "name": "MAITENCILLO - CALERA",
+            "code": "VMT"
+          },
+          {
+            "name": "LABRAR",
+            "code": "VLB"
+          },
+          {
+            "name": "CALETA SARCO",
+            "code": "TSC"
+          },
+          {
+            "name": "CARRIZALILLO",
+            "code": "VCI"
+          },
+          {
+            "name": "LA FRAGUITA",
+            "code": "VFR"
+          },
+          {
+            "name": "CALETA CHANARAL",
+            "code": "VCL"
+          }
+        ]
+      },
+      {
+        "name": "HUASCO",
+        "code": 3304,
+        "defaultDistrict": "HCO",
+        "districts": [
+          {
+            "name": "LOS TOYOS",
+            "code": "CXQ"
+          },
+          {
+            "name": "HUASCO BAJO",
+            "code": "HCB"
+          },
+          {
+            "name": "MIRAFLORES - SERENA",
+            "code": "VMR"
+          },
+          {
+            "name": "CARRIZAL BAJO",
+            "code": "VCR"
+          },
+          {
+            "name": "CANTO DE AGUA",
+            "code": "TAG"
+          },
+          {
+            "name": "HUASCO",
+            "code": "HCO"
+          }
+        ]
+      },
+      {
+        "name": "TIERRA AMARILLA",
+        "code": 3103,
+        "defaultDistrict": "TRM",
+        "districts": [
+          {
+            "name": "AMOLANAS",
+            "code": "AMN"
+          },
+          {
+            "name": "LA GUARDIA",
+            "code": "CGD"
+          },
+          {
+            "name": "ELISA DE BORDO",
+            "code": "CBD"
+          },
+          {
+            "name": "LAS JUNTAS",
+            "code": "CLJ"
+          },
+          {
+            "name": "LOS AZULES",
+            "code": "CLZ"
+          },
+          {
+            "name": "MINA LA COIPA",
+            "code": "CMQ"
+          },
+          {
+            "name": "NANTOCO",
+            "code": "CNN"
+          },
+          {
+            "name": "TOTORALILLO",
+            "code": "RQM"
+          },
+          {
+            "name": "PUQUIOS",
+            "code": "QPQ"
+          },
+          {
+            "name": "PASTOS LARGOS",
+            "code": "QPL"
+          },
+          {
+            "name": "HORNITOS - COPIAPO",
+            "code": "QHN"
+          },
+          {
+            "name": "PAIPOTE",
+            "code": "PPE"
+          },
+          {
+            "name": "MINA MARTE",
+            "code": "MTE"
+          },
+          {
+            "name": "MINA CANDELARIA",
+            "code": "MCR"
+          },
+          {
+            "name": "CHANARCILLO",
+            "code": "CYO"
+          },
+          {
+            "name": "TIERRA AMARILLA",
+            "code": "TRM"
+          },
+          {
+            "name": "SAN ANTONIO - COPIAP",
+            "code": "SAI"
+          },
+          {
+            "name": "LA PUERTA",
+            "code": "CXA"
+          },
+          {
+            "name": "VALLE HERMOSO",
+            "code": "CVX"
+          },
+          {
+            "name": "EL VOLCAN",
+            "code": "CVO"
+          },
+          {
+            "name": "LOS LOROS",
+            "code": "CLW"
+          }
+        ]
+      },
+      {
+        "name": "VALLENAR",
+        "code": 3301,
+        "defaultDistrict": "VAL",
+        "districts": [
+          {
+            "name": "DOMEYKO",
+            "code": "DYK"
+          },
+          {
+            "name": "OBSERVATORIO CAMPANA",
+            "code": "VOS"
+          },
+          {
+            "name": "ALGARROBAL",
+            "code": "VZV"
+          },
+          {
+            "name": "EL DONKEY",
+            "code": "VOB"
+          },
+          {
+            "name": "OBSERVATORIO LA SILL",
+            "code": "LSX"
+          },
+          {
+            "name": "CACHIYUYO",
+            "code": "VCQ"
+          },
+          {
+            "name": "LA HOYADA",
+            "code": "VHY"
+          },
+          {
+            "name": "LOS COLORADOS",
+            "code": "VLO"
+          },
+          {
+            "name": "VALLENAR",
+            "code": "VAL"
+          },
+          {
+            "name": "EL BORATILLO",
+            "code": "EBL"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Coquimbo",
+    "code": 4,
+    "isocode": "CO",
+    "ciudades": [
+      {
+        "name": "ANDACOLLO",
+        "code": 4103,
+        "defaultDistrict": "ACO",
+        "districts": [
+          {
+            "name": "ANDACOLLO - LA SEREN",
+            "code": "ACO"
+          },
+          {
+            "name": "BARRANCAS",
+            "code": "BRR"
+          }
+        ]
+      },
+      {
+        "name": "CANELA",
+        "code": 4202,
+        "defaultDistrict": "CNE",
+        "districts": [
+          {
+            "name": "CANELA",
+            "code": "CNE"
+          },
+          {
+            "name": "PUERTO OSCURO",
+            "code": "POZ"
+          },
+          {
+            "name": "MANTOS DE HORNILLOS",
+            "code": "RMH"
+          },
+          {
+            "name": "POZA HONDA",
+            "code": "XZH"
+          },
+          {
+            "name": "CALETA MORRITOS",
+            "code": "RCC"
+          }
+        ]
+      },
+      {
+        "name": "COMBARBALA",
+        "code": 4302,
+        "defaultDistrict": "COB",
+        "districts": [
+          {
+            "name": "COMBARBALA",
+            "code": "COB"
+          },
+          {
+            "name": "LLAHUIN",
+            "code": "OLH"
+          },
+          {
+            "name": "COGOTI",
+            "code": "RCT"
+          },
+          {
+            "name": "SANTA CECILIA",
+            "code": "SSC"
+          },
+          {
+            "name": "LA LIGUA BAJO",
+            "code": "RLU"
+          },
+          {
+            "name": "QUILITAPIA",
+            "code": "QWQ"
+          },
+          {
+            "name": "PARMA",
+            "code": "OPA"
+          },
+          {
+            "name": "CHINGAY",
+            "code": "ONG"
+          },
+          {
+            "name": "HILARICOS",
+            "code": "OHY"
+          },
+          {
+            "name": "CHINEO",
+            "code": "OCH"
+          },
+          {
+            "name": "LAS COLORADAS",
+            "code": "LZZ"
+          }
+        ]
+      },
+      {
+        "name": "COQUIMBO",
+        "code": 4102,
+        "defaultDistrict": "COQ",
+        "districts": [
+          {
+            "name": "COQUIMBO",
+            "code": "COQ"
+          },
+          {
+            "name": "TOTORALILLO - COQUIM",
+            "code": "TOT"
+          },
+          {
+            "name": "TONGOY",
+            "code": "TGY"
+          },
+          {
+            "name": "RETIRO - COQUIMBO",
+            "code": "RTO"
+          },
+          {
+            "name": "PUERTO VELERO",
+            "code": "PVO"
+          },
+          {
+            "name": "EL PENON - LA SERENA",
+            "code": "PON"
+          },
+          {
+            "name": "PLACILLA - COQUIMBO",
+            "code": "PLM"
+          },
+          {
+            "name": "PENUELAS - LA SERENA",
+            "code": "PLB"
+          },
+          {
+            "name": "LA HERRADURA",
+            "code": "LRR"
+          },
+          {
+            "name": "LAS TACAS",
+            "code": "LTC"
+          },
+          {
+            "name": "TIERRAS BLANCAS",
+            "code": "LTB"
+          },
+          {
+            "name": "PAN DE AZUCAR - SERE",
+            "code": "LPZ"
+          },
+          {
+            "name": "GUACHALALUME",
+            "code": "GHC"
+          },
+          {
+            "name": "GUANAQUEROS",
+            "code": "GQS"
+          }
+        ]
+      },
+      {
+        "name": "ILLAPEL",
+        "code": 4201,
+        "defaultDistrict": "ILL",
+        "districts": [
+          {
+            "name": "CUZ CUZ - CALERA",
+            "code": "AZZ"
+          },
+          {
+            "name": "CHOAPA",
+            "code": "CPA"
+          },
+          {
+            "name": "TUNGA NORTE",
+            "code": "ZTU"
+          },
+          {
+            "name": "TUNGA SUR",
+            "code": "ZTN"
+          },
+          {
+            "name": "RABANALES",
+            "code": "ZTL"
+          },
+          {
+            "name": "CAREN - CALERA",
+            "code": "ZNK"
+          },
+          {
+            "name": "MINCHA SUR",
+            "code": "ZMM"
+          },
+          {
+            "name": "MINCHA",
+            "code": "ZMH"
+          },
+          {
+            "name": "MATANCILLA",
+            "code": "ZMC"
+          },
+          {
+            "name": "LAS PIRCAS",
+            "code": "ZKZ"
+          },
+          {
+            "name": "HUENTELAUQUEN",
+            "code": "ZHT"
+          },
+          {
+            "name": "HUINTIL",
+            "code": "ZHN"
+          },
+          {
+            "name": "FARELLON SANCHEZ",
+            "code": "ZFA"
+          },
+          {
+            "name": "LAS CANAS",
+            "code": "LZC"
+          },
+          {
+            "name": "ILLAPEL",
+            "code": "ILL"
+          },
+          {
+            "name": "COCUA",
+            "code": "CCY"
+          }
+        ]
+      },
+      {
+        "name": "LA HIGUERA",
+        "code": 4104,
+        "defaultDistrict": "LHC",
+        "districts": [
+          {
+            "name": "EL OLIVO",
+            "code": "EOV"
+          },
+          {
+            "name": "INCAGUASI",
+            "code": "LIH"
+          },
+          {
+            "name": "LAS BREAS - SERENA",
+            "code": "MQZ"
+          },
+          {
+            "name": "TRES CRUCES",
+            "code": "TCS"
+          },
+          {
+            "name": "EL TOFO",
+            "code": "TFO"
+          },
+          {
+            "name": "PUNTA CHOROS",
+            "code": "PHS"
+          },
+          {
+            "name": "TRAPICHE - LA SERENA",
+            "code": "LTH"
+          },
+          {
+            "name": "CHOROS BAJOS",
+            "code": "LKM"
+          },
+          {
+            "name": "LA HIGUERA - LA SERE",
+            "code": "LHC"
+          },
+          {
+            "name": "CHUNGUNGO",
+            "code": "LGY"
+          },
+          {
+            "name": "LOS HORNOS",
+            "code": "LHB"
+          }
+        ]
+      },
+      {
+        "name": "LA SERENA",
+        "code": 4101,
+        "defaultDistrict": "LSC",
+        "districts": [
+          {
+            "name": "AGUA GRANDE",
+            "code": "AGG"
+          },
+          {
+            "name": "SAN PABLO",
+            "code": "XPB"
+          },
+          {
+            "name": "TEATINOS",
+            "code": "TNS"
+          },
+          {
+            "name": "LAS ROJAS",
+            "code": "RSE"
+          },
+          {
+            "name": "LA SERENA",
+            "code": "LSC"
+          },
+          {
+            "name": "EL ROMERAL - SERENA",
+            "code": "LER"
+          },
+          {
+            "name": "EL ISLON",
+            "code": "LEI"
+          },
+          {
+            "name": "COQUIMBITO",
+            "code": "LCQ"
+          },
+          {
+            "name": "LAMBERT",
+            "code": "LBT"
+          },
+          {
+            "name": "EL CHACAY",
+            "code": "HAY"
+          },
+          {
+            "name": "LA COMPANIA - SERENA",
+            "code": "GOS"
+          },
+          {
+            "name": "ALTOVALSOL",
+            "code": "AVS"
+          },
+          {
+            "name": "ALMIRANTE LATORRE",
+            "code": "ALT"
+          }
+        ]
+      },
+      {
+        "name": "LOS VILOS",
+        "code": 4203,
+        "defaultDistrict": "LVL",
+        "districts": [
+          {
+            "name": "CAIMANES",
+            "code": "ANS"
+          },
+          {
+            "name": "LOS VILOS",
+            "code": "LVL"
+          },
+          {
+            "name": "GUANGALI",
+            "code": "ZIV"
+          },
+          {
+            "name": "MAURO",
+            "code": "ZMR"
+          },
+          {
+            "name": "CASUTO",
+            "code": "ZOQ"
+          },
+          {
+            "name": "QUELON",
+            "code": "ZQO"
+          },
+          {
+            "name": "TILAMA",
+            "code": "ZTI"
+          },
+          {
+            "name": "QUILIMARI",
+            "code": "ZQM"
+          },
+          {
+            "name": "CHIGUALOCO",
+            "code": "ZOA"
+          },
+          {
+            "name": "LOS ERMITANOS",
+            "code": "ZKK"
+          },
+          {
+            "name": "TOTORALILLO - CALERA",
+            "code": "TTZ"
+          },
+          {
+            "name": "PICHIDANGUI",
+            "code": "PCH"
+          },
+          {
+            "name": "LOS MOLLES",
+            "code": "LMO"
+          },
+          {
+            "name": "PUPIO",
+            "code": "LOI"
+          }
+        ]
+      },
+      {
+        "name": "MONTE PATRIA",
+        "code": 4303,
+        "defaultDistrict": "MPC",
+        "districts": [
+          {
+            "name": "CHANARAL ALTO - OVAL",
+            "code": "CHZ"
+          },
+          {
+            "name": "VALDIVIA - OVALLE",
+            "code": "ZOV"
+          },
+          {
+            "name": "BOCATOMA",
+            "code": "XBC"
+          },
+          {
+            "name": "EL CARRIZAL",
+            "code": "OEC"
+          },
+          {
+            "name": "CHILECITO",
+            "code": "OCT"
+          },
+          {
+            "name": "BANOS DEL GORDITO",
+            "code": "OBG"
+          },
+          {
+            "name": "MONTE PATRIA",
+            "code": "MPC"
+          },
+          {
+            "name": "LAS MOLLACAS",
+            "code": "LMS"
+          },
+          {
+            "name": "CAREN - OVALLE",
+            "code": "KEN"
+          },
+          {
+            "name": "GUATULAME",
+            "code": "GUT"
+          },
+          {
+            "name": "EL PALQUI",
+            "code": "EPI"
+          },
+          {
+            "name": "TULAHUEN",
+            "code": "TNH"
+          },
+          {
+            "name": "SAN MARCOS - OVALLE",
+            "code": "SMC"
+          },
+          {
+            "name": "RAPEL - OVALLE",
+            "code": "RQW"
+          },
+          {
+            "name": "EL MAQUI ",
+            "code": "RMQ"
+          },
+          {
+            "name": "LAS RAMADAS",
+            "code": "RLR"
+          },
+          {
+            "name": "LAS JUNTAS - OVALLE",
+            "code": "RLJ"
+          },
+          {
+            "name": "PEDREGAL",
+            "code": "RGR"
+          },
+          {
+            "name": "SAN LORENZO - OVALLE",
+            "code": "RFG"
+          },
+          {
+            "name": "EL MAITEN",
+            "code": "REM"
+          },
+          {
+            "name": "CENTRAL LOS MOLLES",
+            "code": "RCM"
+          }
+        ]
+      },
+      {
+        "name": "OVALLE",
+        "code": 4301,
+        "defaultDistrict": "OVL",
+        "districts": [
+          {
+            "name": "CHALINGA",
+            "code": "AGA"
+          },
+          {
+            "name": "LAS CARDAS",
+            "code": "LLS"
+          },
+          {
+            "name": "LA TORRE",
+            "code": "LAT"
+          },
+          {
+            "name": "LA CHIMBA",
+            "code": "OLB"
+          },
+          {
+            "name": "OVALLE",
+            "code": "OVL"
+          },
+          {
+            "name": "TERMAS DE SOCO",
+            "code": "SQT"
+          },
+          {
+            "name": "SOTAQUI",
+            "code": "SOZ"
+          },
+          {
+            "name": "SAMO ALTO",
+            "code": "RVG"
+          },
+          {
+            "name": "SAMO BAJO",
+            "code": "RVF"
+          },
+          {
+            "name": "RECOLETA",
+            "code": "RTG"
+          },
+          {
+            "name": "ALGARROBITO - OVALLE",
+            "code": "RRG"
+          },
+          {
+            "name": "BARRAZA",
+            "code": "RRB"
+          },
+          {
+            "name": "CAMARICO VIEJO",
+            "code": "RQV"
+          },
+          {
+            "name": "PEJERREYES",
+            "code": "RPJ"
+          },
+          {
+            "name": "LIMARI",
+            "code": "RLI"
+          },
+          {
+            "name": "HIGUERITAS",
+            "code": "RHG"
+          },
+          {
+            "name": "GUAMPULLA",
+            "code": "RGU"
+          },
+          {
+            "name": "EL ALTAR",
+            "code": "REA"
+          },
+          {
+            "name": "QUEBRADA SECA",
+            "code": "QWR"
+          },
+          {
+            "name": "PACHINGO",
+            "code": "PIC"
+          },
+          {
+            "name": "OTAROLA",
+            "code": "OTR"
+          },
+          {
+            "name": "GUAMALATA",
+            "code": "OGT"
+          },
+          {
+            "name": "CERRILLOS DE TAMAYA",
+            "code": "CTY"
+          },
+          {
+            "name": "CAMARICO",
+            "code": "CRI"
+          }
+        ]
+      },
+      {
+        "name": "PAIGUANO",
+        "code": 4105,
+        "defaultDistrict": "PHO",
+        "districts": [
+          {
+            "name": "COCHIGUAS",
+            "code": "CGS"
+          },
+          {
+            "name": "MINA DEL INDIO",
+            "code": "LMX"
+          },
+          {
+            "name": "MONTE GRANDE",
+            "code": "LMG"
+          },
+          {
+            "name": "LLANOS DE GUANTA",
+            "code": "LLG"
+          },
+          {
+            "name": "CHAPILCA",
+            "code": "LKK"
+          },
+          {
+            "name": "JUNTAS DEL TORO",
+            "code": "LJZ"
+          },
+          {
+            "name": "LAS HEDIONDAS",
+            "code": "LHD"
+          },
+          {
+            "name": "GUANTA",
+            "code": "LGU"
+          },
+          {
+            "name": "BALALA",
+            "code": "LBW"
+          },
+          {
+            "name": "SOL NACIENTE",
+            "code": "TAL"
+          },
+          {
+            "name": "PAIHUANO",
+            "code": "PHO"
+          },
+          {
+            "name": "NUEVA ELQUI",
+            "code": "NEQ"
+          },
+          {
+            "name": "ALCOHUAS",
+            "code": "MRR"
+          },
+          {
+            "name": "VARILLAR",
+            "code": "LVR"
+          },
+          {
+            "name": "RIVADAVIA",
+            "code": "LRV"
+          },
+          {
+            "name": "BANOS DEL TORO",
+            "code": "LBJ"
+          },
+          {
+            "name": "PISCO ELQUI",
+            "code": "ELQ"
+          }
+        ]
+      },
+      {
+        "name": "PUNITAQUI",
+        "code": 4304,
+        "defaultDistrict": "PTQ",
+        "districts": [
+          {
+            "name": "LOS PERALES - OVALLE",
+            "code": "LZP"
+          },
+          {
+            "name": "PUNITAQUI",
+            "code": "PTQ"
+          },
+          {
+            "name": "LA AGUADA",
+            "code": "RLG"
+          },
+          {
+            "name": "LITIPAMPA",
+            "code": "RLL"
+          },
+          {
+            "name": "PENA BLANCA",
+            "code": "OPB"
+          },
+          {
+            "name": "LA PLACILLA",
+            "code": "OLP"
+          }
+        ]
+      },
+      {
+        "name": "RIO HURTADO",
+        "code": 4305,
+        "defaultDistrict": "RHU",
+        "districts": [
+          {
+            "name": "CHANAR ",
+            "code": "LHH"
+          },
+          {
+            "name": "CORRAL QUEMADO",
+            "code": "RQO"
+          },
+          {
+            "name": "PICHASCA",
+            "code": "RPI"
+          },
+          {
+            "name": "PABELLON - OVALLE",
+            "code": "RPB"
+          },
+          {
+            "name": "LA FUNDINA",
+            "code": "RLF"
+          },
+          {
+            "name": "LAS BREAS - OVALLE",
+            "code": "RLB"
+          },
+          {
+            "name": "RIO HURTADO",
+            "code": "RHU"
+          },
+          {
+            "name": "HURTADO",
+            "code": "RHT"
+          },
+          {
+            "name": "ALTO BUEY",
+            "code": "OAY"
+          },
+          {
+            "name": "HACIENDA LOS ANDES",
+            "code": "XMR"
+          }
+        ]
+      },
+      {
+        "name": "SALAMANCA",
+        "code": 4204,
+        "defaultDistrict": "SCA",
+        "districts": [
+          {
+            "name": "ARBOLEDA GRANDE",
+            "code": "ABG"
+          },
+          {
+            "name": "LOS PELADEROS",
+            "code": "LSO"
+          },
+          {
+            "name": "CHELLEPIN",
+            "code": "LNI"
+          },
+          {
+            "name": "PALQUIAL",
+            "code": "PZC"
+          },
+          {
+            "name": "BATUCO - CALERA",
+            "code": "ZBG"
+          },
+          {
+            "name": "JORQUERA",
+            "code": "ZJO"
+          },
+          {
+            "name": "ZAPALLAR",
+            "code": "ZPF"
+          },
+          {
+            "name": "LIMAHUIDA",
+            "code": "ZVH"
+          },
+          {
+            "name": "SAN AGUSTIN",
+            "code": "ZSG"
+          },
+          {
+            "name": "COIRON",
+            "code": "ZNP"
+          },
+          {
+            "name": "EL TAMBO - CALERA",
+            "code": "ZET"
+          },
+          {
+            "name": "ALMENDRALILLO",
+            "code": "ZAM"
+          },
+          {
+            "name": "SALAMANCA",
+            "code": "SCA"
+          },
+          {
+            "name": "LLIMPO",
+            "code": "LLP"
+          }
+        ]
+      },
+      {
+        "name": "VICUNA",
+        "code": 4106,
+        "defaultDistrict": "VCA",
+        "districts": [
+          {
+            "name": "ANDACOLLO HOLDING",
+            "code": "AVU"
+          },
+          {
+            "name": "CORTADERA",
+            "code": "CEA"
+          },
+          {
+            "name": "CASERONES",
+            "code": "LCR"
+          },
+          {
+            "name": "LA LAJA",
+            "code": "YCV"
+          },
+          {
+            "name": "VICUNA",
+            "code": "VCA"
+          },
+          {
+            "name": "EL TAMBO - LA SERENA",
+            "code": "TBE"
+          },
+          {
+            "name": "PERALILLO - SERENA",
+            "code": "PLV"
+          },
+          {
+            "name": "VINITA BAJA",
+            "code": "LVT"
+          },
+          {
+            "name": "OBSERVATORIO TOLOLO",
+            "code": "LOO"
+          },
+          {
+            "name": "EL ROMERAL - SERENA",
+            "code": "LEM"
+          },
+          {
+            "name": "CONDORIACO",
+            "code": "LCO"
+          },
+          {
+            "name": "DIAGUITAS",
+            "code": "DTS"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Valparaiso",
+    "code": 5,
+    "isocode": "VS",
+    "ciudades": [
+      {
+        "name": "ALGARROBO",
+        "code": 5602,
+        "defaultDistrict": "ABO",
+        "districts": [
+          {
+            "name": "ALGARROBO - MELIPILL",
+            "code": "ABO"
+          },
+          {
+            "name": "QUINTAY",
+            "code": "QTY"
+          },
+          {
+            "name": "MIRASOL",
+            "code": "MRL"
+          }
+        ]
+      },
+      {
+        "name": "CABILDO",
+        "code": 5402,
+        "defaultDistrict": "CDO",
+        "districts": [
+          {
+            "name": "CABILDO",
+            "code": "CDO"
+          },
+          {
+            "name": "LA MORA",
+            "code": "LAO"
+          },
+          {
+            "name": "ALICAHUE",
+            "code": "ZAI"
+          },
+          {
+            "name": "EL GUAYACAN",
+            "code": "ZEG"
+          },
+          {
+            "name": "SAN LORENZO - CALERA",
+            "code": "ZSL"
+          },
+          {
+            "name": "SANTA MARTA - CALERA",
+            "code": "ZST"
+          },
+          {
+            "name": "ARTIFICIO",
+            "code": "ZAT"
+          },
+          {
+            "name": "LA VINA ",
+            "code": "XLV"
+          },
+          {
+            "name": "PEDEGUA",
+            "code": "PUA"
+          },
+          {
+            "name": "LAS PALMAS",
+            "code": "LSA"
+          }
+        ]
+      },
+      {
+        "name": "CALERA",
+        "code": 5502,
+        "defaultDistrict": "ZLC",
+        "districts": [
+          {
+            "name": "LA CALERA",
+            "code": "ZLC"
+          }
+        ]
+      },
+      {
+        "name": "CALLE LARGA",
+        "code": 5302,
+        "defaultDistrict": "CLG",
+        "districts": [
+          {
+            "name": "CALLE LARGA",
+            "code": "CLG"
+          }
+        ]
+      },
+      {
+        "name": "CARTAGENA",
+        "code": 5603,
+        "defaultDistrict": "CRT",
+        "districts": [
+          {
+            "name": "LO ABARCA",
+            "code": "ABA"
+          },
+          {
+            "name": "SAN SEBASTIAN - MELI",
+            "code": "SSB"
+          },
+          {
+            "name": "LAS CRUCES",
+            "code": "LCX"
+          },
+          {
+            "name": "EL TURCO",
+            "code": "KER"
+          },
+          {
+            "name": "CARTAGENA",
+            "code": "CRT"
+          }
+        ]
+      },
+      {
+        "name": "CASABLANCA",
+        "code": 5102,
+        "defaultDistrict": "CBC",
+        "districts": [
+          {
+            "name": "CASABLANCA",
+            "code": "CBC"
+          },
+          {
+            "name": "LAS DICHAS",
+            "code": "KHD"
+          },
+          {
+            "name": "LO OROZCO",
+            "code": "KLO"
+          },
+          {
+            "name": "LAS MERCEDES",
+            "code": "KME"
+          },
+          {
+            "name": "TAPIHUE",
+            "code": "KTH"
+          },
+          {
+            "name": "SAN GERONIMO",
+            "code": "KSG"
+          },
+          {
+            "name": "LO VASQUEZ",
+            "code": "KLV"
+          },
+          {
+            "name": "LAGUNILLAS",
+            "code": "KLL"
+          },
+          {
+            "name": "EL CARPINTERO",
+            "code": "KEC"
+          }
+        ]
+      },
+      {
+        "name": "CATEMU",
+        "code": 5702,
+        "defaultDistrict": "CAT",
+        "districts": [
+          {
+            "name": "CATEMU",
+            "code": "CAT"
+          },
+          {
+            "name": "EL CERRADO",
+            "code": "SWC"
+          },
+          {
+            "name": "CHAGRES",
+            "code": "SHW"
+          },
+          {
+            "name": "NILHUE",
+            "code": "SNW"
+          },
+          {
+            "name": "EL COBRE - LOS ANDES",
+            "code": "SOW"
+          }
+        ]
+      },
+      {
+        "name": "CONCON",
+        "code": 5103,
+        "defaultDistrict": "CON",
+        "districts": [
+          {
+            "name": "CONCON",
+            "code": "CON"
+          }
+        ]
+      },
+      {
+        "name": "EL QUISCO",
+        "code": 5604,
+        "defaultDistrict": "EQO",
+        "districts": [
+          {
+            "name": "COSTA AZUL",
+            "code": "AZU"
+          },
+          {
+            "name": "PUNTA DE TRALCA",
+            "code": "KPT"
+          },
+          {
+            "name": "ISLA NEGRA",
+            "code": "INE"
+          },
+          {
+            "name": "EL QUISCO",
+            "code": "EQO"
+          }
+        ]
+      },
+      {
+        "name": "EL TABO",
+        "code": 5605,
+        "defaultDistrict": "ETB",
+        "districts": [
+          {
+            "name": "EL TABO",
+            "code": "ETB"
+          }
+        ]
+      },
+      {
+        "name": "HIJUELAS",
+        "code": 5503,
+        "defaultDistrict": "HJS",
+        "districts": [
+          {
+            "name": "HIJUELAS",
+            "code": "HJS"
+          }
+        ]
+      },
+      {
+        "name": "ISLA DE PASCUA",
+        "code": 5201,
+        "defaultDistrict": "IPC",
+        "districts": [
+          {
+            "name": "ISLA DE PASCUA",
+            "code": "IPC"
+          }
+        ]
+      },
+      {
+        "name": "JUAN FERNANDEZ",
+        "code": 5104,
+        "defaultDistrict": "JFZ",
+        "districts": [
+          {
+            "name": "ISLA JUAN FERNANDEZ",
+            "code": "JFZ"
+          }
+        ]
+      },
+      {
+        "name": "LA CRUZ",
+        "code": 5504,
+        "defaultDistrict": "LCZ",
+        "districts": [
+          {
+            "name": "LA CRUZ - CALERA",
+            "code": "LCZ"
+          },
+          {
+            "name": "OCOA",
+            "code": "SOX"
+          }
+        ]
+      },
+      {
+        "name": "LA LIGUA",
+        "code": 5401,
+        "defaultDistrict": "LLC",
+        "districts": [
+          {
+            "name": "LONGOTOMA",
+            "code": "GMA"
+          },
+          {
+            "name": "LA LIGUA",
+            "code": "LLC"
+          },
+          {
+            "name": "PICHICUY",
+            "code": "PZY"
+          },
+          {
+            "name": "TRAPICHE - CALERA",
+            "code": "ZEW"
+          },
+          {
+            "name": "LA PATAGUA",
+            "code": "ZGC"
+          },
+          {
+            "name": "QUINQUIMO",
+            "code": "ZQQ"
+          },
+          {
+            "name": "EL INGENIO",
+            "code": "ZEI"
+          },
+          {
+            "name": "CALETA POLCURA",
+            "code": "LAR"
+          }
+        ]
+      },
+      {
+        "name": "LIMACHE",
+        "code": 5505,
+        "defaultDistrict": "LIC",
+        "districts": [
+          {
+            "name": "LIMACHE",
+            "code": "LIC"
+          },
+          {
+            "name": "QUEBRADA ALVARADO",
+            "code": "ZQB"
+          }
+        ]
+      },
+      {
+        "name": "LLAILLAY",
+        "code": 5703,
+        "defaultDistrict": "LLY",
+        "districts": [
+          {
+            "name": "LLAILLAY",
+            "code": "LLY"
+          },
+          {
+            "name": "MONTENEGRO",
+            "code": "SMQ"
+          },
+          {
+            "name": "RUNGUE",
+            "code": "SER"
+          }
+        ]
+      },
+      {
+        "name": "LOS ANDES",
+        "code": 5301,
+        "defaultDistrict": "LOB",
+        "districts": [
+          {
+            "name": "LOS ANDES",
+            "code": "LOB"
+          },
+          {
+            "name": "GUARDIA VIEJA",
+            "code": "SGZ"
+          },
+          {
+            "name": "RIO BLANCO",
+            "code": "SRB"
+          },
+          {
+            "name": "SALTO DEL SOLDADO",
+            "code": "SSD"
+          },
+          {
+            "name": "JUNCAL",
+            "code": "SJH"
+          },
+          {
+            "name": "SALADILLO",
+            "code": "SDO"
+          },
+          {
+            "name": "PORTILLO",
+            "code": "PRT"
+          }
+        ]
+      },
+      {
+        "name": "NOGALES",
+        "code": 5506,
+        "defaultDistrict": "NOG",
+        "districts": [
+          {
+            "name": "EL MELON",
+            "code": "EML"
+          },
+          {
+            "name": "EL COBRE - CALERA",
+            "code": "ZEC"
+          },
+          {
+            "name": "NOGALES",
+            "code": "NOG"
+          }
+        ]
+      },
+      {
+        "name": "OLMUE",
+        "code": 5507,
+        "defaultDistrict": "OLM",
+        "districts": [
+          {
+            "name": "OLMUE",
+            "code": "OLM"
+          },
+          {
+            "name": "GRANIZO",
+            "code": "ZGR"
+          },
+          {
+            "name": "SAN PEDRO - CALERA",
+            "code": "ZDD"
+          }
+        ]
+      },
+      {
+        "name": "PANQUEHUE",
+        "code": 5704,
+        "defaultDistrict": "PNQ",
+        "districts": [
+          {
+            "name": "PANQUEHUE",
+            "code": "PNQ"
+          },
+          {
+            "name": "LO  ERRAZURIZ",
+            "code": "SLZ"
+          }
+        ]
+      },
+      {
+        "name": "PAPUDO",
+        "code": 5403,
+        "defaultDistrict": "PPO",
+        "districts": [
+          {
+            "name": "PAPUDO",
+            "code": "PPO"
+          }
+        ]
+      },
+      {
+        "name": "PETORCA",
+        "code": 5404,
+        "defaultDistrict": "PTK",
+        "districts": [
+          {
+            "name": "CHALACO",
+            "code": "LOA"
+          },
+          {
+            "name": "PETORCA",
+            "code": "PTK"
+          },
+          {
+            "name": "PEDERNAL",
+            "code": "ZDR"
+          },
+          {
+            "name": "CHINCOLCO",
+            "code": "OLC"
+          },
+          {
+            "name": "MINA EL ROSARIO",
+            "code": "ZMS"
+          },
+          {
+            "name": "MANUEL MONTT",
+            "code": "ZMU"
+          },
+          {
+            "name": "HIERRO VIEJO",
+            "code": "ZHR"
+          }
+        ]
+      },
+      {
+        "name": "PUCHUNCAVI",
+        "code": 5105,
+        "defaultDistrict": "PCV",
+        "districts": [
+          {
+            "name": "CANELA BAJA",
+            "code": "CNB"
+          },
+          {
+            "name": "LA LAGUNA",
+            "code": "LGN"
+          },
+          {
+            "name": "MAITENCILLO - CALERA",
+            "code": "MTC"
+          },
+          {
+            "name": "CALETA HORCON",
+            "code": "LNO"
+          },
+          {
+            "name": "CANELA ALTA",
+            "code": "ZZC"
+          },
+          {
+            "name": "EL RINCON",
+            "code": "ZQD"
+          },
+          {
+            "name": "VENTANAS",
+            "code": "VTA"
+          },
+          {
+            "name": "LA QUEBRADA - CALERA",
+            "code": "QZC"
+          },
+          {
+            "name": "PUCHUNCAVI",
+            "code": "PCV"
+          }
+        ]
+      },
+      {
+        "name": "PUTAENDO",
+        "code": 5705,
+        "defaultDistrict": "PUT",
+        "districts": [
+          {
+            "name": "PUTAENDO",
+            "code": "PUT"
+          },
+          {
+            "name": "GRANALLA",
+            "code": "SGY"
+          },
+          {
+            "name": "RINCONADA DE GUZMAN",
+            "code": "SRG"
+          },
+          {
+            "name": "RINCONADA DE SILVA",
+            "code": "SRS"
+          },
+          {
+            "name": "TRES FUERTES",
+            "code": "TRE"
+          },
+          {
+            "name": "EL TARTARO",
+            "code": "STY"
+          },
+          {
+            "name": "RESGUARDO LOS PATOS",
+            "code": "SRP"
+          }
+        ]
+      },
+      {
+        "name": "QUILLOTA",
+        "code": 5501,
+        "defaultDistrict": "QTA",
+        "districts": [
+          {
+            "name": "QUILLOTA",
+            "code": "QTA"
+          }
+        ]
+      },
+      {
+        "name": "QUILPUE",
+        "code": 5106,
+        "defaultDistrict": "QPE",
+        "districts": [
+          {
+            "name": "EL BELLOTO",
+            "code": "EBT"
+          },
+          {
+            "name": "LA RETUCA",
+            "code": "KLR"
+          },
+          {
+            "name": "QUILPUE",
+            "code": "QPE"
+          }
+        ]
+      },
+      {
+        "name": "QUINTERO",
+        "code": 5107,
+        "defaultDistrict": "QTO",
+        "districts": [
+          {
+            "name": "VALLE ALEGRE",
+            "code": "BAG"
+          },
+          {
+            "name": "RITOQUE",
+            "code": "ZRV"
+          },
+          {
+            "name": "QUINTERO",
+            "code": "QTO"
+          }
+        ]
+      },
+      {
+        "name": "RINCONADA",
+        "code": 5303,
+        "defaultDistrict": "RDA",
+        "districts": [
+          {
+            "name": "RINCONADA - LOS ANDE",
+            "code": "RDA"
+          }
+        ]
+      },
+      {
+        "name": "SAN ANTONIO",
+        "code": 5601,
+        "defaultDistrict": "SNT",
+        "districts": [
+          {
+            "name": "LLO-LLEO",
+            "code": "LLO"
+          },
+          {
+            "name": "SAN ANTONIO - MELIP.",
+            "code": "SNT"
+          }
+        ]
+      },
+      {
+        "name": "SAN ESTEBAN",
+        "code": 5304,
+        "defaultDistrict": "SEN",
+        "districts": [
+          {
+            "name": "SAN ESTEBAN",
+            "code": "SEN"
+          }
+        ]
+      },
+      {
+        "name": "SAN FELIPE",
+        "code": 5701,
+        "defaultDistrict": "SFP",
+        "districts": [
+          {
+            "name": "CURIMON",
+            "code": "CRM"
+          },
+          {
+            "name": "CERRILLOS DE SAN FEL",
+            "code": "CSP"
+          },
+          {
+            "name": "SAN FELIPE",
+            "code": "SFP"
+          }
+        ]
+      },
+      {
+        "name": "SANTA MARIA",
+        "code": 5706,
+        "defaultDistrict": "SRI",
+        "districts": [
+          {
+            "name": "JAHUEL",
+            "code": "JHL"
+          },
+          {
+            "name": "SANTA MARIA",
+            "code": "SRI"
+          },
+          {
+            "name": "TERMAS DE JAHUEL",
+            "code": "TJL"
+          }
+        ]
+      },
+      {
+        "name": "SANTO DOMINGO",
+        "code": 5606,
+        "defaultDistrict": "SDC",
+        "districts": [
+          {
+            "name": "LO GALLARDO",
+            "code": "KLG"
+          },
+          {
+            "name": "SANTO DOMINGO",
+            "code": "SDC"
+          },
+          {
+            "name": "LEYDA",
+            "code": "KLY"
+          }
+        ]
+      },
+      {
+        "name": "VALPARAISO",
+        "code": 5101,
+        "defaultDistrict": "VAP",
+        "districts": [
+          {
+            "name": "CALETAS LAS DOCAS",
+            "code": "KCD"
+          },
+          {
+            "name": "PUNTA CURAUMILLA",
+            "code": "KPC"
+          },
+          {
+            "name": "LAS TABLAS",
+            "code": "KLT"
+          },
+          {
+            "name": "VALPARAISO",
+            "code": "VAP"
+          },
+          {
+            "name": "PLACILLA - V DEL MAR",
+            "code": "PLP"
+          },
+          {
+            "name": "PENUELAS - V DEL MAR",
+            "code": "KPE"
+          },
+          {
+            "name": "LAGUNA VERDE",
+            "code": "LAV"
+          }
+        ]
+      },
+      {
+        "name": "VILLA ALEMANA",
+        "code": 5108,
+        "defaultDistrict": "VIA",
+        "districts": [
+          {
+            "name": "PENABLANCA",
+            "code": "PBA"
+          },
+          {
+            "name": "VILLA ALEMANA",
+            "code": "VIA"
+          }
+        ]
+      },
+      {
+        "name": "VINA DEL MAR",
+        "code": 5109,
+        "defaultDistrict": "KNA",
+        "districts": [
+          {
+            "name": "VINA DEL MAR",
+            "code": "KNA"
+          },
+          {
+            "name": "RENACA",
+            "code": "RCA"
+          }
+        ]
+      },
+      {
+        "name": "ZAPALLAR",
+        "code": 5405,
+        "defaultDistrict": "ZAR",
+        "districts": [
+          {
+            "name": "CACHAGUA",
+            "code": "CGU"
+          },
+          {
+            "name": "ZAPALLAR - CALERA",
+            "code": "ZAR"
+          },
+          {
+            "name": "CATAPILCO",
+            "code": "PIL"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Metropolitana de Santiago",
+    "code": 13,
+    "isocode": "RM",
+    "ciudades": [
+      {
+        "name": "ALHUE",
+        "code": 13502,
+        "defaultDistrict": "ALH",
+        "districts": [
+          {
+            "name": "ALHUE",
+            "code": "ALH"
+          },
+          {
+            "name": "VILLA ALHUE",
+            "code": "SVH"
+          },
+          {
+            "name": "LONCHA",
+            "code": "ZKU"
+          },
+          {
+            "name": "LO CHACON",
+            "code": "HAC"
+          },
+          {
+            "name": "EL MEMBRILLO",
+            "code": "MMZ"
+          },
+          {
+            "name": "LA CRUZ MELIPILLA",
+            "code": "LZU"
+          }
+        ]
+      },
+      {
+        "name": "BUIN",
+        "code": 13402,
+        "defaultDistrict": "ZBU",
+        "districts": [
+          {
+            "name": "MAIPO",
+            "code": "MIP"
+          },
+          {
+            "name": "BUIN",
+            "code": "ZBU"
+          }
+        ]
+      },
+      {
+        "name": "CALERA DE TANGO",
+        "code": 13403,
+        "defaultDistrict": "CDT",
+        "districts": [
+          {
+            "name": "CALERA DE TANGO",
+            "code": "CDT"
+          },
+          {
+            "name": "ALTO JAHUEL",
+            "code": "SAJ"
+          }
+        ]
+      },
+      {
+        "name": "CERRILLOS",
+        "code": 13102,
+        "defaultDistrict": "RRI",
+        "districts": [
+          {
+            "name": "CERRILLOS",
+            "code": "RRI"
+          }
+        ]
+      },
+      {
+        "name": "CERRO NAVIA",
+        "code": 13103,
+        "defaultDistrict": "CNV",
+        "districts": [
+          {
+            "name": "CERRO NAVIA",
+            "code": "CNV"
+          }
+        ]
+      },
+      {
+        "name": "COLINA",
+        "code": 13301,
+        "defaultDistrict": "COL",
+        "districts": [
+          {
+            "name": "CHICUREO",
+            "code": "CHW"
+          },
+          {
+            "name": "COLINA",
+            "code": "COL"
+          },
+          {
+            "name": "LAS CANTERAS",
+            "code": "SLN"
+          },
+          {
+            "name": "ESMERALDA",
+            "code": "ESB"
+          }
+        ]
+      },
+      {
+        "name": "CONCHALI",
+        "code": 13104,
+        "defaultDistrict": "CNH",
+        "districts": [
+          {
+            "name": "CONCHALI",
+            "code": "CNH"
+          }
+        ]
+      },
+      {
+        "name": "CURACAVI",
+        "code": 13503,
+        "defaultDistrict": "CVI",
+        "districts": [
+          {
+            "name": "EL TREBOL",
+            "code": "TRB"
+          },
+          {
+            "name": "LOS ARRAYANES",
+            "code": "LYR"
+          },
+          {
+            "name": "CURACAVI",
+            "code": "CVI"
+          }
+        ]
+      },
+      {
+        "name": "EL BOSQUE",
+        "code": 13105,
+        "defaultDistrict": "EBO",
+        "districts": [
+          {
+            "name": "EL BOSQUE",
+            "code": "EBO"
+          }
+        ]
+      },
+      {
+        "name": "EL MONTE",
+        "code": 13602,
+        "defaultDistrict": "ZTE",
+        "districts": [
+          {
+            "name": "EL PAICO",
+            "code": "EPC"
+          },
+          {
+            "name": "EL MONTE",
+            "code": "ZTE"
+          }
+        ]
+      },
+      {
+        "name": "ESTACION CENTRAL",
+        "code": 13106,
+        "defaultDistrict": "ECE",
+        "districts": [
+          {
+            "name": "ESTACION CENTRAL",
+            "code": "ECE"
+          }
+        ]
+      },
+      {
+        "name": "HUECHURABA",
+        "code": 13107,
+        "defaultDistrict": "HRB",
+        "districts": [
+          {
+            "name": "HUECHURABA",
+            "code": "HRB"
+          }
+        ]
+      },
+      {
+        "name": "INDEPENDENCIA",
+        "code": 13108,
+        "defaultDistrict": "IDP",
+        "districts": [
+          {
+            "name": "INDEPENDENCIA",
+            "code": "IDP"
+          }
+        ]
+      },
+      {
+        "name": "ISLA DE MAIPO",
+        "code": 13603,
+        "defaultDistrict": "IDM",
+        "districts": [
+          {
+            "name": "ISLA DE MAIPO",
+            "code": "IDM"
+          }
+        ]
+      },
+      {
+        "name": "LA CISTERNA",
+        "code": 13109,
+        "defaultDistrict": "LCN",
+        "districts": [
+          {
+            "name": "LA CISTERNA",
+            "code": "LCN"
+          }
+        ]
+      },
+      {
+        "name": "LA FLORIDA",
+        "code": 13110,
+        "defaultDistrict": "LFD",
+        "districts": [
+          {
+            "name": "LA FLORIDA",
+            "code": "LFD"
+          }
+        ]
+      },
+      {
+        "name": "LA GRANJA",
+        "code": 13111,
+        "defaultDistrict": "LGJ",
+        "districts": [
+          {
+            "name": "LA GRANJA",
+            "code": "LGJ"
+          }
+        ]
+      },
+      {
+        "name": "LA PINTANA",
+        "code": 13112,
+        "defaultDistrict": "LPT",
+        "districts": [
+          {
+            "name": "LA PINTANA",
+            "code": "LPT"
+          }
+        ]
+      },
+      {
+        "name": "LA REINA",
+        "code": 13113,
+        "defaultDistrict": "LRN",
+        "districts": [
+          {
+            "name": "LA REINA",
+            "code": "LRN"
+          }
+        ]
+      },
+      {
+        "name": "LAMPA",
+        "code": 13302,
+        "defaultDistrict": "LSG",
+        "districts": [
+          {
+            "name": "LAMPA",
+            "code": "LSG"
+          },
+          {
+            "name": "BATUCO",
+            "code": "SBX"
+          }
+        ]
+      },
+      {
+        "name": "LAS CONDES",
+        "code": 13114,
+        "defaultDistrict": "LCD",
+        "districts": [
+          {
+            "name": "LAS CONDES",
+            "code": "LCD"
+          }
+        ]
+      },
+      {
+        "name": "LO BARNECHEA",
+        "code": 13115,
+        "defaultDistrict": "LBR",
+        "districts": [
+          {
+            "name": "FARELLONES",
+            "code": "FAR"
+          },
+          {
+            "name": "LO BARNECHEA",
+            "code": "LBR"
+          }
+        ]
+      },
+      {
+        "name": "LO ESPEJO",
+        "code": 13116,
+        "defaultDistrict": "LEP",
+        "districts": [
+          {
+            "name": "LO ESPEJO",
+            "code": "LEP"
+          }
+        ]
+      },
+      {
+        "name": "LO PRADO",
+        "code": 13117,
+        "defaultDistrict": "LPR",
+        "districts": [
+          {
+            "name": "LO PRADO",
+            "code": "LPR"
+          }
+        ]
+      },
+      {
+        "name": "MACUL",
+        "code": 13118,
+        "defaultDistrict": "MAC",
+        "districts": [
+          {
+            "name": "MACUL",
+            "code": "MAC"
+          }
+        ]
+      },
+      {
+        "name": "MAIPU",
+        "code": 13119,
+        "defaultDistrict": "MAI",
+        "districts": [
+          {
+            "name": "MAIPU",
+            "code": "MAI"
+          }
+        ]
+      },
+      {
+        "name": "MARIA PINTO",
+        "code": 13504,
+        "defaultDistrict": "MPO",
+        "districts": [
+          {
+            "name": "LOLENCO - MELIPILLA",
+            "code": "KET"
+          },
+          {
+            "name": "LOS RULOS",
+            "code": "SLR"
+          },
+          {
+            "name": "SANTA INES",
+            "code": "SIS"
+          },
+          {
+            "name": "MARIA PINTO",
+            "code": "MPO"
+          },
+          {
+            "name": "CHOROMBO",
+            "code": "SCM"
+          },
+          {
+            "name": "BOLLENAR",
+            "code": "SBR"
+          }
+        ]
+      },
+      {
+        "name": "MELIPILLA",
+        "code": 13501,
+        "defaultDistrict": "ZMP",
+        "districts": [
+          {
+            "name": "CHOCALAN ",
+            "code": "AAN"
+          },
+          {
+            "name": "MELIPILLA",
+            "code": "ZMP"
+          },
+          {
+            "name": "CODIGUA",
+            "code": "ZCD"
+          },
+          {
+            "name": "PABELLON - MELIPILLA",
+            "code": "SPB"
+          },
+          {
+            "name": "SAN MANUEL",
+            "code": "SMN"
+          },
+          {
+            "name": "MANDINGA",
+            "code": "SMD"
+          },
+          {
+            "name": "LAS MARIPOSAS - MELI",
+            "code": "SLM"
+          },
+          {
+            "name": "POMAIRE",
+            "code": "IRE"
+          },
+          {
+            "name": "CULIPRAN",
+            "code": "CLP"
+          }
+        ]
+      },
+      {
+        "name": "NUNOA",
+        "code": 13120,
+        "defaultDistrict": "NNA",
+        "districts": [
+          {
+            "name": "NUNOA",
+            "code": "NNA"
+          }
+        ]
+      },
+      {
+        "name": "PADRE HURTADO",
+        "code": 13604,
+        "defaultDistrict": "PHT",
+        "districts": [
+          {
+            "name": "LONQUEN",
+            "code": "LQN"
+          },
+          {
+            "name": "PADRE HURTADO",
+            "code": "PHT"
+          }
+        ]
+      },
+      {
+        "name": "PAINE",
+        "code": 13404,
+        "defaultDistrict": "ZPN",
+        "districts": [
+          {
+            "name": "CHAMPA",
+            "code": "CHP"
+          },
+          {
+            "name": "HUELQUEN",
+            "code": "SHU"
+          },
+          {
+            "name": "PINTUE",
+            "code": "SPT"
+          },
+          {
+            "name": "PAINE",
+            "code": "ZPN"
+          },
+          {
+            "name": "RANGUE",
+            "code": "ZUU"
+          },
+          {
+            "name": "EL TRANSITO - SANTIA",
+            "code": "TTO"
+          },
+          {
+            "name": "SANTA MARTA",
+            "code": "SMP"
+          },
+          {
+            "name": "LINDEROS",
+            "code": "SLD"
+          },
+          {
+            "name": "HOSPITAL",
+            "code": "HOS"
+          }
+        ]
+      },
+      {
+        "name": "PEDRO AGUIRRE CERDA",
+        "code": 13121,
+        "defaultDistrict": "PAC",
+        "districts": [
+          {
+            "name": "PEDRO AGUIRRE CERDA",
+            "code": "PAC"
+          }
+        ]
+      },
+      {
+        "name": "PENAFLOR",
+        "code": 13605,
+        "defaultDistrict": "PFL",
+        "districts": [
+          {
+            "name": "MALLOCO",
+            "code": "MLL"
+          },
+          {
+            "name": "PENAFLOR",
+            "code": "PFL"
+          }
+        ]
+      },
+      {
+        "name": "PENALOLEN",
+        "code": 13122,
+        "defaultDistrict": "PNL",
+        "districts": [
+          {
+            "name": "PENALOLEN",
+            "code": "PNL"
+          }
+        ]
+      },
+      {
+        "name": "PIRQUE",
+        "code": 13202,
+        "defaultDistrict": "PIR",
+        "districts": [
+          {
+            "name": "ISLA DE PIRQUE",
+            "code": "IPQ"
+          },
+          {
+            "name": "PIRQUE",
+            "code": "PIR"
+          }
+        ]
+      },
+      {
+        "name": "PROVIDENCIA",
+        "code": 13123,
+        "defaultDistrict": "PRO",
+        "districts": [
+          {
+            "name": "PROVIDENCIA",
+            "code": "PRO"
+          }
+        ]
+      },
+      {
+        "name": "PUDAHUEL",
+        "code": 13124,
+        "defaultDistrict": "PUD",
+        "districts": [
+          {
+            "name": "AEROPUERTO ARTURO ME",
+            "code": "AMB"
+          },
+          {
+            "name": "PUDAHUEL",
+            "code": "PUD"
+          }
+        ]
+      },
+      {
+        "name": "PUENTE ALTO",
+        "code": 13201,
+        "defaultDistrict": "PAL",
+        "districts": [
+          {
+            "name": "PUENTE ALTO",
+            "code": "PAL"
+          },
+          {
+            "name": "LA OBRA",
+            "code": "SLO"
+          },
+          {
+            "name": "LAS VERTIENTES",
+            "code": "SLV"
+          },
+          {
+            "name": "EL CANELO",
+            "code": "SEC"
+          }
+        ]
+      },
+      {
+        "name": "QUILICURA",
+        "code": 13125,
+        "defaultDistrict": "QLC",
+        "districts": [
+          {
+            "name": "QUILICURA",
+            "code": "QLC"
+          }
+        ]
+      },
+      {
+        "name": "QUINTA NORMAL",
+        "code": 13126,
+        "defaultDistrict": "QTN",
+        "districts": [
+          {
+            "name": "QUINTA NORMAL",
+            "code": "QTN"
+          }
+        ]
+      },
+      {
+        "name": "RECOLETA",
+        "code": 13127,
+        "defaultDistrict": "RLT",
+        "districts": [
+          {
+            "name": "RECOLETA",
+            "code": "RLT"
+          }
+        ]
+      },
+      {
+        "name": "RENCA",
+        "code": 13128,
+        "defaultDistrict": "REN",
+        "districts": [
+          {
+            "name": "RENCA",
+            "code": "REN"
+          }
+        ]
+      },
+      {
+        "name": "SAN BERNARDO",
+        "code": 13401,
+        "defaultDistrict": "SBD",
+        "districts": [
+          {
+            "name": "SAN BERNARDO",
+            "code": "SBD"
+          }
+        ]
+      },
+      {
+        "name": "SAN JOAQUIN",
+        "code": 13129,
+        "defaultDistrict": "SJQ",
+        "districts": [
+          {
+            "name": "SAN JOAQUIN",
+            "code": "SJQ"
+          }
+        ]
+      },
+      {
+        "name": "SAN JOSE DE MAIPO",
+        "code": 13203,
+        "defaultDistrict": "SJS",
+        "districts": [
+          {
+            "name": "EL MELOCOTON",
+            "code": "EME"
+          },
+          {
+            "name": "SAN GABRIEL",
+            "code": "SGB"
+          },
+          {
+            "name": "LAS MELOSAS",
+            "code": "SLS"
+          },
+          {
+            "name": "EL MANZANILLO",
+            "code": "SMI"
+          },
+          {
+            "name": "VILLA DEL VALLE",
+            "code": "SRV"
+          },
+          {
+            "name": "EL VOLCAN",
+            "code": "SVV"
+          },
+          {
+            "name": "LOS QUELTEHUES",
+            "code": "XQT"
+          },
+          {
+            "name": "GUAYACAN",
+            "code": "SYY"
+          },
+          {
+            "name": "LO VALDES",
+            "code": "STQ"
+          },
+          {
+            "name": "LOS MAITENES",
+            "code": "SMT"
+          },
+          {
+            "name": "SAN JOSE DE MAIPO",
+            "code": "SJS"
+          },
+          {
+            "name": "CHACAY",
+            "code": "SCY"
+          },
+          {
+            "name": "SAN ALFONSO",
+            "code": "SAF"
+          }
+        ]
+      },
+      {
+        "name": "SAN MIGUEL",
+        "code": 13130,
+        "defaultDistrict": "SMG",
+        "districts": [
+          {
+            "name": "SAN MIGUEL",
+            "code": "SMG"
+          }
+        ]
+      },
+      {
+        "name": "SAN PEDRO",
+        "code": 13505,
+        "defaultDistrict": "SPO",
+        "districts": [
+          {
+            "name": "BUCALEMU",
+            "code": "BUU"
+          },
+          {
+            "name": "LOYCA",
+            "code": "ZXX"
+          },
+          {
+            "name": "QUIMCAHUE",
+            "code": "SQM"
+          },
+          {
+            "name": "SAN PEDRO - MELIPILL",
+            "code": "SPO"
+          },
+          {
+            "name": "PUEBLO HUNDIDO",
+            "code": "SPH"
+          },
+          {
+            "name": "PUNTA TORO",
+            "code": "KPR"
+          },
+          {
+            "name": "CRUCE LAS ARANAS",
+            "code": "CZA"
+          }
+        ]
+      },
+      {
+        "name": "SAN RAMON",
+        "code": 13131,
+        "defaultDistrict": "SRN",
+        "districts": [
+          {
+            "name": "SAN RAMON",
+            "code": "SRN"
+          }
+        ]
+      },
+      {
+        "name": "SANTIAGO",
+        "code": 13101,
+        "defaultDistrict": "SCL",
+        "districts": [
+          {
+            "name": "SANTIAGO",
+            "code": "SCL"
+          }
+        ]
+      },
+      {
+        "name": "TALAGANTE",
+        "code": 13601,
+        "defaultDistrict": "TNT",
+        "districts": [
+          {
+            "name": "TALAGANTE",
+            "code": "TNT"
+          }
+        ]
+      },
+      {
+        "name": "TILTIL",
+        "code": 13303,
+        "defaultDistrict": "TIL",
+        "districts": [
+          {
+            "name": "CERRO BLANCO",
+            "code": "CBO"
+          },
+          {
+            "name": "TIL TIL",
+            "code": "TIL"
+          },
+          {
+            "name": "POLPAICO",
+            "code": "POL"
+          }
+        ]
+      },
+      {
+        "name": "VITACURA",
+        "code": 13132,
+        "defaultDistrict": "VTC",
+        "districts": [
+          {
+            "name": "VITACURA",
+            "code": "VTC"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Libertador General Bernardo O`Higgins",
+    "code": 6,
+    "isocode": "LI",
+    "ciudades": [
+      {
+        "name": "CHEPICA",
+        "code": 6302,
+        "defaultDistrict": "CHE",
+        "districts": [
+          {
+            "name": "AUQUINCO",
+            "code": "AQQ"
+          },
+          {
+            "name": "CHEPICA",
+            "code": "CHE"
+          },
+          {
+            "name": "QUINAHUE - CURICO",
+            "code": "QQW"
+          }
+        ]
+      },
+      {
+        "name": "CHIMBARONGO",
+        "code": 6303,
+        "defaultDistrict": "CHB",
+        "districts": [
+          {
+            "name": "CHIMBARONGO",
+            "code": "CHB"
+          },
+          {
+            "name": "HUEMUL",
+            "code": "HXO"
+          },
+          {
+            "name": "CONVENTO VIEJO",
+            "code": "CVQ"
+          },
+          {
+            "name": "QUINTA",
+            "code": "QPX"
+          },
+          {
+            "name": "MORZA",
+            "code": "MOX"
+          }
+        ]
+      },
+      {
+        "name": "CODEGUA",
+        "code": 6102,
+        "defaultDistrict": "ZDE",
+        "districts": [
+          {
+            "name": "LA LEONERA - RANCAGU",
+            "code": "LRW"
+          },
+          {
+            "name": "LA PUNTA",
+            "code": "RLP"
+          },
+          {
+            "name": "CODEGUA",
+            "code": "ZDE"
+          },
+          {
+            "name": "LA COMPANÍA - RANCAG",
+            "code": "RLC"
+          }
+        ]
+      },
+      {
+        "name": "COINCO",
+        "code": 6103,
+        "defaultDistrict": "CNO",
+        "districts": [
+          {
+            "name": "COINCO - RANCAGUA",
+            "code": "CNO"
+          }
+        ]
+      },
+      {
+        "name": "COLTAUCO",
+        "code": 6104,
+        "defaultDistrict": "CTO",
+        "districts": [
+          {
+            "name": "COLTAUCO",
+            "code": "CTO"
+          },
+          {
+            "name": "ZUNIGA",
+            "code": "RZU"
+          }
+        ]
+      },
+      {
+        "name": "DONIHUE",
+        "code": 6105,
+        "defaultDistrict": "DNE",
+        "districts": [
+          {
+            "name": "DONIHUE",
+            "code": "DNE"
+          },
+          {
+            "name": "PUREN VI - RANCAGUA",
+            "code": "PRN"
+          }
+        ]
+      },
+      {
+        "name": "GRANEROS",
+        "code": 6106,
+        "defaultDistrict": "GRA",
+        "districts": [
+          {
+            "name": "GRANEROS",
+            "code": "GRA"
+          }
+        ]
+      },
+      {
+        "name": "LA ESTRELLA",
+        "code": 6202,
+        "defaultDistrict": "LAE",
+        "districts": [
+          {
+            "name": "LAS DAMAS",
+            "code": "KLD"
+          },
+          {
+            "name": "LA ESTRELLA",
+            "code": "LAE"
+          }
+        ]
+      },
+      {
+        "name": "LAS CABRAS",
+        "code": 6107,
+        "defaultDistrict": "LCB",
+        "districts": [
+          {
+            "name": "COCALAN",
+            "code": "CCN"
+          },
+          {
+            "name": "PUNTA VERDE",
+            "code": "RPN"
+          },
+          {
+            "name": "LA CEBADA",
+            "code": "RLA"
+          },
+          {
+            "name": "EL MANZANO - RANCAGU",
+            "code": "MZN"
+          },
+          {
+            "name": "LAS CABRAS",
+            "code": "LCB"
+          }
+        ]
+      },
+      {
+        "name": "LITUECHE",
+        "code": 6203,
+        "defaultDistrict": "LTU",
+        "districts": [
+          {
+            "name": "TOPOCALMA",
+            "code": "KTL"
+          },
+          {
+            "name": "LITUECHE",
+            "code": "LTU"
+          }
+        ]
+      },
+      {
+        "name": "LOLOL",
+        "code": 6304,
+        "defaultDistrict": "LOL",
+        "districts": [
+          {
+            "name": "EL GUAICO",
+            "code": "EGQ"
+          },
+          {
+            "name": "LOLOL",
+            "code": "LOL"
+          },
+          {
+            "name": "SAN PEDRO - RANCAGUA",
+            "code": "SPW"
+          },
+          {
+            "name": "RANGUIL",
+            "code": "RQQ"
+          }
+        ]
+      },
+      {
+        "name": "MACHALI",
+        "code": 6108,
+        "defaultDistrict": "MCH",
+        "districts": [
+          {
+            "name": "CHAPA VERDE",
+            "code": "CHV"
+          },
+          {
+            "name": "COLON",
+            "code": "CLN"
+          },
+          {
+            "name": "SEWELL",
+            "code": "SEW"
+          },
+          {
+            "name": "COYA",
+            "code": "OCY"
+          },
+          {
+            "name": "MINA LA JUANITA",
+            "code": "MJT"
+          },
+          {
+            "name": "MACHALI",
+            "code": "MCH"
+          },
+          {
+            "name": "CALETONES",
+            "code": "CTS"
+          }
+        ]
+      },
+      {
+        "name": "MALLOA",
+        "code": 6109,
+        "defaultDistrict": "ZML",
+        "districts": [
+          {
+            "name": "MALLOA",
+            "code": "ZML"
+          }
+        ]
+      },
+      {
+        "name": "MARCHIHUE",
+        "code": 6204,
+        "defaultDistrict": "MRH",
+        "districts": [
+          {
+            "name": "ALCONES",
+            "code": "LNE"
+          },
+          {
+            "name": "LAS PATAGUAS",
+            "code": "LPG"
+          },
+          {
+            "name": "MARCHIHUE",
+            "code": "MRH"
+          },
+          {
+            "name": "MARCHANT",
+            "code": "RMT"
+          },
+          {
+            "name": "ESPERANZA",
+            "code": "RZE"
+          },
+          {
+            "name": "SAN JOSE MARCHIHUE",
+            "code": "RSA"
+          },
+          {
+            "name": "LA QUEBRADA - RANCAG",
+            "code": "RQE"
+          }
+        ]
+      },
+      {
+        "name": "MOSTAZAL",
+        "code": 6110,
+        "defaultDistrict": "SFM",
+        "districts": [
+          {
+            "name": "SAN FCO DE MOSTAZAL",
+            "code": "SFM"
+          }
+        ]
+      },
+      {
+        "name": "NANCAGUA",
+        "code": 6305,
+        "defaultDistrict": "NGA",
+        "districts": [
+          {
+            "name": "NANCAGUA",
+            "code": "NGA"
+          }
+        ]
+      },
+      {
+        "name": "NAVIDAD",
+        "code": 6205,
+        "defaultDistrict": "NAV",
+        "districts": [
+          {
+            "name": "MATANZAS",
+            "code": "KMT"
+          },
+          {
+            "name": "PUNTA PERRO",
+            "code": "KPP"
+          },
+          {
+            "name": "SAN ENRIQUE",
+            "code": "KSE"
+          },
+          {
+            "name": "CORNECHE",
+            "code": "KRC"
+          },
+          {
+            "name": "PUERTECILLO",
+            "code": "KPU"
+          },
+          {
+            "name": "PUNTA BARRANCA",
+            "code": "KPB"
+          },
+          {
+            "name": "SAN VICENTE DE PUCAL",
+            "code": "KVP"
+          },
+          {
+            "name": "LA BOCA - MELIPILLA",
+            "code": "ZRW"
+          },
+          {
+            "name": "RAPEL - MELIPILLA",
+            "code": "RPL"
+          },
+          {
+            "name": "NAVIDAD",
+            "code": "NAV"
+          }
+        ]
+      },
+      {
+        "name": "OLIVAR",
+        "code": 6111,
+        "defaultDistrict": "OAL",
+        "districts": [
+          {
+            "name": "LO MIRANDA",
+            "code": "LMI"
+          },
+          {
+            "name": "OLIVAR BAJO",
+            "code": "ROL"
+          },
+          {
+            "name": "OLIVAR ALTO",
+            "code": "OAL"
+          }
+        ]
+      },
+      {
+        "name": "PALMILLA",
+        "code": 6306,
+        "defaultDistrict": "PLA",
+        "districts": [
+          {
+            "name": "PALMILLA - RANCAGUA",
+            "code": "PLA"
+          }
+        ]
+      },
+      {
+        "name": "PAREDONES",
+        "code": 6206,
+        "defaultDistrict": "PDS",
+        "districts": [
+          {
+            "name": "BOYERUCA",
+            "code": "BYY"
+          },
+          {
+            "name": "PAREDONES",
+            "code": "PDS"
+          },
+          {
+            "name": "BUCALEMU - RANCAGUA",
+            "code": "PRM"
+          },
+          {
+            "name": "LO VALDIVIA",
+            "code": "LVQ"
+          }
+        ]
+      },
+      {
+        "name": "PERALILLO",
+        "code": 6307,
+        "defaultDistrict": "ZPE",
+        "districts": [
+          {
+            "name": "LIHUEIMO",
+            "code": "LHX"
+          },
+          {
+            "name": "PERALILLO - RANCAGUA",
+            "code": "ZPE"
+          },
+          {
+            "name": "POBLACION",
+            "code": "RQT"
+          }
+        ]
+      },
+      {
+        "name": "PEUMO",
+        "code": 6112,
+        "defaultDistrict": "PEO",
+        "districts": [
+          {
+            "name": "PEUMO",
+            "code": "PEO"
+          },
+          {
+            "name": "TUNCA ARRIBA",
+            "code": "TZV"
+          }
+        ]
+      },
+      {
+        "name": "PICHIDEGUA",
+        "code": 6113,
+        "defaultDistrict": "PHA",
+        "districts": [
+          {
+            "name": "LARMAHUE",
+            "code": "LQX"
+          },
+          {
+            "name": "EL TOCO",
+            "code": "RET"
+          },
+          {
+            "name": "PICHIDEGUA",
+            "code": "PHA"
+          }
+        ]
+      },
+      {
+        "name": "PICHILEMU",
+        "code": 6201,
+        "defaultDistrict": "PMU",
+        "districts": [
+          {
+            "name": "PICHILEMU",
+            "code": "PMU"
+          },
+          {
+            "name": "ALTO COLORADO",
+            "code": "RAC"
+          },
+          {
+            "name": "CAHUIL",
+            "code": "RHL"
+          },
+          {
+            "name": "CIRUELOS",
+            "code": "RJC"
+          },
+          {
+            "name": "EL PUESTO",
+            "code": "RPS"
+          },
+          {
+            "name": "SANTA GRACIELA ALCON",
+            "code": "RGQ"
+          }
+        ]
+      },
+      {
+        "name": "PLACILLA",
+        "code": 6308,
+        "defaultDistrict": "PLL",
+        "districts": [
+          {
+            "name": "PLACILLA - RANCAGUA",
+            "code": "PLL"
+          }
+        ]
+      },
+      {
+        "name": "PUMANQUE",
+        "code": 6309,
+        "defaultDistrict": "PMQ",
+        "districts": [
+          {
+            "name": "PUMANQUE",
+            "code": "PMQ"
+          },
+          {
+            "name": "NILAHUE",
+            "code": "RNI"
+          }
+        ]
+      },
+      {
+        "name": "QUINTA DE TILCOCO",
+        "code": 6114,
+        "defaultDistrict": "QCC",
+        "districts": [
+          {
+            "name": "QUINTA DE TILCOCO",
+            "code": "QCC"
+          }
+        ]
+      },
+      {
+        "name": "RANCAGUA",
+        "code": 6101,
+        "defaultDistrict": "RCG",
+        "districts": [
+          {
+            "name": "RANCAGUA",
+            "code": "RCG"
+          },
+          {
+            "name": "PUNTA DE CORTES",
+            "code": "TPC"
+          }
+        ]
+      },
+      {
+        "name": "RENGO",
+        "code": 6115,
+        "defaultDistrict": "ZRG",
+        "districts": [
+          {
+            "name": "CERRILLOS",
+            "code": "CRE"
+          },
+          {
+            "name": "HACIENDA LOS LINGUES",
+            "code": "HRQ"
+          },
+          {
+            "name": "RENGO",
+            "code": "ZRG"
+          },
+          {
+            "name": "POPETA",
+            "code": "RPO"
+          },
+          {
+            "name": "LAS NIEVES - RANCAGU",
+            "code": "RLS"
+          },
+          {
+            "name": "LOS MAQUIS",
+            "code": "RLM"
+          },
+          {
+            "name": "PELEQUEN",
+            "code": "PEQ"
+          }
+        ]
+      },
+      {
+        "name": "REQUINOA",
+        "code": 6116,
+        "defaultDistrict": "REQ",
+        "districts": [
+          {
+            "name": "REQUINOA",
+            "code": "REQ"
+          },
+          {
+            "name": "PIMPINELA",
+            "code": "RMC"
+          },
+          {
+            "name": "ROSARIO",
+            "code": "RSS"
+          }
+        ]
+      },
+      {
+        "name": "SAN FERNANDO",
+        "code": 6301,
+        "defaultDistrict": "SFR",
+        "districts": [
+          {
+            "name": "AGUA BUENA",
+            "code": "AQB"
+          },
+          {
+            "name": "LA RUFINA",
+            "code": "LRF"
+          },
+          {
+            "name": "ROMA",
+            "code": "RMY"
+          },
+          {
+            "name": "SIERRA BELLAVISTA",
+            "code": "ZSB"
+          },
+          {
+            "name": "TROMPETILLA",
+            "code": "TZT"
+          },
+          {
+            "name": "TERMAS DEL FLACO",
+            "code": "TZF"
+          },
+          {
+            "name": "TINGUIRIRICA",
+            "code": "TGR"
+          },
+          {
+            "name": "SAN FERNANDO",
+            "code": "SFR"
+          },
+          {
+            "name": "TERMAS DE CAUQUENES",
+            "code": "RTE"
+          },
+          {
+            "name": "PUENTE NEGRO",
+            "code": "RPT"
+          }
+        ]
+      },
+      {
+        "name": "SAN VICENTE",
+        "code": 6117,
+        "defaultDistrict": "SVT",
+        "districts": [
+          {
+            "name": "MILLAHUE",
+            "code": "MLX"
+          },
+          {
+            "name": "SAN VICENTE DE TAGUA TAGUA",
+            "code": "SVT"
+          }
+        ]
+      },
+      {
+        "name": "SANTA CRUZ",
+        "code": 6310,
+        "defaultDistrict": "ZSC",
+        "districts": [
+          {
+            "name": "LA LAJUELA",
+            "code": "LLW"
+          },
+          {
+            "name": "PANIAHUE",
+            "code": "PHU"
+          },
+          {
+            "name": "RINCONADA DE YAQUIL",
+            "code": "RQY"
+          },
+          {
+            "name": "SANTA CRUZ",
+            "code": "ZSC"
+          },
+          {
+            "name": "CUNACO",
+            "code": "ZCU"
+          },
+          {
+            "name": "NERQUIHUE",
+            "code": "RNH"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Maule",
+    "code": 7,
+    "isocode": "ML",
+    "ciudades": [
+      {
+        "name": "CAUQUENES",
+        "code": 7201,
+        "defaultDistrict": "CQE",
+        "districts": [
+          {
+            "name": "CAUQUENES",
+            "code": "CQE"
+          },
+          {
+            "name": "UNICAVEN",
+            "code": "ZUV"
+          },
+          {
+            "name": "LOS PERALES",
+            "code": "ZHH"
+          },
+          {
+            "name": "QUELLA",
+            "code": "XQL"
+          },
+          {
+            "name": "LOS NABOS",
+            "code": "XNY"
+          },
+          {
+            "name": "PASO HONDO - TALCA",
+            "code": "XEI"
+          },
+          {
+            "name": "HUALVE",
+            "code": "XHR"
+          }
+        ]
+      },
+      {
+        "name": "CHANCO",
+        "code": 7202,
+        "defaultDistrict": "CNC",
+        "districts": [
+          {
+            "name": "CHANCO",
+            "code": "CNC"
+          },
+          {
+            "name": "CURANIPE",
+            "code": "CNP"
+          }
+        ]
+      },
+      {
+        "name": "COLBUN",
+        "code": 7402,
+        "defaultDistrict": "CLB",
+        "districts": [
+          {
+            "name": "BARRERA",
+            "code": "BYQ"
+          },
+          {
+            "name": "SANTA ANA",
+            "code": "ZSN"
+          },
+          {
+            "name": "COLBUN",
+            "code": "CLB"
+          }
+        ]
+      },
+      {
+        "name": "CONSTITUCION",
+        "code": 7102,
+        "defaultDistrict": "CTT",
+        "districts": [
+          {
+            "name": "CONSTITUCION",
+            "code": "CTT"
+          },
+          {
+            "name": "JUNQUILLAR",
+            "code": "ZJU"
+          },
+          {
+            "name": "QUIVOLGO",
+            "code": "ZQI"
+          },
+          {
+            "name": "PUTU",
+            "code": "PUU"
+          }
+        ]
+      },
+      {
+        "name": "CUREPTO",
+        "code": 7103,
+        "defaultDistrict": "CUR",
+        "districts": [
+          {
+            "name": "CUREPTO",
+            "code": "CUR"
+          },
+          {
+            "name": "LA LORA",
+            "code": "XLA"
+          }
+        ]
+      },
+      {
+        "name": "CURICO",
+        "code": 7301,
+        "defaultDistrict": "CCO",
+        "districts": [
+          {
+            "name": "CURICO",
+            "code": "CCO"
+          },
+          {
+            "name": "LOS NICHES",
+            "code": "LNH"
+          },
+          {
+            "name": "QUEBRADA HONDA",
+            "code": "ZQH"
+          },
+          {
+            "name": "UPEO",
+            "code": "ZUO"
+          },
+          {
+            "name": "MONTE OSCURO",
+            "code": "ZPA"
+          },
+          {
+            "name": "POTRERO GRANDE",
+            "code": "PTG"
+          }
+        ]
+      },
+      {
+        "name": "EMPEDRADO",
+        "code": 7104,
+        "defaultDistrict": "EMP",
+        "districts": [
+          {
+            "name": "EMPEDRADO",
+            "code": "EMP"
+          },
+          {
+            "name": "NIRIVILO",
+            "code": "ZNI"
+          }
+        ]
+      },
+      {
+        "name": "HUALANE",
+        "code": 7302,
+        "defaultDistrict": "HNE",
+        "districts": [
+          {
+            "name": "HUALANE",
+            "code": "HNE"
+          }
+        ]
+      },
+      {
+        "name": "LICANTEN",
+        "code": 7303,
+        "defaultDistrict": "LCT",
+        "districts": [
+          {
+            "name": "LICANTEN",
+            "code": "LCT"
+          }
+        ]
+      },
+      {
+        "name": "LINARES",
+        "code": 7401,
+        "defaultDistrict": "LNR",
+        "districts": [
+          {
+            "name": "ADUANA PEJERREY",
+            "code": "ADJ"
+          },
+          {
+            "name": "LINARES",
+            "code": "LNR"
+          },
+          {
+            "name": "LLEPO",
+            "code": "XBL"
+          },
+          {
+            "name": "MELADO",
+            "code": "XMK"
+          },
+          {
+            "name": "ROBLERIA",
+            "code": "XRI"
+          },
+          {
+            "name": "EL SALTO",
+            "code": "XSE"
+          },
+          {
+            "name": "MIRAFLORES - TALCA",
+            "code": "ZMI"
+          },
+          {
+            "name": "LOS RABONES",
+            "code": "XRX"
+          },
+          {
+            "name": "PALMILLA",
+            "code": "XPE"
+          },
+          {
+            "name": "CAMPAMENTO ANCOA",
+            "code": "CPQ"
+          }
+        ]
+      },
+      {
+        "name": "LONGAVI",
+        "code": 7403,
+        "defaultDistrict": "LGV",
+        "districts": [
+          {
+            "name": "LONGAVI",
+            "code": "LGV"
+          },
+          {
+            "name": "EL TRANSITO - TALCA",
+            "code": "XTD"
+          },
+          {
+            "name": "VILLA SECA",
+            "code": "ZVS"
+          },
+          {
+            "name": "MELAO",
+            "code": "ZMG"
+          },
+          {
+            "name": "LOS CRISTALES",
+            "code": "XLY"
+          },
+          {
+            "name": "MESAMAVIDA",
+            "code": "XME"
+          }
+        ]
+      },
+      {
+        "name": "MAULE",
+        "code": 7105,
+        "defaultDistrict": "ZMA",
+        "districts": [
+          {
+            "name": "DUAO",
+            "code": "UAO"
+          },
+          {
+            "name": "MAULE",
+            "code": "ZMA"
+          }
+        ]
+      },
+      {
+        "name": "MOLINA",
+        "code": 7304,
+        "defaultDistrict": "ZMO",
+        "districts": [
+          {
+            "name": "ADUANA  ",
+            "code": "ADW"
+          },
+          {
+            "name": "MOLINA",
+            "code": "ZMO"
+          },
+          {
+            "name": "YACEL",
+            "code": "XYY"
+          },
+          {
+            "name": "RADAL - CURICO",
+            "code": "XXR"
+          },
+          {
+            "name": "LONTUE",
+            "code": "LTE"
+          }
+        ]
+      },
+      {
+        "name": "PARRAL",
+        "code": 7404,
+        "defaultDistrict": "PRR",
+        "districts": [
+          {
+            "name": "AJIAL",
+            "code": "JJZ"
+          },
+          {
+            "name": "BULLILLEO",
+            "code": "LLZ"
+          },
+          {
+            "name": "PERQUILAUQUEN",
+            "code": "PQQ"
+          },
+          {
+            "name": "EL PENON - TALCA",
+            "code": "PXQ"
+          },
+          {
+            "name": "QUINCHIMAVIDA",
+            "code": "QQH"
+          },
+          {
+            "name": "PARRAL",
+            "code": "PRR"
+          },
+          {
+            "name": "TERMAS DE CATILLO",
+            "code": "TQC"
+          },
+          {
+            "name": "VILLA ROSAS",
+            "code": "VZQ"
+          },
+          {
+            "name": "SAN PABLO",
+            "code": "SZS"
+          }
+        ]
+      },
+      {
+        "name": "PELARCO",
+        "code": 7106,
+        "defaultDistrict": "PLC",
+        "districts": [
+          {
+            "name": "PELARCO",
+            "code": "PLC"
+          },
+          {
+            "name": "ASTILLERO",
+            "code": "ZAS"
+          }
+        ]
+      },
+      {
+        "name": "PELLUHUE",
+        "code": 7203,
+        "defaultDistrict": "PEL",
+        "districts": [
+          {
+            "name": "PELLUHUE",
+            "code": "PEL"
+          }
+        ]
+      },
+      {
+        "name": "PENCAHUE",
+        "code": 7107,
+        "defaultDistrict": "PEH",
+        "districts": [
+          {
+            "name": "PENCAHUE",
+            "code": "PEH"
+          },
+          {
+            "name": "GUALLECO",
+            "code": "ZGU"
+          },
+          {
+            "name": "PICHAMAN",
+            "code": "ZKQ"
+          },
+          {
+            "name": "COIPUE",
+            "code": "ZCP"
+          },
+          {
+            "name": "BATUCO - TALCA",
+            "code": "ZBA"
+          }
+        ]
+      },
+      {
+        "name": "RAUCO",
+        "code": 7305,
+        "defaultDistrict": "RAU",
+        "districts": [
+          {
+            "name": "RAUCO",
+            "code": "RAU"
+          },
+          {
+            "name": "TRINCAO - CURICO",
+            "code": "SAR"
+          },
+          {
+            "name": "PALQUIBUDA",
+            "code": "XQB"
+          }
+        ]
+      },
+      {
+        "name": "RETIRO",
+        "code": 7405,
+        "defaultDistrict": "RTR",
+        "districts": [
+          {
+            "name": "RETIRO - TALCA",
+            "code": "RTR"
+          }
+        ]
+      },
+      {
+        "name": "RIO CLARO",
+        "code": 7108,
+        "defaultDistrict": "RCL",
+        "districts": [
+          {
+            "name": "CUMPEO",
+            "code": "CUM"
+          },
+          {
+            "name": "ITAHUE",
+            "code": "ZIK"
+          },
+          {
+            "name": "RIO CLARO - TALCA",
+            "code": "RCL"
+          }
+        ]
+      },
+      {
+        "name": "ROMERAL",
+        "code": 7306,
+        "defaultDistrict": "RML",
+        "districts": [
+          {
+            "name": "ROMERAL",
+            "code": "RML"
+          },
+          {
+            "name": "EL PLANCHON",
+            "code": "XPO"
+          },
+          {
+            "name": "LOS QUENES",
+            "code": "ZQX"
+          },
+          {
+            "name": "POTRERO GRANDE CHICO",
+            "code": "XPC"
+          }
+        ]
+      },
+      {
+        "name": "SAGRADA FAMILIA",
+        "code": 7307,
+        "defaultDistrict": "SFA",
+        "districts": [
+          {
+            "name": "SAGRADA FAMILIA",
+            "code": "SFA"
+          },
+          {
+            "name": "VILLA PRAT",
+            "code": "ZVO"
+          }
+        ]
+      },
+      {
+        "name": "SAN CLEMENTE",
+        "code": 7109,
+        "defaultDistrict": "STE",
+        "districts": [
+          {
+            "name": "ARMERILLO",
+            "code": "BWP"
+          },
+          {
+            "name": "ENDESA ",
+            "code": "ZED"
+          },
+          {
+            "name": "LA MINA",
+            "code": "ZLM"
+          },
+          {
+            "name": "LAS GARZAS",
+            "code": "ZLG"
+          },
+          {
+            "name": "EL COLORADO",
+            "code": "ZEL"
+          },
+          {
+            "name": "CORRALONES",
+            "code": "ZCS"
+          },
+          {
+            "name": "SAN CLEMENTE",
+            "code": "STE"
+          },
+          {
+            "name": "PASO NEVADO",
+            "code": "XPS"
+          },
+          {
+            "name": "AURORA ",
+            "code": "ZAU"
+          }
+        ]
+      },
+      {
+        "name": "SAN JAVIER",
+        "code": 7406,
+        "defaultDistrict": "SJA",
+        "districts": [
+          {
+            "name": "SAN JAVIER",
+            "code": "SJA"
+          }
+        ]
+      },
+      {
+        "name": "SAN RAFAEL",
+        "code": 7110,
+        "defaultDistrict": "SRF",
+        "districts": [
+          {
+            "name": "LITU",
+            "code": "CUT"
+          },
+          {
+            "name": "SAN RAFAEL",
+            "code": "SRF"
+          }
+        ]
+      },
+      {
+        "name": "TALCA",
+        "code": 7101,
+        "defaultDistrict": "ZCA",
+        "districts": [
+          {
+            "name": "BOTALCURA",
+            "code": "ZBO"
+          },
+          {
+            "name": "CURTIDURIA",
+            "code": "ZCE"
+          },
+          {
+            "name": "COLIN",
+            "code": "ZCL"
+          },
+          {
+            "name": "TALCA",
+            "code": "ZCA"
+          },
+          {
+            "name": "CORINTO",
+            "code": "ZNM"
+          }
+        ]
+      },
+      {
+        "name": "TENO",
+        "code": 7308,
+        "defaultDistrict": "TEN",
+        "districts": [
+          {
+            "name": "LA MONTANA",
+            "code": "LMN"
+          },
+          {
+            "name": "TENO",
+            "code": "TEN"
+          },
+          {
+            "name": "CULENAR",
+            "code": "XQP"
+          },
+          {
+            "name": "REBECA",
+            "code": "ZRB"
+          },
+          {
+            "name": "EL MANZANO - CURICO",
+            "code": "XMM"
+          }
+        ]
+      },
+      {
+        "name": "VICHUQUEN",
+        "code": 7309,
+        "defaultDistrict": "VCH",
+        "districts": [
+          {
+            "name": "PICHIBUDI",
+            "code": "BCH"
+          },
+          {
+            "name": "LLICO - CURICO",
+            "code": "ZYC"
+          },
+          {
+            "name": "LIPIMAVIDA",
+            "code": "ZVU"
+          },
+          {
+            "name": "LA TRINCHERA",
+            "code": "ZLT"
+          },
+          {
+            "name": "VICHUQUEN",
+            "code": "VCH"
+          },
+          {
+            "name": "ILOCA",
+            "code": "ILO"
+          }
+        ]
+      },
+      {
+        "name": "VILLA ALEGRE",
+        "code": 7407,
+        "defaultDistrict": "VGE",
+        "districts": [
+          {
+            "name": "ARBOLILLO",
+            "code": "ARB"
+          },
+          {
+            "name": "VILLA ALEGRE - TALCA",
+            "code": "VGE"
+          },
+          {
+            "name": "LAS CAMPANAS",
+            "code": "ZLJ"
+          },
+          {
+            "name": "MELOZAL",
+            "code": "XMD"
+          }
+        ]
+      },
+      {
+        "name": "YERBAS BUENAS",
+        "code": 7408,
+        "defaultDistrict": "YBB",
+        "districts": [
+          {
+            "name": "PANIMAVIDA",
+            "code": "PNV"
+          },
+          {
+            "name": "QUINMAVIDA",
+            "code": "ZQV"
+          },
+          {
+            "name": "YERBAS BUENAS",
+            "code": "YBB"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Ñuble",
+    "code": 16,
+    "isocode": "NB",
+    "ciudades": [
+      {
+        "name": "BULNES",
+        "code": 16102,
+        "defaultDistrict": "BLN",
+        "districts": [
+          {
+            "name": "BULNES",
+            "code": "BLN"
+          },
+          {
+            "name": "QUINCHAMALI",
+            "code": "QML"
+          }
+        ]
+      },
+      {
+        "name": "CHILLAN",
+        "code": 16101,
+        "defaultDistrict": "YAI",
+        "districts": [
+          {
+            "name": "CHILLAN",
+            "code": "YAI"
+          }
+        ]
+      },
+      {
+        "name": "CHILLAN VIEJO",
+        "code": 16103,
+        "defaultDistrict": "YAV",
+        "districts": [
+          {
+            "name": "CHILLAN VIEJO",
+            "code": "YAV"
+          },
+          {
+            "name": "RUCAPEQUEN",
+            "code": "YRU"
+          }
+        ]
+      },
+      {
+        "name": "COBQUECURA",
+        "code": 16202,
+        "defaultDistrict": "CQU",
+        "districts": [
+          {
+            "name": "COBQUECURA",
+            "code": "CQU"
+          },
+          {
+            "name": "PULLAY",
+            "code": "YPL"
+          },
+          {
+            "name": "BUCHUPUREO",
+            "code": "YBU"
+          }
+        ]
+      },
+      {
+        "name": "COELEMU",
+        "code": 16203,
+        "defaultDistrict": "ZOU",
+        "districts": [
+          {
+            "name": "SAN IGNACIO - CONCEP",
+            "code": "ZCG"
+          },
+          {
+            "name": "RAQUIL",
+            "code": "ZER"
+          },
+          {
+            "name": "CONAIR",
+            "code": "ZIR"
+          },
+          {
+            "name": "NUEVA ALDEA",
+            "code": "ZNA"
+          },
+          {
+            "name": "COELEMU",
+            "code": "ZOU"
+          },
+          {
+            "name": "NIPAS",
+            "code": "ZNY"
+          }
+        ]
+      },
+      {
+        "name": "COIHUECO",
+        "code": 16302,
+        "defaultDistrict": "CUH",
+        "districts": [
+          {
+            "name": "COIHUECO",
+            "code": "CUH"
+          },
+          {
+            "name": "MINAS DEL PRADO",
+            "code": "MPD"
+          },
+          {
+            "name": "LA CAPILLA - CHILLAN",
+            "code": "LQP"
+          },
+          {
+            "name": "TANILVORO",
+            "code": "YTA"
+          },
+          {
+            "name": "FUNDO LOS ROBLES",
+            "code": "FRQ"
+          }
+        ]
+      },
+      {
+        "name": "EL CARMEN",
+        "code": 16104,
+        "defaultDistrict": "YCX",
+        "districts": [
+          {
+            "name": "QUIRIQUINA",
+            "code": "QNA"
+          },
+          {
+            "name": "LOS CASTANOS",
+            "code": "YLO"
+          },
+          {
+            "name": "TREGUALEMU",
+            "code": "YTU"
+          },
+          {
+            "name": "PUEBLO SECO",
+            "code": "YPU"
+          },
+          {
+            "name": "EL CARMEN - CHILLAN",
+            "code": "YCX"
+          }
+        ]
+      },
+      {
+        "name": "NINHUE",
+        "code": 16204,
+        "defaultDistrict": "NIN",
+        "districts": [
+          {
+            "name": "NINHUE",
+            "code": "NIN"
+          },
+          {
+            "name": "TORRECILLA",
+            "code": "YTR"
+          },
+          {
+            "name": "EL PARRON",
+            "code": "YEL"
+          },
+          {
+            "name": "POCILLAS",
+            "code": "YPO"
+          },
+          {
+            "name": "COIPIN",
+            "code": "YCO"
+          },
+          {
+            "name": "CANCHA ALEGRE",
+            "code": "YCN"
+          }
+        ]
+      },
+      {
+        "name": "NIQUEN",
+        "code": 16303,
+        "defaultDistrict": "NYY",
+        "districts": [
+          {
+            "name": "NIQUEN",
+            "code": "NYY"
+          }
+        ]
+      },
+      {
+        "name": "PEMUCO",
+        "code": 16105,
+        "defaultDistrict": "ZPC",
+        "districts": [
+          {
+            "name": "SAN PEDRO - CHILLAN",
+            "code": "SQZ"
+          },
+          {
+            "name": "PEMUCO",
+            "code": "ZPC"
+          },
+          {
+            "name": "GENERAL CRUZ",
+            "code": "YGE"
+          }
+        ]
+      },
+      {
+        "name": "PINTO",
+        "code": 16106,
+        "defaultDistrict": "PNO",
+        "districts": [
+          {
+            "name": "PINTO",
+            "code": "PNO"
+          }
+        ]
+      },
+      {
+        "name": "PORTEZUELO",
+        "code": 16205,
+        "defaultDistrict": "49H",
+        "districts": [
+          {
+            "name": "PORTEZUELO",
+            "code": "49H"
+          },
+          {
+            "name": "CONFLUENCIA",
+            "code": "YCF"
+          }
+        ]
+      },
+      {
+        "name": "QUILLON",
+        "code": 16107,
+        "defaultDistrict": "QLL",
+        "districts": [
+          {
+            "name": "QUILLON",
+            "code": "QLL"
+          }
+        ]
+      },
+      {
+        "name": "QUIRIHUE",
+        "code": 16201,
+        "defaultDistrict": "QIH",
+        "districts": [
+          {
+            "name": "QUIRIHUE",
+            "code": "QIH"
+          }
+        ]
+      },
+      {
+        "name": "RANQUIL",
+        "code": 16206,
+        "defaultDistrict": "RNQ",
+        "districts": [
+          {
+            "name": "RANQUIL",
+            "code": "RNQ"
+          }
+        ]
+      },
+      {
+        "name": "SAN CARLOS",
+        "code": 16301,
+        "defaultDistrict": "SCS",
+        "districts": [
+          {
+            "name": "SAN CARLOS - CHILLAN",
+            "code": "SCS"
+          },
+          {
+            "name": "NAHUELTORO",
+            "code": "YNA"
+          },
+          {
+            "name": "ZEMITA",
+            "code": "YZE"
+          },
+          {
+            "name": "SAN GREGORIO NIQUEN ",
+            "code": "YSN"
+          },
+          {
+            "name": "CACHAPOAL - CHILLAN",
+            "code": "YCA"
+          },
+          {
+            "name": "EL SAUCE",
+            "code": "YES"
+          }
+        ]
+      },
+      {
+        "name": "SAN FABIAN",
+        "code": 16304,
+        "defaultDistrict": "SFB",
+        "districts": [
+          {
+            "name": "SAN FABIAN DE ALICO",
+            "code": "SFB"
+          },
+          {
+            "name": "LOS PUQUIOS",
+            "code": "YLP"
+          },
+          {
+            "name": "LA PUNTILLA",
+            "code": "YLA"
+          }
+        ]
+      },
+      {
+        "name": "SAN IGNACIO",
+        "code": 16108,
+        "defaultDistrict": "SIG",
+        "districts": [
+          {
+            "name": "SAN IGNACIO - CHILLA",
+            "code": "SIG"
+          },
+          {
+            "name": "SAN MIGUEL",
+            "code": "SMW"
+          },
+          {
+            "name": "ZAPALLAR - CHILLAN",
+            "code": "ZAY"
+          },
+          {
+            "name": "TERMAS DE CHILLAN",
+            "code": "YTE"
+          },
+          {
+            "name": "RECINTO",
+            "code": "YRE"
+          },
+          {
+            "name": "LAS TRANCAS",
+            "code": "YLS"
+          }
+        ]
+      },
+      {
+        "name": "SAN NICOLAS",
+        "code": 16305,
+        "defaultDistrict": "SNL",
+        "districts": [
+          {
+            "name": "SAN NICOLAS",
+            "code": "SNL"
+          }
+        ]
+      },
+      {
+        "name": "TREHUACO",
+        "code": 16207,
+        "defaultDistrict": "TRH",
+        "districts": [
+          {
+            "name": "TREHUACO",
+            "code": "TRH"
+          },
+          {
+            "name": "TREGUACO",
+            "code": "YTG"
+          },
+          {
+            "name": "MELA",
+            "code": "YME"
+          },
+          {
+            "name": "COLMUYAO",
+            "code": "YCL"
+          }
+        ]
+      },
+      {
+        "name": "YUNGAY",
+        "code": 16109,
+        "defaultDistrict": "YGY",
+        "districts": [
+          {
+            "name": "CHOLGUAN",
+            "code": "YCH"
+          },
+          {
+            "name": "CAMPANARIO",
+            "code": "YCM"
+          },
+          {
+            "name": "EL SALTILLO",
+            "code": "YEY"
+          },
+          {
+            "name": "PANGAL - LOS ANGELES",
+            "code": "ZPP"
+          },
+          {
+            "name": "YUNGAY",
+            "code": "YGY"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bío - Bío",
+    "code": 8,
+    "isocode": "BI",
+    "ciudades": [
+      {
+        "name": "ALTO BIOBIO",
+        "code": 8314,
+        "defaultDistrict": "AOO",
+        "districts": [
+          {
+            "name": "ALTO BIO BIO",
+            "code": "AOO"
+          },
+          {
+            "name": "PANGUE",
+            "code": "ZLL"
+          },
+          {
+            "name": "RALCO",
+            "code": "RCO"
+          },
+          {
+            "name": "RALCO LEPOY",
+            "code": "ZLN"
+          },
+          {
+            "name": "TERMAS DEL AVELLANO",
+            "code": "ZTV"
+          },
+          {
+            "name": "COMUNIDAD CANICU",
+            "code": "ZRI"
+          },
+          {
+            "name": "CASA LOLCO",
+            "code": "ZOT"
+          }
+        ]
+      },
+      {
+        "name": "ANTUCO",
+        "code": 8302,
+        "defaultDistrict": "ANT",
+        "districts": [
+          {
+            "name": "ANTUCO",
+            "code": "ANT"
+          },
+          {
+            "name": "LOS BARROS",
+            "code": "LLB"
+          },
+          {
+            "name": "EL TORO",
+            "code": "LTW"
+          },
+          {
+            "name": "EL ABANICO",
+            "code": "LEA"
+          }
+        ]
+      },
+      {
+        "name": "ARAUCO",
+        "code": 8202,
+        "defaultDistrict": "ARA",
+        "districts": [
+          {
+            "name": "ARAUCO",
+            "code": "ARA"
+          },
+          {
+            "name": "RAQUI",
+            "code": "ZUQ"
+          },
+          {
+            "name": "QUIDICO - CONCEPCION",
+            "code": "ZQR"
+          },
+          {
+            "name": "RAMADILLA",
+            "code": "ZMD"
+          },
+          {
+            "name": "LLICO - CONCEPCION",
+            "code": "ZCF"
+          },
+          {
+            "name": "EL BOLDO",
+            "code": "ZBC"
+          },
+          {
+            "name": "VILLA ALEGRE - CONCE",
+            "code": "VAG"
+          },
+          {
+            "name": "CARAMPANGUE",
+            "code": "PAN"
+          },
+          {
+            "name": "LARAQUETE",
+            "code": "LAQ"
+          }
+        ]
+      },
+      {
+        "name": "CABRERO",
+        "code": 8303,
+        "defaultDistrict": "CRO",
+        "districts": [
+          {
+            "name": "SANTA CLARA",
+            "code": "CLA"
+          },
+          {
+            "name": "PASO HONDO",
+            "code": "PHY"
+          },
+          {
+            "name": "LIUCURA",
+            "code": "YCU"
+          },
+          {
+            "name": "PASO HONDO - CHILLAN",
+            "code": "YCR"
+          },
+          {
+            "name": "TOMECO",
+            "code": "TMK"
+          },
+          {
+            "name": "CABRERO",
+            "code": "CRO"
+          }
+        ]
+      },
+      {
+        "name": "CANETE",
+        "code": 8203,
+        "defaultDistrict": "CTE",
+        "districts": [
+          {
+            "name": "SAN ALFONSO - CONCEP",
+            "code": "CFF"
+          },
+          {
+            "name": "CAYUCUPIL",
+            "code": "ZZW"
+          },
+          {
+            "name": "CANETE",
+            "code": "CTE"
+          }
+        ]
+      },
+      {
+        "name": "CHIGUAYANTE",
+        "code": 8103,
+        "defaultDistrict": "CYE",
+        "districts": [
+          {
+            "name": "CHIGUAYANTE",
+            "code": "CYE"
+          }
+        ]
+      },
+      {
+        "name": "CONCEPCION",
+        "code": 8101,
+        "defaultDistrict": "CCP",
+        "districts": [
+          {
+            "name": "CONCEPCION",
+            "code": "CCP"
+          },
+          {
+            "name": "RANGUELMO",
+            "code": "GUO"
+          }
+        ]
+      },
+      {
+        "name": "CONTULMO",
+        "code": 8204,
+        "defaultDistrict": "CTU",
+        "districts": [
+          {
+            "name": "CONTULMO",
+            "code": "CTU"
+          },
+          {
+            "name": "RINCONADA - CONCEPCI",
+            "code": "ZWE"
+          },
+          {
+            "name": "ANTIQUINA",
+            "code": "ZQG"
+          }
+        ]
+      },
+      {
+        "name": "CORONEL",
+        "code": 8102,
+        "defaultDistrict": "CRN",
+        "districts": [
+          {
+            "name": "CORONEL",
+            "code": "CRN"
+          }
+        ]
+      },
+      {
+        "name": "CURANILAHUE",
+        "code": 8205,
+        "defaultDistrict": "ZHE",
+        "districts": [
+          {
+            "name": "SAN JOSE DE COLICO",
+            "code": "SJL"
+          },
+          {
+            "name": "CURANILAHUE",
+            "code": "ZHE"
+          }
+        ]
+      },
+      {
+        "name": "FLORIDA",
+        "code": 8104,
+        "defaultDistrict": "FLO",
+        "districts": [
+          {
+            "name": "FLORIDA",
+            "code": "FLO"
+          },
+          {
+            "name": "AGUAS DE LA GLORIA",
+            "code": "ZGG"
+          },
+          {
+            "name": "COPIULEMU",
+            "code": "ZUM"
+          }
+        ]
+      },
+      {
+        "name": "HUALPEN",
+        "code": 8112,
+        "defaultDistrict": "HLP",
+        "districts": [
+          {
+            "name": "HUALPEN",
+            "code": "HLP"
+          },
+          {
+            "name": "LA BOCA - CONCEPCION",
+            "code": "ZBB"
+          }
+        ]
+      },
+      {
+        "name": "HUALQUI",
+        "code": 8105,
+        "defaultDistrict": "HLQ",
+        "districts": [
+          {
+            "name": "TALCAMAVIDA",
+            "code": "CTV"
+          },
+          {
+            "name": "QUILACOYA",
+            "code": "ZIQ"
+          },
+          {
+            "name": "HUALQUI",
+            "code": "HLQ"
+          }
+        ]
+      },
+      {
+        "name": "LAJA",
+        "code": 8304,
+        "defaultDistrict": "LLJ",
+        "districts": [
+          {
+            "name": "COLONIA",
+            "code": "LCI"
+          },
+          {
+            "name": "LAJA",
+            "code": "LLJ"
+          }
+        ]
+      },
+      {
+        "name": "LEBU",
+        "code": 8201,
+        "defaultDistrict": "ZLB",
+        "districts": [
+          {
+            "name": "CURACO - CONCEPCION",
+            "code": "MLC"
+          },
+          {
+            "name": "SARA DE LEBU",
+            "code": "ZBL"
+          },
+          {
+            "name": "LEBU",
+            "code": "ZLB"
+          },
+          {
+            "name": "MILLONHUE",
+            "code": "ZNG"
+          },
+          {
+            "name": "YENECO",
+            "code": "ZYY"
+          },
+          {
+            "name": "RUCARAQUIL",
+            "code": "ZYR"
+          },
+          {
+            "name": "RANQUILCO",
+            "code": "ZRQ"
+          },
+          {
+            "name": "QUINAHUE - CONCEPCIO",
+            "code": "ZQA"
+          },
+          {
+            "name": "PEHUEN",
+            "code": "ZPQ"
+          }
+        ]
+      },
+      {
+        "name": "LOS ALAMOS",
+        "code": 8206,
+        "defaultDistrict": "LAL",
+        "districts": [
+          {
+            "name": "LOS ALAMOS",
+            "code": "LAL"
+          },
+          {
+            "name": "ANTIGUALA",
+            "code": "ZNT"
+          },
+          {
+            "name": "TRES PINOS",
+            "code": "ZTP"
+          },
+          {
+            "name": "PILPILCO",
+            "code": "ZWP"
+          }
+        ]
+      },
+      {
+        "name": "LOS ANGELES",
+        "code": 8301,
+        "defaultDistrict": "LSQ",
+        "districts": [
+          {
+            "name": "EL ALAMO",
+            "code": "LEL"
+          },
+          {
+            "name": "SANTA CLARA",
+            "code": "LST"
+          },
+          {
+            "name": "SAN CARLOS PUREN - L",
+            "code": "SCP"
+          },
+          {
+            "name": "SAN CARLOS PUREN - L",
+            "code": "SCW"
+          },
+          {
+            "name": "LOS ANGELES",
+            "code": "LSQ"
+          }
+        ]
+      },
+      {
+        "name": "LOTA",
+        "code": 8106,
+        "defaultDistrict": "LOT",
+        "districts": [
+          {
+            "name": "LOTA",
+            "code": "LOT"
+          }
+        ]
+      },
+      {
+        "name": "MULCHEN",
+        "code": 8305,
+        "defaultDistrict": "MUL",
+        "districts": [
+          {
+            "name": "EL AVELLANO",
+            "code": "LEV"
+          },
+          {
+            "name": "MAITENES",
+            "code": "LLM"
+          },
+          {
+            "name": "EL MORRO",
+            "code": "LMR"
+          },
+          {
+            "name": "LOS MAICAS",
+            "code": "LZX"
+          },
+          {
+            "name": "MULCHEN",
+            "code": "MUL"
+          },
+          {
+            "name": "MELICA",
+            "code": "MEA"
+          },
+          {
+            "name": "SAN MIGUEL",
+            "code": "LSM"
+          }
+        ]
+      },
+      {
+        "name": "NACIMIENTO",
+        "code": 8306,
+        "defaultDistrict": "NAC",
+        "districts": [
+          {
+            "name": "CHOROICO",
+            "code": "CIO"
+          },
+          {
+            "name": "COIHUE",
+            "code": "LCE"
+          },
+          {
+            "name": "DIUQUIN",
+            "code": "LDQ"
+          },
+          {
+            "name": "PROGRESO",
+            "code": "PGS"
+          },
+          {
+            "name": "NACIMIENTO",
+            "code": "NAC"
+          },
+          {
+            "name": "SANTA FE",
+            "code": "LSF"
+          }
+        ]
+      },
+      {
+        "name": "NEGRETE",
+        "code": 8307,
+        "defaultDistrict": "NRE",
+        "districts": [
+          {
+            "name": "NEGRETE",
+            "code": "NRE"
+          },
+          {
+            "name": "RIHUE",
+            "code": "RIE"
+          }
+        ]
+      },
+      {
+        "name": "PENCO",
+        "code": 8107,
+        "defaultDistrict": "PCO",
+        "districts": [
+          {
+            "name": "LIRQUEN",
+            "code": "LIR"
+          },
+          {
+            "name": "PENCO",
+            "code": "PCO"
+          },
+          {
+            "name": "ROA",
+            "code": "ZRO"
+          }
+        ]
+      },
+      {
+        "name": "QUILACO",
+        "code": 8308,
+        "defaultDistrict": "QCO",
+        "districts": [
+          {
+            "name": "ALTO CALEDONIA",
+            "code": "ANI"
+          },
+          {
+            "name": "QUILACO",
+            "code": "QCO"
+          },
+          {
+            "name": "LONCOPANGUE",
+            "code": "LGE"
+          },
+          {
+            "name": "CERRO DEL PADRE",
+            "code": "LCP"
+          },
+          {
+            "name": "RUCALHUE",
+            "code": "LRH"
+          }
+        ]
+      },
+      {
+        "name": "QUILLECO",
+        "code": 8309,
+        "defaultDistrict": "QLO",
+        "districts": [
+          {
+            "name": "CANTERAS",
+            "code": "CNT"
+          },
+          {
+            "name": "QUILLECO",
+            "code": "QLO"
+          },
+          {
+            "name": "CANICURA",
+            "code": "CRA"
+          },
+          {
+            "name": "VILLA MERCEDES",
+            "code": "LVM"
+          }
+        ]
+      },
+      {
+        "name": "SAN PEDRO DE LA PAZ",
+        "code": 8108,
+        "defaultDistrict": "SPP",
+        "districts": [
+          {
+            "name": "SAN PEDRO DE LA PAZ",
+            "code": "SPP"
+          }
+        ]
+      },
+      {
+        "name": "SAN ROSENDO",
+        "code": 8310,
+        "defaultDistrict": "SRO",
+        "districts": [
+          {
+            "name": "BUENURAQUI",
+            "code": "LBQ"
+          },
+          {
+            "name": "SAN ROSENDO",
+            "code": "SRO"
+          }
+        ]
+      },
+      {
+        "name": "SANTA BARBARA",
+        "code": 8311,
+        "defaultDistrict": "SBB",
+        "districts": [
+          {
+            "name": "LOLCO",
+            "code": "COC"
+          },
+          {
+            "name": "SANTA BARBARA",
+            "code": "SBB"
+          },
+          {
+            "name": "VILLUCURA",
+            "code": "LVU"
+          },
+          {
+            "name": "LAS NIEVES",
+            "code": "LNV"
+          },
+          {
+            "name": "EL GUACHI",
+            "code": "LGH"
+          },
+          {
+            "name": "LOS BRUJOS",
+            "code": "LBS"
+          },
+          {
+            "name": "LOS PLACERES",
+            "code": "LBO"
+          }
+        ]
+      },
+      {
+        "name": "SANTA JUANA",
+        "code": 8109,
+        "defaultDistrict": "SJN",
+        "districts": [
+          {
+            "name": "SANTA JUANA",
+            "code": "SJN"
+          }
+        ]
+      },
+      {
+        "name": "TALCAHUANO",
+        "code": 8110,
+        "defaultDistrict": "ZTO",
+        "districts": [
+          {
+            "name": "ISLA QUIRIQUINA",
+            "code": "IQR"
+          },
+          {
+            "name": "TALCAHUANO",
+            "code": "ZTO"
+          },
+          {
+            "name": "SAN VICENTE",
+            "code": "SVC"
+          },
+          {
+            "name": "RANCHO TALCAHUANO",
+            "code": "RTH"
+          }
+        ]
+      },
+      {
+        "name": "TIRUA",
+        "code": 8207,
+        "defaultDistrict": "TUA",
+        "districts": [
+          {
+            "name": "PAILACO",
+            "code": "PLO"
+          },
+          {
+            "name": "TIRUA",
+            "code": "TUA"
+          },
+          {
+            "name": "QUIDICO - TEMUCO",
+            "code": "ZDQ"
+          }
+        ]
+      },
+      {
+        "name": "TOME",
+        "code": 8111,
+        "defaultDistrict": "TMC",
+        "districts": [
+          {
+            "name": "DICHATO",
+            "code": "DTO"
+          },
+          {
+            "name": "TOME",
+            "code": "TMC"
+          },
+          {
+            "name": "MENQUE",
+            "code": "ZQW"
+          },
+          {
+            "name": "VEGAS DE ITATA",
+            "code": "ZTT"
+          },
+          {
+            "name": "RAFAEL",
+            "code": "ZRA"
+          }
+        ]
+      },
+      {
+        "name": "TUCAPEL",
+        "code": 8312,
+        "defaultDistrict": "TCP",
+        "districts": [
+          {
+            "name": "HUEPIL",
+            "code": "HUP"
+          },
+          {
+            "name": "TRUPAN",
+            "code": "LTP"
+          },
+          {
+            "name": "TUCAPEL",
+            "code": "TCP"
+          },
+          {
+            "name": "POLCURA",
+            "code": "LPO"
+          }
+        ]
+      },
+      {
+        "name": "YUMBEL",
+        "code": 8313,
+        "defaultDistrict": "ZYU",
+        "districts": [
+          {
+            "name": "ESTACION YUMBEL",
+            "code": "EYY"
+          },
+          {
+            "name": "MONTE AGUILA",
+            "code": "ZLA"
+          },
+          {
+            "name": "YUMBEL",
+            "code": "ZYU"
+          },
+          {
+            "name": "RIO CLARO - LOS ANGE",
+            "code": "LRC"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Araucanía",
+    "code": 9,
+    "isocode": "AR",
+    "ciudades": [
+      {
+        "name": "ANGOL",
+        "code": 9201,
+        "defaultDistrict": "ZOL",
+        "districts": [
+          {
+            "name": "MAITENREHUE",
+            "code": "LLH"
+          },
+          {
+            "name": "PIEDRA DEL AGUILA",
+            "code": "PDA"
+          },
+          {
+            "name": "ANGOL",
+            "code": "ZOL"
+          },
+          {
+            "name": "VEGAS BLANCAS",
+            "code": "LVB"
+          }
+        ]
+      },
+      {
+        "name": "CARAHUE",
+        "code": 9102,
+        "defaultDistrict": "CRH",
+        "districts": [
+          {
+            "name": "CARAHUE",
+            "code": "CRH"
+          },
+          {
+            "name": "VILLA ARAUCANIA",
+            "code": "VZA"
+          },
+          {
+            "name": "LOBERIA",
+            "code": "ZLE"
+          },
+          {
+            "name": "TROVOLHUE",
+            "code": "ZTK"
+          },
+          {
+            "name": "NEHUENTUE",
+            "code": "ZNH"
+          },
+          {
+            "name": "CAMARONES - TEMUCO",
+            "code": "VAC"
+          }
+        ]
+      },
+      {
+        "name": "CHOL CHOL",
+        "code": 9121,
+        "defaultDistrict": "CHL",
+        "districts": [
+          {
+            "name": "CHOLCHOL",
+            "code": "CHL"
+          }
+        ]
+      },
+      {
+        "name": "COLLIPULLI",
+        "code": 9202,
+        "defaultDistrict": "CPI",
+        "districts": [
+          {
+            "name": "CANADA",
+            "code": "CDA"
+          },
+          {
+            "name": "PORVENIR",
+            "code": "ZPB"
+          },
+          {
+            "name": "TRINTRE",
+            "code": "TTE"
+          },
+          {
+            "name": "TERMAS DE PEMEHUE",
+            "code": "MTW"
+          },
+          {
+            "name": "NANCO",
+            "code": "LYY"
+          },
+          {
+            "name": "LOLENCO",
+            "code": "LLE"
+          },
+          {
+            "name": "CURACO ",
+            "code": "HDF"
+          },
+          {
+            "name": "EL AMARGO",
+            "code": "EAG"
+          },
+          {
+            "name": "COLLIPULLI",
+            "code": "CPI"
+          }
+        ]
+      },
+      {
+        "name": "CUNCO",
+        "code": 9103,
+        "defaultDistrict": "NCO",
+        "districts": [
+          {
+            "name": "PLAYA NEGRA",
+            "code": "MFN"
+          },
+          {
+            "name": "TERMAS DE SAN SEBAST",
+            "code": "ZTB"
+          },
+          {
+            "name": "LOS LAURELES",
+            "code": "ZSO"
+          },
+          {
+            "name": "CUNCO",
+            "code": "NCO"
+          },
+          {
+            "name": "PUERTO PUMA",
+            "code": "PPM"
+          },
+          {
+            "name": "HELO SUR",
+            "code": "ZHL"
+          },
+          {
+            "name": "LAS HORTENCIAS",
+            "code": "ZLH"
+          }
+        ]
+      },
+      {
+        "name": "CURACAUTIN",
+        "code": 9203,
+        "defaultDistrict": "CCC",
+        "districts": [
+          {
+            "name": "CURACAUTIN",
+            "code": "CCC"
+          },
+          {
+            "name": "MANZANAR",
+            "code": "ZMN"
+          },
+          {
+            "name": "TERMAS DE RIO BLANCO",
+            "code": "ZTS"
+          },
+          {
+            "name": "MALALCAHUELO ",
+            "code": "ZOH"
+          },
+          {
+            "name": "LA SOMBRA",
+            "code": "ZBN"
+          }
+        ]
+      },
+      {
+        "name": "CURARREHUE",
+        "code": 9104,
+        "defaultDistrict": "RRH",
+        "districts": [
+          {
+            "name": "TERMAS DE PANGUI",
+            "code": "GAR"
+          },
+          {
+            "name": "REIGOLIL",
+            "code": "ZGO"
+          },
+          {
+            "name": "TERMAS DE SAN LUIS",
+            "code": "TSL"
+          },
+          {
+            "name": "CURARREHUE",
+            "code": "RRH"
+          },
+          {
+            "name": "PUESCO",
+            "code": "PUE"
+          }
+        ]
+      },
+      {
+        "name": "ERCILLA",
+        "code": 9204,
+        "defaultDistrict": "ERL",
+        "districts": [
+          {
+            "name": "ERCILLA",
+            "code": "ERL"
+          },
+          {
+            "name": "PAILAHUENQUE",
+            "code": "ZPH"
+          }
+        ]
+      },
+      {
+        "name": "FREIRE",
+        "code": 9105,
+        "defaultDistrict": "FIE",
+        "districts": [
+          {
+            "name": "FREIRE",
+            "code": "FIE"
+          },
+          {
+            "name": "MISION BOROA",
+            "code": "MBA"
+          },
+          {
+            "name": "QUEPE",
+            "code": "QUP"
+          }
+        ]
+      },
+      {
+        "name": "GALVARINO",
+        "code": 9106,
+        "defaultDistrict": "GAL",
+        "districts": [
+          {
+            "name": "GALVARINO",
+            "code": "GAL"
+          },
+          {
+            "name": "RUCATRARO",
+            "code": "ZXR"
+          }
+        ]
+      },
+      {
+        "name": "GORBEA",
+        "code": 9107,
+        "defaultDistrict": "GEA",
+        "districts": [
+          {
+            "name": "GORBEA",
+            "code": "GEA"
+          },
+          {
+            "name": "QUITRATUE",
+            "code": "ZQT"
+          },
+          {
+            "name": "LASTARRIA",
+            "code": "ZLR"
+          }
+        ]
+      },
+      {
+        "name": "LAUTARO",
+        "code": 9108,
+        "defaultDistrict": "LTR",
+        "districts": [
+          {
+            "name": "AGUA SANTA",
+            "code": "AST"
+          },
+          {
+            "name": "COLONIA LAUTARO",
+            "code": "CLU"
+          },
+          {
+            "name": "PUA",
+            "code": "CAU"
+          },
+          {
+            "name": "RETEN DOLLINCO",
+            "code": "ZRT"
+          },
+          {
+            "name": "LOS PRADOS",
+            "code": "ZLD"
+          },
+          {
+            "name": "LAUTARO",
+            "code": "LTR"
+          }
+        ]
+      },
+      {
+        "name": "LONCOCHE",
+        "code": 9109,
+        "defaultDistrict": "LOC",
+        "districts": [
+          {
+            "name": "CRUCES",
+            "code": "CRS"
+          },
+          {
+            "name": "LONCOCHE",
+            "code": "LOC"
+          }
+        ]
+      },
+      {
+        "name": "LONQUIMAY",
+        "code": 9205,
+        "defaultDistrict": "LQY",
+        "districts": [
+          {
+            "name": "LIUCURA - TEMUCO",
+            "code": "IRA"
+          },
+          {
+            "name": "LONQUIMAY",
+            "code": "LQY"
+          },
+          {
+            "name": "TROYO",
+            "code": "ZTY"
+          },
+          {
+            "name": "SIERRA NEVADA",
+            "code": "ZSI"
+          },
+          {
+            "name": "QUINQUEN",
+            "code": "ZQN"
+          },
+          {
+            "name": "LOLEN",
+            "code": "LLN"
+          }
+        ]
+      },
+      {
+        "name": "LOS SAUCES",
+        "code": 9206,
+        "defaultDistrict": "SUS",
+        "districts": [
+          {
+            "name": "NAHUELVE",
+            "code": "NNH"
+          },
+          {
+            "name": "SANTA ROSA - TEMUCO",
+            "code": "SZZ"
+          },
+          {
+            "name": "CENTENARIO",
+            "code": "ZCT"
+          },
+          {
+            "name": "LOS SAUCES",
+            "code": "SUS"
+          }
+        ]
+      },
+      {
+        "name": "LUMACO",
+        "code": 9207,
+        "defaultDistrict": "LUM",
+        "districts": [
+          {
+            "name": "CAPITAN PASTENE",
+            "code": "CPP"
+          },
+          {
+            "name": "RELUN",
+            "code": "ZRL"
+          },
+          {
+            "name": "PICHIPELLAHUEN",
+            "code": "ZNN"
+          },
+          {
+            "name": "LUMACO",
+            "code": "LUM"
+          }
+        ]
+      },
+      {
+        "name": "MELIPEUCO",
+        "code": 9110,
+        "defaultDistrict": "MLP",
+        "districts": [
+          {
+            "name": "MELIPEUCO",
+            "code": "MLP"
+          },
+          {
+            "name": "TERMAS DE MOLULCO",
+            "code": "ZMY"
+          },
+          {
+            "name": "LOMACURA",
+            "code": "ZLV"
+          },
+          {
+            "name": "ICALMA",
+            "code": "ZIC"
+          }
+        ]
+      },
+      {
+        "name": "NUEVA IMPERIAL",
+        "code": 9111,
+        "defaultDistrict": "NIP",
+        "districts": [
+          {
+            "name": "BOROA",
+            "code": "BOA"
+          },
+          {
+            "name": "NUEVA IMPERIAL",
+            "code": "NIP"
+          },
+          {
+            "name": "ALMAGRO",
+            "code": "ZGV"
+          }
+        ]
+      },
+      {
+        "name": "PADRE LAS CASAS",
+        "code": 9112,
+        "defaultDistrict": "PCS",
+        "districts": [
+          {
+            "name": "PADRE LAS CASAS",
+            "code": "PCS"
+          },
+          {
+            "name": "EL ALAMBRADO",
+            "code": "ZEA"
+          }
+        ]
+      },
+      {
+        "name": "PERQUENCO",
+        "code": 9113,
+        "defaultDistrict": "PQO",
+        "districts": [
+          {
+            "name": "PERQUENCO",
+            "code": "PQO"
+          },
+          {
+            "name": "SELVA OSCURA",
+            "code": "SSO"
+          }
+        ]
+      },
+      {
+        "name": "PITRUFQUEN",
+        "code": 9114,
+        "defaultDistrict": "PQN",
+        "districts": [
+          {
+            "name": "PITRUFQUEN",
+            "code": "PQN"
+          },
+          {
+            "name": "RADAL - TEMUCO",
+            "code": "ZLK"
+          }
+        ]
+      },
+      {
+        "name": "PUCON",
+        "code": 9115,
+        "defaultDistrict": "ZPU",
+        "districts": [
+          {
+            "name": "SAN PEDRO - TEMUCO",
+            "code": "SSP"
+          },
+          {
+            "name": "CABURGUA",
+            "code": "ZCB"
+          },
+          {
+            "name": "TERMAS DE MENETUE",
+            "code": "ZMT"
+          },
+          {
+            "name": "PUCON",
+            "code": "ZPU"
+          },
+          {
+            "name": "TERMAS DE PALGUIN",
+            "code": "ZTM"
+          },
+          {
+            "name": "HUIFE",
+            "code": "ZTZ"
+          },
+          {
+            "name": "TERMAS DE HUIFE",
+            "code": "ZTR"
+          },
+          {
+            "name": "REFUGIO",
+            "code": "ZRE"
+          },
+          {
+            "name": "PEMUCO",
+            "code": "ZPC"
+          }
+        ]
+      },
+      {
+        "name": "PUREN",
+        "code": 9208,
+        "defaultDistrict": "PUR",
+        "districts": [
+          {
+            "name": "PUREN - TEMUCO",
+            "code": "PUR"
+          }
+        ]
+      },
+      {
+        "name": "RENAICO",
+        "code": 9209,
+        "defaultDistrict": "RNA",
+        "districts": [
+          {
+            "name": "TIJERAL",
+            "code": "LTJ"
+          },
+          {
+            "name": "MININCO",
+            "code": "MNC"
+          },
+          {
+            "name": "RENAICO",
+            "code": "RNA"
+          }
+        ]
+      },
+      {
+        "name": "SAAVEDRA",
+        "code": 9116,
+        "defaultDistrict": "ZPS",
+        "districts": [
+          {
+            "name": "BOCA BUDI",
+            "code": "BBD"
+          },
+          {
+            "name": "PUERTO SAAVEDRA",
+            "code": "ZPS"
+          }
+        ]
+      },
+      {
+        "name": "TEMUCO",
+        "code": 9101,
+        "defaultDistrict": "ZCO",
+        "districts": [
+          {
+            "name": "CAJON",
+            "code": "CJN"
+          },
+          {
+            "name": "MAQUEHUE",
+            "code": "MQH"
+          },
+          {
+            "name": "LABRANZA",
+            "code": "LZA"
+          },
+          {
+            "name": "METRENCO",
+            "code": "MTR"
+          },
+          {
+            "name": "TEMUCO",
+            "code": "ZCO"
+          },
+          {
+            "name": "PILLANLELBUN",
+            "code": "ZUN"
+          },
+          {
+            "name": "GENERAL LOPEZ",
+            "code": "ZGE"
+          }
+        ]
+      },
+      {
+        "name": "TEODORO SCHMIDT",
+        "code": 9117,
+        "defaultDistrict": "TEO",
+        "districts": [
+          {
+            "name": "PELECO",
+            "code": "PEC"
+          },
+          {
+            "name": "TEODORO SCHMIDT",
+            "code": "TEO"
+          },
+          {
+            "name": "PUERTO DOMINGUEZ",
+            "code": "ZPM"
+          },
+          {
+            "name": "BARROS ARANA",
+            "code": "ZBR"
+          }
+        ]
+      },
+      {
+        "name": "TOLTEN",
+        "code": 9118,
+        "defaultDistrict": "TOL",
+        "districts": [
+          {
+            "name": "TOLTEN",
+            "code": "TOL"
+          },
+          {
+            "name": "HUALPIN",
+            "code": "UAL"
+          },
+          {
+            "name": "QUILQUE",
+            "code": "ZQL"
+          },
+          {
+            "name": "COMUY",
+            "code": "ZCM"
+          }
+        ]
+      },
+      {
+        "name": "TRAIGUEN",
+        "code": 9210,
+        "defaultDistrict": "ZEN",
+        "districts": [
+          {
+            "name": "TRAIGUEN",
+            "code": "ZEN"
+          },
+          {
+            "name": "QUECHEREGUAS",
+            "code": "ZQE"
+          }
+        ]
+      },
+      {
+        "name": "VICTORIA",
+        "code": 9211,
+        "defaultDistrict": "VIC",
+        "districts": [
+          {
+            "name": "VICTORIA",
+            "code": "VIC"
+          },
+          {
+            "name": "TERMAS DE TOLHUACA",
+            "code": "ZTD"
+          },
+          {
+            "name": "TRES ESQUINAS",
+            "code": "ZTQ"
+          },
+          {
+            "name": "LAS MARIPOSAS - TEMU",
+            "code": "ZJM"
+          }
+        ]
+      },
+      {
+        "name": "VILCUN",
+        "code": 9119,
+        "defaultDistrict": "VIL",
+        "districts": [
+          {
+            "name": "VILCUN",
+            "code": "VIL"
+          },
+          {
+            "name": "REFUGIO LLAIMA",
+            "code": "ZRF"
+          },
+          {
+            "name": "SAN PATRICIO",
+            "code": "ZSP"
+          },
+          {
+            "name": "CHERQUENCO",
+            "code": "ZCC"
+          }
+        ]
+      },
+      {
+        "name": "VILLARRICA",
+        "code": 9120,
+        "defaultDistrict": "VRR",
+        "districts": [
+          {
+            "name": "VILLARRICA",
+            "code": "VRR"
+          },
+          {
+            "name": "PEDREGOSO",
+            "code": "ZPD"
+          },
+          {
+            "name": "HUISCAPI",
+            "code": "ZHS"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Los Ríos",
+    "code": 14,
+    "isocode": "LR",
+    "ciudades": [
+      {
+        "name": "CORRAL",
+        "code": 14102,
+        "defaultDistrict": "ZCR",
+        "districts": [
+          {
+            "name": "PUNTA CHAIHUIN",
+            "code": "PTC"
+          },
+          {
+            "name": "CORRAL",
+            "code": "ZCR"
+          }
+        ]
+      },
+      {
+        "name": "FUTRONO",
+        "code": 14202,
+        "defaultDistrict": "FTR",
+        "districts": [
+          {
+            "name": "COIQUE",
+            "code": "COI"
+          },
+          {
+            "name": "FUTRONO",
+            "code": "FTR"
+          },
+          {
+            "name": "LLIFEN",
+            "code": "LLI"
+          },
+          {
+            "name": "EL MUNDIAL",
+            "code": "EMN"
+          },
+          {
+            "name": "CHABRANCO",
+            "code": "ZXB"
+          },
+          {
+            "name": "MONTUELA",
+            "code": "ZMB"
+          },
+          {
+            "name": "LOS LLOLLES",
+            "code": "ZLO"
+          },
+          {
+            "name": "HUEQUECURA",
+            "code": "ZHU"
+          },
+          {
+            "name": "DOLLINCO",
+            "code": "ZDO"
+          },
+          {
+            "name": "BANOS DE CHIHUIO",
+            "code": "ZBZ"
+          },
+          {
+            "name": "MAIHUE",
+            "code": "MLE"
+          }
+        ]
+      },
+      {
+        "name": "LA UNION",
+        "code": 14201,
+        "defaultDistrict": "ZLU",
+        "districts": [
+          {
+            "name": "LAS VENTANAS",
+            "code": "LVS"
+          },
+          {
+            "name": "EL MIRADOR",
+            "code": "ORO"
+          },
+          {
+            "name": "TRUMAO",
+            "code": "TMA"
+          },
+          {
+            "name": "TRINIDAD",
+            "code": "ODA"
+          },
+          {
+            "name": "LA BARRA",
+            "code": "OAA"
+          },
+          {
+            "name": "SANTA ELISA",
+            "code": "ZSS"
+          },
+          {
+            "name": "RAPACO",
+            "code": "ZRP"
+          },
+          {
+            "name": "LA UNION",
+            "code": "ZLU"
+          },
+          {
+            "name": "HUEICOLLA",
+            "code": "ZHC"
+          },
+          {
+            "name": "LOS CONALES - OSORNO",
+            "code": "ZAQ"
+          }
+        ]
+      },
+      {
+        "name": "LAGO RANCO",
+        "code": 14203,
+        "defaultDistrict": "LRO",
+        "districts": [
+          {
+            "name": "LAGO RANCO",
+            "code": "LRO"
+          },
+          {
+            "name": "TRAPI",
+            "code": "OIP"
+          },
+          {
+            "name": "LLIHUE",
+            "code": "OEU"
+          },
+          {
+            "name": "IGNAO",
+            "code": "ZIG"
+          },
+          {
+            "name": "RININAHUE",
+            "code": "ZZR"
+          },
+          {
+            "name": "VIVANCO",
+            "code": "ZVV"
+          },
+          {
+            "name": "ILIHUE",
+            "code": "ZEQ"
+          }
+        ]
+      },
+      {
+        "name": "LANCO",
+        "code": 14103,
+        "defaultDistrict": "LNC",
+        "districts": [
+          {
+            "name": "LANCO",
+            "code": "LNC"
+          },
+          {
+            "name": "LA CAPILLA - VALDIV",
+            "code": "ZLW"
+          },
+          {
+            "name": "SALTO DEL AGUA",
+            "code": "ZSA"
+          },
+          {
+            "name": "PURULON",
+            "code": "ZPO"
+          },
+          {
+            "name": "LA LEONERA - VALDIVI",
+            "code": "LRA"
+          },
+          {
+            "name": "MALALHUE",
+            "code": "MAL"
+          }
+        ]
+      },
+      {
+        "name": "LOS LAGOS",
+        "code": 14104,
+        "defaultDistrict": "LAG",
+        "districts": [
+          {
+            "name": "ANTILHUE",
+            "code": "ANH"
+          },
+          {
+            "name": "RUNCA",
+            "code": "ZRU"
+          },
+          {
+            "name": "PUCARA",
+            "code": "ZPX"
+          },
+          {
+            "name": "HUITE",
+            "code": "ZHI"
+          },
+          {
+            "name": "FOLILCO",
+            "code": "ZFO"
+          },
+          {
+            "name": "RINIHUE",
+            "code": "XGR"
+          },
+          {
+            "name": "PUCONO",
+            "code": "PUC"
+          },
+          {
+            "name": "LIPINGUE",
+            "code": "OSN"
+          },
+          {
+            "name": "LOS LAGOS",
+            "code": "LAG"
+          },
+          {
+            "name": "HUICHACO",
+            "code": "HIC"
+          },
+          {
+            "name": "COLEGUAL - VALDIVIA",
+            "code": "COA"
+          }
+        ]
+      },
+      {
+        "name": "MAFIL",
+        "code": 14105,
+        "defaultDistrict": "MFL",
+        "districts": [
+          {
+            "name": "FUNDO ALTUE",
+            "code": "FAE"
+          },
+          {
+            "name": "PUERTO PAICO",
+            "code": "ZAE"
+          },
+          {
+            "name": "CHANCOYAN",
+            "code": "ZAX"
+          },
+          {
+            "name": "MAFIL",
+            "code": "MFL"
+          }
+        ]
+      },
+      {
+        "name": "MARIQUINA",
+        "code": 14106,
+        "defaultDistrict": "MQA",
+        "districts": [
+          {
+            "name": "PICHOY",
+            "code": "CHY"
+          },
+          {
+            "name": "QUEULE - VALDIVIA",
+            "code": "ZQU"
+          },
+          {
+            "name": "PURINGUE",
+            "code": "ZPG"
+          },
+          {
+            "name": "FUERTE SAN LUIS",
+            "code": "ZFF"
+          },
+          {
+            "name": "CIRUELOS - VALDIVIA",
+            "code": "ZCI"
+          },
+          {
+            "name": "MEHUIN",
+            "code": "MEH"
+          },
+          {
+            "name": "S.J. DE LA MARIQUINA",
+            "code": "MQA"
+          }
+        ]
+      },
+      {
+        "name": "PAILLACO",
+        "code": 14107,
+        "defaultDistrict": "PAI",
+        "districts": [
+          {
+            "name": "MANAO - VALDIVIA",
+            "code": "MMO"
+          },
+          {
+            "name": "LA PENA",
+            "code": "ZLP"
+          },
+          {
+            "name": "PICHIRROPULLI",
+            "code": "ZPI"
+          },
+          {
+            "name": "LOS ULMOS",
+            "code": "ZLX"
+          },
+          {
+            "name": "REUMEN",
+            "code": "RMN"
+          },
+          {
+            "name": "TRAITRACO",
+            "code": "TRR"
+          },
+          {
+            "name": "PAILLACO",
+            "code": "PAI"
+          },
+          {
+            "name": "LOS CONALES - OSORNO",
+            "code": "OSE"
+          }
+        ]
+      },
+      {
+        "name": "PANGUIPULLI",
+        "code": 14108,
+        "defaultDistrict": "PGP",
+        "districts": [
+          {
+            "name": "CHOSHUENCO",
+            "code": "CHS"
+          },
+          {
+            "name": "LICAN RAY",
+            "code": "LCY"
+          },
+          {
+            "name": "CARIRRINGUE",
+            "code": "ZZQ"
+          },
+          {
+            "name": "LIQUINE",
+            "code": "ZVC"
+          },
+          {
+            "name": "PUERTO PIRIHUEICO",
+            "code": "ZPT"
+          },
+          {
+            "name": "ENCO",
+            "code": "ZNC"
+          },
+          {
+            "name": "LOS TALLOS",
+            "code": "ZLS"
+          },
+          {
+            "name": "PUERTO FUY",
+            "code": "ZFQ"
+          },
+          {
+            "name": "CALAFQUEN",
+            "code": "ZCZ"
+          },
+          {
+            "name": "TERMAS DE CONARIPE",
+            "code": "TRC"
+          },
+          {
+            "name": "PANGUIPULLI",
+            "code": "PGP"
+          },
+          {
+            "name": "PULLINGUE",
+            "code": "PGE"
+          },
+          {
+            "name": "NELTUME",
+            "code": "NTM"
+          },
+          {
+            "name": "NANCUL",
+            "code": "NCU"
+          },
+          {
+            "name": "CONARIPE",
+            "code": "CPE"
+          }
+        ]
+      },
+      {
+        "name": "RIO BUENO",
+        "code": 14204,
+        "defaultDistrict": "RBN",
+        "districts": [
+          {
+            "name": "LOS CHILCOS",
+            "code": "LCL"
+          },
+          {
+            "name": "RIO BUENO",
+            "code": "RBN"
+          },
+          {
+            "name": "PUERTO NUEVO",
+            "code": "ZXN"
+          },
+          {
+            "name": "SANTA ROSA - OSORNO",
+            "code": "ZSR"
+          },
+          {
+            "name": "CHANCHAN",
+            "code": "ZNX"
+          },
+          {
+            "name": "CAYURRUCA",
+            "code": "ZCY"
+          }
+        ]
+      },
+      {
+        "name": "VALDIVIA",
+        "code": 14101,
+        "defaultDistrict": "ZAL",
+        "districts": [
+          {
+            "name": "CURINANCO",
+            "code": "CNA"
+          },
+          {
+            "name": "PUNUCAPA",
+            "code": "NUC"
+          },
+          {
+            "name": "LOS MOLINOS",
+            "code": "LML"
+          },
+          {
+            "name": "HUEYELHUE",
+            "code": "ZYH"
+          },
+          {
+            "name": "NIEBLA",
+            "code": "NBL"
+          },
+          {
+            "name": "TRALCAO",
+            "code": "ZAP"
+          },
+          {
+            "name": "VALDIVIA",
+            "code": "ZAL"
+          },
+          {
+            "name": "LOS PELLINES - VALDI",
+            "code": "LPS"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Los Lagos",
+    "code": 10,
+    "isocode": "LL",
+    "ciudades": [
+      {
+        "name": "ANCUD",
+        "code": 10202,
+        "defaultDistrict": "ACD",
+        "districts": [
+          {
+            "name": "ANCUD",
+            "code": "ACD"
+          },
+          {
+            "name": "CHACAO",
+            "code": "CAO"
+          },
+          {
+            "name": "CAULIN",
+            "code": "CHG"
+          },
+          {
+            "name": "QUETELMAHUE",
+            "code": "PQT"
+          },
+          {
+            "name": "GUALBUN",
+            "code": "GBN"
+          }
+        ]
+      },
+      {
+        "name": "CALBUCO",
+        "code": 10102,
+        "defaultDistrict": "CBU",
+        "districts": [
+          {
+            "name": "CALBUCO",
+            "code": "CBU"
+          },
+          {
+            "name": "HUELMO",
+            "code": "PXY"
+          }
+        ]
+      },
+      {
+        "name": "CASTRO",
+        "code": 10201,
+        "defaultDistrict": "CTR",
+        "districts": [
+          {
+            "name": "CURAHUE",
+            "code": "CGE"
+          },
+          {
+            "name": "ABTAO",
+            "code": "PAB"
+          },
+          {
+            "name": "CASTRO",
+            "code": "CTR"
+          }
+        ]
+      },
+      {
+        "name": "CHAITEN",
+        "code": 10401,
+        "defaultDistrict": "ZCN",
+        "districts": [
+          {
+            "name": "CALETA SANTA BARBARA",
+            "code": "PBB"
+          },
+          {
+            "name": "CHAITEN",
+            "code": "ZCN"
+          },
+          {
+            "name": "BUILL",
+            "code": "PBX"
+          },
+          {
+            "name": "CALETA GONZALO",
+            "code": "PCG"
+          },
+          {
+            "name": "TERMAS EL AMARILLO",
+            "code": "PTM"
+          },
+          {
+            "name": "PUERTO CARDENAS",
+            "code": "TCD"
+          }
+        ]
+      },
+      {
+        "name": "CHONCHI",
+        "code": 10203,
+        "defaultDistrict": "ZCH",
+        "districts": [
+          {
+            "name": "CUCAO",
+            "code": "CUO"
+          },
+          {
+            "name": "CHADMO CENTRAL",
+            "code": "PDN"
+          },
+          {
+            "name": "CHONCHI",
+            "code": "ZCH"
+          },
+          {
+            "name": "TEUPA",
+            "code": "PTU"
+          }
+        ]
+      },
+      {
+        "name": "COCHAMO",
+        "code": 10103,
+        "defaultDistrict": "CMO",
+        "districts": [
+          {
+            "name": "COCHAMO",
+            "code": "CMO"
+          },
+          {
+            "name": "ROLLIZO",
+            "code": "PWZ"
+          },
+          {
+            "name": "CANUTILLAR",
+            "code": "PWC"
+          },
+          {
+            "name": "EL BARRACO",
+            "code": "PWA"
+          },
+          {
+            "name": "RALUN",
+            "code": "PRA"
+          },
+          {
+            "name": "PUELO",
+            "code": "PPL"
+          },
+          {
+            "name": "BANOS DE SOTOMO",
+            "code": "PBS"
+          }
+        ]
+      },
+      {
+        "name": "CURACO DE VELEZ",
+        "code": 10204,
+        "defaultDistrict": "CVL",
+        "districts": [
+          {
+            "name": "CURACO DE VELEZ",
+            "code": "CVL"
+          },
+          {
+            "name": "QUINCHAO",
+            "code": "QCH"
+          }
+        ]
+      },
+      {
+        "name": "DALCAHUE",
+        "code": 10205,
+        "defaultDistrict": "DLE",
+        "districts": [
+          {
+            "name": "DALCAHUE",
+            "code": "DLE"
+          },
+          {
+            "name": "MECHUQUE",
+            "code": "PME"
+          },
+          {
+            "name": "ALTO BUTALCURA",
+            "code": "PAT"
+          },
+          {
+            "name": "SAN JUAN",
+            "code": "JJN"
+          },
+          {
+            "name": "QUICAVI",
+            "code": "QIA"
+          }
+        ]
+      },
+      {
+        "name": "FRESIA",
+        "code": 10104,
+        "defaultDistrict": "FSA",
+        "districts": [
+          {
+            "name": "FRESIA",
+            "code": "FSA"
+          },
+          {
+            "name": "MAICHIHUE",
+            "code": "PMA"
+          },
+          {
+            "name": "PARGA",
+            "code": "PPD"
+          }
+        ]
+      },
+      {
+        "name": "FRUTILLAR",
+        "code": 10105,
+        "defaultDistrict": "FRT",
+        "districts": [
+          {
+            "name": "FRUTILLAR",
+            "code": "FRT"
+          },
+          {
+            "name": "PARAGUAY",
+            "code": "ZPY"
+          },
+          {
+            "name": "TEGUALDA",
+            "code": "ZTG"
+          }
+        ]
+      },
+      {
+        "name": "FUTALEUFU",
+        "code": 10402,
+        "defaultDistrict": "FTF",
+        "districts": [
+          {
+            "name": "FUTALEUFU",
+            "code": "FTF"
+          },
+          {
+            "name": "LAGO YELCHO",
+            "code": "PLG"
+          },
+          {
+            "name": "PUERTO RAMIREZ",
+            "code": "PRZ"
+          },
+          {
+            "name": "VILLA SANTA LUCIA",
+            "code": "PVI"
+          },
+          {
+            "name": "PUERTO PIEDRA",
+            "code": "PIE"
+          }
+        ]
+      },
+      {
+        "name": "HUALAIHUE",
+        "code": 10403,
+        "defaultDistrict": "HLH",
+        "districts": [
+          {
+            "name": "AULEN",
+            "code": "ALN"
+          },
+          {
+            "name": "TERMAS DE LLANCATUE",
+            "code": "TLE"
+          },
+          {
+            "name": "POYO",
+            "code": "PWY"
+          },
+          {
+            "name": "CALETA HUALAIHUE",
+            "code": "PWX"
+          },
+          {
+            "name": "CHOLGO",
+            "code": "PWS"
+          },
+          {
+            "name": "CHAPARANO",
+            "code": "PWQ"
+          },
+          {
+            "name": "SEGUNDO CORRAL",
+            "code": "PSE"
+          },
+          {
+            "name": "PRIMER CORRAL",
+            "code": "PPR"
+          },
+          {
+            "name": "PICHANCO",
+            "code": "PPI"
+          },
+          {
+            "name": "HUINAY",
+            "code": "PHN"
+          },
+          {
+            "name": "LLANADA GRANDE",
+            "code": "PGX"
+          },
+          {
+            "name": "CONTAO",
+            "code": "PCM"
+          },
+          {
+            "name": "AYACARA",
+            "code": "PAY"
+          },
+          {
+            "name": "HORNOPIREN",
+            "code": "HRP"
+          },
+          {
+            "name": "HUALAIHUE",
+            "code": "HLH"
+          }
+        ]
+      },
+      {
+        "name": "LLANQUIHUE",
+        "code": 10107,
+        "defaultDistrict": "LLQ",
+        "districts": [
+          {
+            "name": "LLANQUIHUE",
+            "code": "LLQ"
+          },
+          {
+            "name": "LONCOTORO",
+            "code": "LNT"
+          },
+          {
+            "name": "LOS PELLINES - PUERT",
+            "code": "PWT"
+          },
+          {
+            "name": "COLEGUAL - PUERTO MO",
+            "code": "PCL"
+          }
+        ]
+      },
+      {
+        "name": "LOS MUERMOS",
+        "code": 10106,
+        "defaultDistrict": "LMU",
+        "districts": [
+          {
+            "name": "LOLCURA",
+            "code": "LLA"
+          },
+          {
+            "name": "RIO FRIO",
+            "code": "PWF"
+          },
+          {
+            "name": "LAS QUEMAS",
+            "code": "PLS"
+          },
+          {
+            "name": "LOS MUERMOS",
+            "code": "LMU"
+          }
+        ]
+      },
+      {
+        "name": "MAULLIN",
+        "code": 10108,
+        "defaultDistrict": "MAU",
+        "districts": [
+          {
+            "name": "CARELMAPU",
+            "code": "CRU"
+          },
+          {
+            "name": "MISQUIHUE",
+            "code": "MSQ"
+          },
+          {
+            "name": "MAULLIN",
+            "code": "MAU"
+          },
+          {
+            "name": "PUELPUN",
+            "code": "PPP"
+          },
+          {
+            "name": "PARGUA",
+            "code": "ZGA"
+          },
+          {
+            "name": "PANGAL - PUERTO MONT",
+            "code": "PPA"
+          }
+        ]
+      },
+      {
+        "name": "OSORNO",
+        "code": 10301,
+        "defaultDistrict": "ZOS",
+        "districts": [
+          {
+            "name": "CANCURA",
+            "code": "OAR"
+          },
+          {
+            "name": "PICHI DAMAS",
+            "code": "OSD"
+          },
+          {
+            "name": "MONTE VERDE",
+            "code": "ZMV"
+          },
+          {
+            "name": "REMEHUE",
+            "code": "ZRM"
+          },
+          {
+            "name": "OSORNO",
+            "code": "ZOS"
+          },
+          {
+            "name": "LAS LUMAS",
+            "code": "OSM"
+          }
+        ]
+      },
+      {
+        "name": "PALENA",
+        "code": 10404,
+        "defaultDistrict": "PLE",
+        "districts": [
+          {
+            "name": "PALENA",
+            "code": "PLE"
+          },
+          {
+            "name": "VILLA VANGUARDIA",
+            "code": "PVL"
+          }
+        ]
+      },
+      {
+        "name": "PUERTO MONTT",
+        "code": 10101,
+        "defaultDistrict": "PMC",
+        "districts": [
+          {
+            "name": "ALERCE",
+            "code": "ALE"
+          },
+          {
+            "name": "RANCHO PUERTO MONTT",
+            "code": "RPM"
+          },
+          {
+            "name": "CHAMIZA",
+            "code": "PZH"
+          },
+          {
+            "name": "QUILLAIPE",
+            "code": "PTE"
+          },
+          {
+            "name": "PUERTO MONTT",
+            "code": "PMC"
+          },
+          {
+            "name": "LENCA",
+            "code": "PLW"
+          },
+          {
+            "name": "CORRENTOSO",
+            "code": "PCT"
+          },
+          {
+            "name": "CALETA LA ARENA",
+            "code": "PCA"
+          },
+          {
+            "name": "EL TEPUAL",
+            "code": "ETL"
+          }
+        ]
+      },
+      {
+        "name": "PUERTO OCTAY",
+        "code": 10302,
+        "defaultDistrict": "PCY",
+        "districts": [
+          {
+            "name": "LAS CASCADAS",
+            "code": "LDS"
+          },
+          {
+            "name": "PIEDRAS NEGRAS",
+            "code": "PNG"
+          },
+          {
+            "name": "REFUGIO LA PICADA",
+            "code": "ZRD"
+          },
+          {
+            "name": "PUERTO CLOCKER",
+            "code": "ZPK"
+          },
+          {
+            "name": "LOS BAJOS",
+            "code": "ZEP"
+          },
+          {
+            "name": "PUERTO FONCK",
+            "code": "XPF"
+          },
+          {
+            "name": "CENTRAL RUPANCO",
+            "code": "OOC"
+          },
+          {
+            "name": "PUERTO OCTAY",
+            "code": "PCY"
+          }
+        ]
+      },
+      {
+        "name": "PUERTO VARAS",
+        "code": 10109,
+        "defaultDistrict": "ZPV",
+        "districts": [
+          {
+            "name": "ENSENADA",
+            "code": "ENS"
+          },
+          {
+            "name": "NUEVA BRAUNAU",
+            "code": "NBR"
+          },
+          {
+            "name": "PUERTO VARAS",
+            "code": "ZPV"
+          },
+          {
+            "name": "LA POSA",
+            "code": "PWP"
+          },
+          {
+            "name": "RIO SUR",
+            "code": "RIS"
+          },
+          {
+            "name": "PETROHUE",
+            "code": "PTH"
+          },
+          {
+            "name": "LOS RISCOS",
+            "code": "OSC"
+          }
+        ]
+      },
+      {
+        "name": "PUQUELDON",
+        "code": 10206,
+        "defaultDistrict": "PQE",
+        "districts": [
+          {
+            "name": "ALDACHILDO",
+            "code": "ADO"
+          },
+          {
+            "name": "PUQUELDON",
+            "code": "PQE"
+          }
+        ]
+      },
+      {
+        "name": "PURRANQUE",
+        "code": 10303,
+        "defaultDistrict": "PRE",
+        "districts": [
+          {
+            "name": "CASMA",
+            "code": "OAM"
+          },
+          {
+            "name": "CONCORDIA",
+            "code": "ZIX"
+          },
+          {
+            "name": "HUEYUSCA",
+            "code": "ZHY"
+          },
+          {
+            "name": "LOS CORRALES",
+            "code": "ZEU"
+          },
+          {
+            "name": "PURRANQUE",
+            "code": "PRE"
+          },
+          {
+            "name": "CRUCERO",
+            "code": "OOR"
+          },
+          {
+            "name": "CORTE ALTO",
+            "code": "OOT"
+          }
+        ]
+      },
+      {
+        "name": "PUYEHUE",
+        "code": 10304,
+        "defaultDistrict": "PYH",
+        "districts": [
+          {
+            "name": "ENTRE LAGOS",
+            "code": "ENL"
+          },
+          {
+            "name": "AGUAS CALIENTES - OS",
+            "code": "ZAA"
+          },
+          {
+            "name": "TERMAS DE PUYEHUE",
+            "code": "ZTH"
+          },
+          {
+            "name": "REFUGIO ANTILLANCA",
+            "code": "ZRN"
+          },
+          {
+            "name": "PAJARITOS",
+            "code": "ZPJ"
+          },
+          {
+            "name": "NILQUE",
+            "code": "ZLY"
+          },
+          {
+            "name": "EL ENCANTO ",
+            "code": "ZEE"
+          },
+          {
+            "name": "EL ISLOTE",
+            "code": "ZEO"
+          },
+          {
+            "name": "ANTICURA",
+            "code": "ZAC"
+          },
+          {
+            "name": "PUYEHUE",
+            "code": "PYH"
+          },
+          {
+            "name": "PUERTO RICO",
+            "code": "OOI"
+          }
+        ]
+      },
+      {
+        "name": "QUEILEN",
+        "code": 10207,
+        "defaultDistrict": "QLE",
+        "districts": [
+          {
+            "name": "AHONI",
+            "code": "AHI"
+          },
+          {
+            "name": "PAILDAD",
+            "code": "PPU"
+          },
+          {
+            "name": "CONTAY",
+            "code": "PCN"
+          },
+          {
+            "name": "QUEILEN",
+            "code": "QLE"
+          },
+          {
+            "name": "AITUI",
+            "code": "PWU"
+          }
+        ]
+      },
+      {
+        "name": "QUELLON",
+        "code": 10208,
+        "defaultDistrict": "QLN",
+        "districts": [
+          {
+            "name": "HUILDAD",
+            "code": "PHI"
+          },
+          {
+            "name": "QUELLON",
+            "code": "QLN"
+          },
+          {
+            "name": "RANCHO QUELLON",
+            "code": "RQL"
+          },
+          {
+            "name": "QUELLON VIEJO",
+            "code": "QUV"
+          },
+          {
+            "name": "YALDAD",
+            "code": "PYA"
+          },
+          {
+            "name": "TRINCAO - CASTRO",
+            "code": "PWD"
+          },
+          {
+            "name": "COINCO - CASTRO",
+            "code": "PWI"
+          }
+        ]
+      },
+      {
+        "name": "QUEMCHI",
+        "code": 10209,
+        "defaultDistrict": "QUE",
+        "districts": [
+          {
+            "name": "HUILLINCO",
+            "code": "HNO"
+          },
+          {
+            "name": "QUEMCHI",
+            "code": "QUE"
+          },
+          {
+            "name": "AGUAS  BUENAS",
+            "code": "PZG"
+          },
+          {
+            "name": "BELBEN",
+            "code": "PZB"
+          },
+          {
+            "name": "LINAO",
+            "code": "PLI"
+          },
+          {
+            "name": "LLIUCO",
+            "code": "PLU"
+          },
+          {
+            "name": "MANAO - CASTRO",
+            "code": "PMN"
+          },
+          {
+            "name": "DEGAN",
+            "code": "PDG"
+          },
+          {
+            "name": "AUCAR",
+            "code": "PAU"
+          }
+        ]
+      },
+      {
+        "name": "QUINCHAO",
+        "code": 10210,
+        "defaultDistrict": "ZAO",
+        "districts": [
+          {
+            "name": "APIAO",
+            "code": "APO"
+          },
+          {
+            "name": "ACHAO",
+            "code": "ZAO"
+          },
+          {
+            "name": "CHAULINEC",
+            "code": "PHC"
+          }
+        ]
+      },
+      {
+        "name": "RIO NEGRO",
+        "code": 10305,
+        "defaultDistrict": "RNC",
+        "districts": [
+          {
+            "name": "MILLANTUE",
+            "code": "OET"
+          },
+          {
+            "name": "CHAHUILCO",
+            "code": "OOL"
+          },
+          {
+            "name": "HUILMA",
+            "code": "ZHM"
+          },
+          {
+            "name": "EL BOLSON",
+            "code": "ZEB"
+          },
+          {
+            "name": "RIO NEGRO",
+            "code": "RNC"
+          }
+        ]
+      },
+      {
+        "name": "SAN JUAN DE LA COSTA",
+        "code": 10306,
+        "defaultDistrict": "SJD",
+        "districts": [
+          {
+            "name": "PUCATRIHUE",
+            "code": "OEH"
+          },
+          {
+            "name": "PUAUCHO",
+            "code": "OOH"
+          },
+          {
+            "name": "S.JUAN DE LA COSTA",
+            "code": "SJD"
+          },
+          {
+            "name": "MAICOLPUE",
+            "code": "ZWQ"
+          },
+          {
+            "name": "BAHIA MANSA",
+            "code": "ZBH"
+          },
+          {
+            "name": "CONTACO",
+            "code": "OOA"
+          }
+        ]
+      },
+      {
+        "name": "SAN PABLO",
+        "code": 10307,
+        "defaultDistrict": "SPL",
+        "districts": [
+          {
+            "name": "CHIRRE",
+            "code": "OER"
+          },
+          {
+            "name": "CARACOL",
+            "code": "OLO"
+          },
+          {
+            "name": "FILUCO",
+            "code": "ZFI"
+          },
+          {
+            "name": "PURRAPEL",
+            "code": "OLE"
+          },
+          {
+            "name": "SAN PABLO - OSORNO",
+            "code": "SPL"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Aysén",
+    "code": 11,
+    "isocode": "AI",
+    "ciudades": [
+      {
+        "name": "AYSEN",
+        "code": 11201,
+        "defaultDistrict": "WPA",
+        "districts": [
+          {
+            "name": "PUERTO AGUIRRE",
+            "code": "AGR"
+          },
+          {
+            "name": "MANIHUALES",
+            "code": "GMH"
+          },
+          {
+            "name": "MINA EL TOQUI",
+            "code": "GMT"
+          },
+          {
+            "name": "PUERTO AYSEN",
+            "code": "WPA"
+          },
+          {
+            "name": "PUERTO CHACABUCO",
+            "code": "PCC"
+          },
+          {
+            "name": "SANTA MARIA DEL MAR",
+            "code": "GSM"
+          },
+          {
+            "name": "EL GATO",
+            "code": "IAU"
+          },
+          {
+            "name": "VILLA MANIHUALES",
+            "code": "MHS"
+          },
+          {
+            "name": "PUERTO GAVIOTA",
+            "code": "GVH"
+          }
+        ]
+      },
+      {
+        "name": "CHILE CHICO",
+        "code": 11401,
+        "defaultDistrict": "CCH",
+        "districts": [
+          {
+            "name": "CHILE CHICO",
+            "code": "CCH"
+          },
+          {
+            "name": "PUERTO FACHINAL",
+            "code": "GPF"
+          },
+          {
+            "name": "PUERTO MURTA",
+            "code": "GPX"
+          },
+          {
+            "name": "PUERTO SANCHEZ",
+            "code": "GPZ"
+          },
+          {
+            "name": "PUERTO TRANQUILO",
+            "code": "TGL"
+          },
+          {
+            "name": "PUERTO GUADAL",
+            "code": "PGU"
+          },
+          {
+            "name": "PUERTO BERTRAND",
+            "code": "PBI"
+          }
+        ]
+      },
+      {
+        "name": "CISNES",
+        "code": 11202,
+        "defaultDistrict": "CNS",
+        "districts": [
+          {
+            "name": "CISNES",
+            "code": "CNS"
+          },
+          {
+            "name": "LA TAPERA",
+            "code": "GLT"
+          },
+          {
+            "name": "PUERTO CISNES",
+            "code": "PCI"
+          },
+          {
+            "name": "TERMAS DE PUYUHUAPI",
+            "code": "GTP"
+          },
+          {
+            "name": "VILLA AMENGUAL",
+            "code": "VGL"
+          },
+          {
+            "name": "PUYUHUAPI",
+            "code": "YUH"
+          },
+          {
+            "name": "RIO CISNES",
+            "code": "GRC"
+          }
+        ]
+      },
+      {
+        "name": "COCHRANE",
+        "code": 11301,
+        "defaultDistrict": "CCL",
+        "districts": [
+          {
+            "name": "LAGO COCHRANE",
+            "code": "ANE"
+          },
+          {
+            "name": "PUERTO HERRADURA",
+            "code": "GXP"
+          },
+          {
+            "name": "COCHRANE",
+            "code": "CCL"
+          },
+          {
+            "name": "VILLA CHACABUCO",
+            "code": "GVC"
+          }
+        ]
+      },
+      {
+        "name": "COYHAIQUE",
+        "code": 11101,
+        "defaultDistrict": "GXQ",
+        "districts": [
+          {
+            "name": "BALMACEDA",
+            "code": "BBA"
+          },
+          {
+            "name": "COYHAIQUE ALTO",
+            "code": "GAX"
+          },
+          {
+            "name": "BANO NUEVO",
+            "code": "BNO"
+          },
+          {
+            "name": "COYHAIQUE",
+            "code": "GXQ"
+          },
+          {
+            "name": "VILLA ORTEGA",
+            "code": "GVZ"
+          },
+          {
+            "name": "NIREGUAO",
+            "code": "GNG"
+          },
+          {
+            "name": "LAGUNA SAN RAFAEL",
+            "code": "GLS"
+          }
+        ]
+      },
+      {
+        "name": "GUAITECAS",
+        "code": 11203,
+        "defaultDistrict": "GCA",
+        "districts": [
+          {
+            "name": "GUAITECAS",
+            "code": "GCA"
+          },
+          {
+            "name": "ISLA ANGAMOS",
+            "code": "GIA"
+          },
+          {
+            "name": "ISLA IPUN",
+            "code": "GII"
+          },
+          {
+            "name": "ISLA MELCHOR",
+            "code": "GIM"
+          },
+          {
+            "name": "ISLA CUPTANA",
+            "code": "GIP"
+          },
+          {
+            "name": "ISLA VICTORIA",
+            "code": "GIV"
+          },
+          {
+            "name": "ISLA IZAZO",
+            "code": "GIZ"
+          },
+          {
+            "name": "MELINKA",
+            "code": "NKA"
+          },
+          {
+            "name": "ISLA NALCAYEC",
+            "code": "GIN"
+          },
+          {
+            "name": "ISLA LEVEL",
+            "code": "GIL"
+          },
+          {
+            "name": "ISLA BENJAMIN",
+            "code": "GIB"
+          }
+        ]
+      },
+      {
+        "name": "LAGO VERDE",
+        "code": 11102,
+        "defaultDistrict": "LVE",
+        "districts": [
+          {
+            "name": "LA JUNTA - COYHAIQUE",
+            "code": "JUN"
+          },
+          {
+            "name": "LAGO VERDE",
+            "code": "LVE"
+          }
+        ]
+      },
+      {
+        "name": "OHIGGINS",
+        "code": 11302,
+        "defaultDistrict": "OHG",
+        "districts": [
+          {
+            "name": "O HIGGINS",
+            "code": "OHG"
+          },
+          {
+            "name": "VILLA OHIGGINS",
+            "code": "VOH"
+          }
+        ]
+      },
+      {
+        "name": "RIO IBANEZ",
+        "code": 11402,
+        "defaultDistrict": "RIB",
+        "districts": [
+          {
+            "name": "PUERTO ING.IBANEZ",
+            "code": "GIQ"
+          },
+          {
+            "name": "VILLA CERRO CASTILLO",
+            "code": "VCC"
+          },
+          {
+            "name": "LEVICAN",
+            "code": "GLV"
+          },
+          {
+            "name": "RIO IBANEZ",
+            "code": "RIB"
+          }
+        ]
+      },
+      {
+        "name": "TORTEL",
+        "code": 11303,
+        "defaultDistrict": "TRT",
+        "districts": [
+          {
+            "name": "ISLA CAMPANA",
+            "code": "GIC"
+          },
+          {
+            "name": "CALETA TORTEL",
+            "code": "TOR"
+          },
+          {
+            "name": "TORTEL",
+            "code": "TRT"
+          },
+          {
+            "name": "ISLA MERINO JARPA",
+            "code": "GMJ"
+          },
+          {
+            "name": "PUERTO YUNGAY",
+            "code": "GPY"
+          },
+          {
+            "name": "ISLA PATRICIO LYNCH",
+            "code": "GIY"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Magallanes y la Antartica Chilena",
+    "code": 12,
+    "isocode": "MA",
+    "ciudades": [
+      {
+        "name": "ANTARTICA",
+        "code": 12202,
+        "defaultDistrict": "ATC",
+        "districts": [
+          {
+            "name": "ANTARTICA",
+            "code": "ATC"
+          }
+        ]
+      },
+      {
+        "name": "CABO DE HORNOS",
+        "code": 12201,
+        "defaultDistrict": "HOR",
+        "districts": [
+          {
+            "name": "CALETA EUGENIA",
+            "code": "CEU"
+          },
+          {
+            "name": "CABO DE HORNOS",
+            "code": "HOR"
+          },
+          {
+            "name": "PUERTO TORO",
+            "code": "PTO"
+          },
+          {
+            "name": "YENDEGAIA",
+            "code": "YEN"
+          },
+          {
+            "name": "PUERTO WILLIAMS",
+            "code": "PWL"
+          },
+          {
+            "name": "ISLA NAVARINO",
+            "code": "INV"
+          },
+          {
+            "name": "LAPATAIA",
+            "code": "LTA"
+          }
+        ]
+      },
+      {
+        "name": "LAGUNA BLANCA",
+        "code": 12102,
+        "defaultDistrict": "LBL",
+        "districts": [
+          {
+            "name": "LAGUNA BLANCA",
+            "code": "LBL"
+          }
+        ]
+      },
+      {
+        "name": "NATALES",
+        "code": 12401,
+        "defaultDistrict": "PNT",
+        "districts": [
+          {
+            "name": "CERRO CASTILLO ",
+            "code": "CEC"
+          },
+          {
+            "name": "LA JUNTA  ",
+            "code": "PLJ"
+          },
+          {
+            "name": "PUERTO NATALES",
+            "code": "PNT"
+          },
+          {
+            "name": "RUBENS",
+            "code": "RBS"
+          },
+          {
+            "name": "RIO TURBIO",
+            "code": "RTT"
+          },
+          {
+            "name": "PUERTO BORIES",
+            "code": "PPB"
+          }
+        ]
+      },
+      {
+        "name": "PORVENIR",
+        "code": 12301,
+        "defaultDistrict": "ZPR",
+        "districts": [
+          {
+            "name": "ARMONIA",
+            "code": "ARM"
+          },
+          {
+            "name": "ISLA DAWSON",
+            "code": "IDW"
+          },
+          {
+            "name": "PORVENIR - PUNTA ARE",
+            "code": "ZPR"
+          },
+          {
+            "name": "SECCION RUSSFIN",
+            "code": "SRU"
+          },
+          {
+            "name": "PUERTO PERCY",
+            "code": "PZP"
+          },
+          {
+            "name": "PAMPA GUANACOS",
+            "code": "PPG"
+          }
+        ]
+      },
+      {
+        "name": "PRIMAVERA",
+        "code": 12302,
+        "defaultDistrict": "PRI",
+        "districts": [
+          {
+            "name": "CERRO SOMBRERO",
+            "code": "CSM"
+          },
+          {
+            "name": "ESTANCIA CHINA CR.",
+            "code": "ECH"
+          },
+          {
+            "name": "SAN SEBASTIAN",
+            "code": "KSB"
+          },
+          {
+            "name": "CULLEN",
+            "code": "QEN"
+          },
+          {
+            "name": "PRIMAVERA",
+            "code": "PRI"
+          },
+          {
+            "name": "ONAISIN",
+            "code": "ONA"
+          },
+          {
+            "name": "MANANTIALES",
+            "code": "MTS"
+          },
+          {
+            "name": "ESTANCIA LOS OLIVOS",
+            "code": "ELO"
+          }
+        ]
+      },
+      {
+        "name": "PUNTA ARENAS",
+        "code": 12101,
+        "defaultDistrict": "PUQ",
+        "districts": [
+          {
+            "name": "CABEZA DE MAR",
+            "code": "CAB"
+          },
+          {
+            "name": "ESTANCIA SAN JUAN",
+            "code": "ESJ"
+          },
+          {
+            "name": "TERMINAL CABO NEGRO",
+            "code": "TCN"
+          },
+          {
+            "name": "RANCHO PUNTA ARENAS",
+            "code": "RPU"
+          },
+          {
+            "name": "PUNTA ARENAS",
+            "code": "PUQ"
+          },
+          {
+            "name": "MINA PECKET",
+            "code": "MPK"
+          },
+          {
+            "name": "FUERTE BULNES",
+            "code": "FBL"
+          }
+        ]
+      },
+      {
+        "name": "RIO VERDE",
+        "code": 12103,
+        "defaultDistrict": "RVE",
+        "districts": [
+          {
+            "name": "ENTRE VIENTOS",
+            "code": "EVT"
+          },
+          {
+            "name": "VILLA TEHUELCHES",
+            "code": "VTT"
+          },
+          {
+            "name": "RIO VERDE",
+            "code": "RVE"
+          },
+          {
+            "name": "RIO GRANDE",
+            "code": "RGG"
+          },
+          {
+            "name": "PUERTO ALTAMIRANO",
+            "code": "PPN"
+          },
+          {
+            "name": "MORRO CHICO",
+            "code": "MRC"
+          }
+        ]
+      },
+      {
+        "name": "SAN GREGORIO",
+        "code": 12104,
+        "defaultDistrict": "SGG",
+        "districts": [
+          {
+            "name": "GAIKE",
+            "code": "GKE"
+          },
+          {
+            "name": "GALLEGOS CHICOS",
+            "code": "PGL"
+          },
+          {
+            "name": "ESTANCIA SN GREGORIO",
+            "code": "PES"
+          },
+          {
+            "name": "SAN GREGORIO - PUNTA",
+            "code": "SGG"
+          },
+          {
+            "name": "TERMINAL SAN GREGORI",
+            "code": "PZA"
+          },
+          {
+            "name": "MONTE AYMOND",
+            "code": "MAY"
+          },
+          {
+            "name": "PUNTA DELGADA",
+            "code": "PDU"
+          }
+        ]
+      },
+      {
+        "name": "TIMAUKEL",
+        "code": 12303,
+        "defaultDistrict": "PTI",
+        "districts": [
+          {
+            "name": "CAMERON",
+            "code": "PCX"
+          },
+          {
+            "name": "PUERTO YARTAU",
+            "code": "PPY"
+          },
+          {
+            "name": "PUERTO ARTURO",
+            "code": "UOR"
+          },
+          {
+            "name": "TIMAUKEL",
+            "code": "PTI"
+          },
+          {
+            "name": "PUERTO CONDOR",
+            "code": "PPC"
+          }
+        ]
+      },
+      {
+        "name": "TORRES DEL PAINE",
+        "code": 12402,
+        "defaultDistrict": "TRP",
+        "districts": [
+          {
+            "name": "ESTANCIA VICTORINA",
+            "code": "ESV"
+          },
+          {
+            "name": "PEHOE",
+            "code": "PHE"
+          },
+          {
+            "name": "TORRES DEL PAINE",
+            "code": "TRP"
+          }
+        ]
+      }
+    ]
+  }
+];
+const container$1 = "_container_1ehjy_1";
+const selectWrapper = "_selectWrapper_1ehjy_7";
+const styles$7 = {
+  container: container$1,
+  selectWrapper
+};
+const findLocationByDistrictCode = (code) => {
+  for (const region of comunas) {
+    for (const city of region.ciudades) {
+      const district = city.districts.find((d) => d.code === code);
+      if (district) {
+        return {
+          regionName: region.name,
+          cityName: city.name,
+          cities: region.ciudades,
+          districts: city.districts
+        };
+      }
+    }
+  }
+  return null;
+};
+const DistrictSelector = ({
+  register,
+  setValue,
+  initialValue,
+  name
+}) => {
+  const [selectedRegion, setSelectedRegion] = reactExports.useState("");
+  const [selectedDistrict, setSelectedDistrict] = reactExports.useState("");
+  const [districts, setDistricts] = reactExports.useState([]);
+  const [initialized, setInitialized] = reactExports.useState(false);
+  const getDistrictsForRegion = (regionName) => {
+    const regionData = comunas.find((r) => r.name === regionName);
+    if (!regionData) return [];
+    return regionData.ciudades.reduce(
+      (acc, city) => acc.concat(city.districts),
+      []
+    );
+  };
+  reactExports.useEffect(() => {
+    if (initialValue) {
+      const location = findLocationByDistrictCode(initialValue);
+      if (location) {
+        setSelectedRegion(location.regionName);
+        setDistricts(getDistrictsForRegion(location.regionName));
+        setSelectedDistrict(initialValue);
+        setValue(name, initialValue);
+        setInitialized(true);
+      }
+    }
+  }, [initialValue, setValue, name]);
+  reactExports.useEffect(() => {
+    if (selectedDistrict && districts.length > 0) {
+      const districtExists = districts.find((d) => d.code === selectedDistrict);
+      if (districtExists) {
+        setValue(name, selectedDistrict);
+      }
+    }
+  }, [selectedDistrict, districts, setValue, name]);
+  reactExports.useEffect(() => {
+    register(name);
+  }, [register, name]);
+  reactExports.useEffect(() => {
+    var _a;
+    if (!initialized && initialValue) {
+      return;
+    }
+    if (selectedRegion) {
+      setDistricts(getDistrictsForRegion(selectedRegion));
+      if (!initialValue || ((_a = findLocationByDistrictCode(initialValue)) == null ? void 0 : _a.regionName) !== selectedRegion) {
+        setSelectedDistrict("");
+        setValue(name, "");
+      }
+    } else {
+      if (initialized) {
+        setDistricts([]);
+        setSelectedDistrict("");
+        setValue(name, "");
+      }
+    }
+  }, [selectedRegion, setValue, name, initialValue, initialized]);
+  const handleRegionChange = (e) => {
+    setSelectedRegion(e.target.value);
+    setSelectedDistrict("");
+    setDistricts([]);
+    setValue(name, "");
+  };
+  const handleDistrictChange = (e) => {
+    setSelectedDistrict(e.target.value);
+    setValue(name, e.target.value);
+  };
+  const regionOptions = comunas.map((region) => ({
+    value: region.name,
+    label: region.name
+  }));
+  const districtOptions = districts.map((district) => ({
+    value: district.code,
+    label: district.name
+  }));
+  const filteredDistrictOptions = districtOptions;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.container, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.selectWrapper, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Región de origen" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SearchableSelect,
+        {
+          value: selectedRegion,
+          onChange: handleRegionChange,
+          placeholder: "Seleccione o busque una región",
+          options: regionOptions
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.selectWrapper, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Comuna de origen" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SearchableSelect,
+        {
+          value: selectedDistrict,
+          onChange: handleDistrictChange,
+          options: filteredDistrictOptions,
+          placeholder: "Seleccione o busque una comuna",
+          disabled: !selectedRegion
+        },
+        selectedRegion
+      )
+    ] })
+  ] });
+};
+const ENABLE_DEVTOOLS$1 = String("false") === "true";
 const FormConfig = ({
   storeId,
   errorValidation,
   settings,
   optionsEmissionOs = [],
   setActiveSection,
-  setDeveloperToolsOpen
+  setDeveloperToolsOpen,
+  OnSaveSettings
 }) => {
   const [toast2, setToast] = reactExports.useState(null);
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { isSubmitting }
   } = useForm({
     defaultValues: {
@@ -9039,6 +18555,7 @@ const FormConfig = ({
         pudoEnable: (data == null ? void 0 : data.pudoEnable) ? "yes" : "no",
         active_logs: (data == null ? void 0 : data.active_logs) ? "yes" : "no"
       });
+      OnSaveSettings();
       setToast({
         message: "Configuración guardada correctamente",
         type: "success"
@@ -9051,9 +18568,8 @@ const FormConfig = ({
       });
     }
   };
-  const isEnabledPudo = watch("pudoEnable");
   const isEnabledLogs = watch("active_logs");
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.formContainer, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -9062,63 +18578,61 @@ const FormConfig = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$5.formTitle, children: "Configuración" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$5.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$5.subTitle, children: "Configura tu tienda" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Código de la comuna de origen" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Input,
-            {
-              register,
-              name: "districtCode",
-              placeholder: "xxx",
-              type: "text"
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$9.formTitle, children: "Configuración" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$9.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$9.subTitle, children: "Configura tu tienda" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControls, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          DistrictSelector,
+          {
+            register,
+            setValue,
+            initialValue: settings == null ? void 0 : settings.districtCode,
+            name: "districtCode"
+          }
+        ) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Estado para crear orden en Ecommerce Blue Express" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Select,
+            SearchableSelect,
             {
-              register,
-              name: "noBlueStatus",
-              options: optionsEmissionOs
+              value: watch("noBlueStatus") || "",
+              onChange: (e) => setValue("noBlueStatus", e.target.value),
+              options: optionsEmissionOs,
+              placeholder: "Seleccione o busque un estado"
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$5.checkboxSectionTitle, children: "Opciones generales" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Opciones generales" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Checkbox,
+          {
+            register,
+            name: "pudoEnable",
+            label: "Habilitar Puntos de retiro Blue Express"
+          }
+        ) }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Checkout y Direcciones" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Checkbox,
             {
               register,
-              name: "pudoEnable",
-              label: "Habilitar Puntos de retiro Blue Express"
+              name: "districtsEnable",
+              label: "Activación de comunas y regiones en checkout"
             }
-          ) }),
-          isEnabledPudo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Clave API de Google Maps" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Input,
-              {
-                register,
-                name: "googleKey",
-                placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                type: "text"
-              }
-            )
-          ] })
-        ] })
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.helpText, children: "Convierte los campos de región y ciudad en listas desplegables con opciones predefinidas de Chile." })
+        ] }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$5.checkboxSectionTitle, children: "Logs y Soporte" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Logs y Soporte" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Checkbox,
           {
             register,
@@ -9126,35 +18640,35 @@ const FormConfig = ({
             label: "Habilitar logs"
           }
         ) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.rowControls, children: [
-          isEnabledLogs && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControls, children: [
+          isEnabledLogs && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
-              className: styles$5.buttonSecondary,
+              className: styles$9.buttonSecondary,
               onClick: () => setActiveSection("logs"),
               children: "Logs de sistema"
             }
           ) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: ENABLE_DEVTOOLS$1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
-              className: styles$5.buttonSecondary,
+              className: styles$9.buttonSecondary,
               onClick: () => setDeveloperToolsOpen(true),
               children: "Herramientas de desarrollo"
             }
           ) })
         ] })
       ] }),
-      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$5.errorText, children: errorValidation }),
-      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$5.errorText, children: error2 }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$5.button, children: "Guardar configuración" })
+      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.errorText, children: errorValidation }),
+      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.errorText, children: error2 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$9.button, children: "Guardar configuración" })
     ] })
   ] });
 };
 const formContainer = "_formContainer_ecg4b_1";
-const form = "_form_ecg4b_1";
+const form$1 = "_form_ecg4b_1";
 const formTitle = "_formTitle_ecg4b_16";
 const formDescription = "_formDescription_ecg4b_23";
 const storeIdInput = "_storeIdInput_ecg4b_30";
@@ -9172,9 +18686,9 @@ const rowControlsItem = "_rowControlsItem_ecg4b_187";
 const rowControlsItemLabel = "_rowControlsItemLabel_ecg4b_194";
 const createAccountText = "_createAccountText_ecg4b_201";
 const helperText = "_helperText_ecg4b_208";
-const styles$4 = {
+const styles$6 = {
   formContainer,
-  form,
+  form: form$1,
   formTitle,
   formDescription,
   storeIdInput,
@@ -9260,7 +18774,7 @@ const FormNewIntegrate = ({
           "a",
           {
             href: "https://ecommerce.blue.cl",
-            className: styles$4.link,
+            className: styles$6.link,
             target: "_blank",
             rel: "noopener noreferrer",
             children: "ecommerce.blue.cl"
@@ -9272,7 +18786,7 @@ const FormNewIntegrate = ({
     }
     return errorMsg;
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.formContainer, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -9281,29 +18795,29 @@ const FormNewIntegrate = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$4.formTitle, children: "Conexión con Blue Express" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$4.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "ID de integración" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.helperText, children: "Ingresa el ID de integración que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$6.formTitle, children: "Conexión con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$6.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$6.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "ID de integración" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$6.helperText, children: "Ingresa el ID de integración que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             type: "text",
             placeholder: "ID de integración",
             ...register("storeId"),
-            className: styles$4.storeIdInput
+            className: styles$6.storeIdInput
           }
         )
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.errorText, children: renderText(error2) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.subTitle, children: [
+        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.errorText, children: renderText(error2) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.subTitle, children: [
           "Credenciales de Woocommerce",
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.tooltip, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.tooltipIcon, children: "?" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$4.tooltipText, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.tooltip, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.tooltipIcon, children: "?" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$6.tooltipText, children: [
               "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes → Avanzado → API REST → Añadir clave.",
               /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
               "Clave del cliente inicia con “ck_“",
@@ -9312,43 +18826,43 @@ const FormNewIntegrate = ({
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "Clave del cliente" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControls, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "Clave del cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
                 placeholder: "Ingrese la clave del cliente",
                 ...register("clientKey"),
-                className: styles$4.input
+                className: styles$6.input
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$4.rowControlsItemLabel, children: "Clave secreta de cliente" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "Clave secreta de cliente" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
                 placeholder: "Ingrese la clave secreta del cliente",
                 ...register("clientSecret"),
-                className: styles$4.input
+                className: styles$6.input
               }
             )
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$4.button, children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$6.button, children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$4.createAccountText, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$6.createAccountText, children: [
       "¿No tienes un ID de integración?",
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "a",
         {
           href: "https://ecommerce.blue.cl",
-          className: styles$4.link,
+          className: styles$6.link,
           target: "_blank",
           rel: "noopener noreferrer",
           children: "Crea tu cuenta aquí"
@@ -9357,19 +18871,19 @@ const FormNewIntegrate = ({
     ] })
   ] });
 };
-const modalOverlay = "_modalOverlay_111a3_1";
-const modalContent = "_modalContent_111a3_14";
-const warningBox = "_warningBox_111a3_31";
-const formFields = "_formFields_111a3_41";
-const fieldGroup = "_fieldGroup_111a3_48";
-const buttonGroup = "_buttonGroup_111a3_73";
-const button = "_button_111a3_73";
-const primaryButton = "_primaryButton_111a3_89";
-const secondaryButton = "_secondaryButton_111a3_103";
-const styles$3 = {
+const modalOverlay = "_modalOverlay_x9myy_1";
+const modalContent$1 = "_modalContent_x9myy_14";
+const warningBox$1 = "_warningBox_x9myy_31";
+const formFields = "_formFields_x9myy_41";
+const fieldGroup = "_fieldGroup_x9myy_48";
+const buttonGroup = "_buttonGroup_x9myy_73";
+const button = "_button_x9myy_73";
+const primaryButton = "_primaryButton_x9myy_89";
+const secondaryButton = "_secondaryButton_x9myy_103";
+const styles$5 = {
   modalOverlay,
-  modalContent,
-  warningBox,
+  modalContent: modalContent$1,
+  warningBox: warningBox$1,
   formFields,
   fieldGroup,
   buttonGroup,
@@ -9408,14 +18922,14 @@ const DeveloperToolsForm = ({
     }
   };
   if (!open) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.modalOverlay, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.modalContent, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.modalOverlay, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.modalContent, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Herramientas de desarrollo" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.warningBox, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.warningBox, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Advertencia:" }),
       " No modifique estas configuraciones a menos que tenga un conocimiento claro de lo que está haciendo. Una mala configuración puede provocar que su plugin deje de funcionar."
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.formFields, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.formFields, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "dev-enabled-checkbox", children: "Habilitar opciones de desarrollo" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
@@ -9428,7 +18942,7 @@ const DeveloperToolsForm = ({
         )
       ] }),
       isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "alternative-url-input", children: "URL alternativa" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
@@ -9440,7 +18954,7 @@ const DeveloperToolsForm = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.fieldGroup, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "tracking-key-input", children: "Tracking BX key" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
@@ -9454,13 +18968,13 @@ const DeveloperToolsForm = ({
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.buttonGroup, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.buttonGroup, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
           onClick: onClose,
-          className: `${styles$3.button} ${styles$3.secondaryButton}`,
+          className: `${styles$5.button} ${styles$5.secondaryButton}`,
           children: "Cancelar"
         }
       ),
@@ -9470,7 +18984,7 @@ const DeveloperToolsForm = ({
           type: "button",
           disabled: loading,
           onClick: handleSave,
-          className: `${styles$3.button} ${styles$3.primaryButton}`,
+          className: `${styles$5.button} ${styles$5.primaryButton}`,
           children: loading ? "Guardando..." : "Guardar"
         }
       )
@@ -9489,7 +19003,7 @@ const logDetail = "_logDetail_171sx_72";
 const pagination = "_pagination_171sx_104";
 const logsDisabledContainer = "_logsDisabledContainer_171sx_135";
 const logsDisabledMessage = "_logsDisabledMessage_171sx_145";
-const styles$2 = {
+const styles$4 = {
   logsContainer,
   backButton,
   logsTable,
@@ -9552,7 +19066,8 @@ const http = {
     ...options,
     method: "POST",
     body: JSON.stringify(data)
-  })
+  }),
+  delete: (endpoint, options = {}) => fetchWrapper(endpoint, { ...options, method: "DELETE" })
 };
 const blueExpressService = {
   /**
@@ -9627,6 +19142,13 @@ const blueExpressService = {
     });
     const queryString = queryParams.toString();
     return http.get(`/get-logs${queryString ? `?${queryString}` : ""}`);
+  },
+  /**
+   * Delete all logs
+   * @returns {Promise} - Operation result
+   */
+  deleteLogs: () => {
+    return http.delete("/delete-logs");
   }
 };
 const Logs = ({ settings, setActiveSection }) => {
@@ -9635,6 +19157,7 @@ const Logs = ({ settings, setActiveSection }) => {
   const [totalPages, setTotalPages] = reactExports.useState(1);
   const [selectedLog, setSelectedLog] = reactExports.useState(null);
   const [loading, setLoading] = reactExports.useState(false);
+  const [deleting, setDeleting] = reactExports.useState(false);
   const logsEnabled = (settings == null ? void 0 : settings.active_logs) === "yes";
   reactExports.useEffect(() => {
     if (logsEnabled) {
@@ -9660,25 +19183,66 @@ const Logs = ({ settings, setActiveSection }) => {
     e.preventDefault();
     setActiveSection("configuracion");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.logsContainer, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "button",
-      {
-        type: "button",
-        className: styles$2.backButton,
-        onClick: () => setActiveSection("configuracion"),
-        children: "← Volver"
+  const handleDeleteLogs = async () => {
+    if (window.confirm(
+      "¿Estás seguro de que deseas eliminar todos los logs? Esta acción no se puede deshacer."
+    )) {
+      setDeleting(true);
+      try {
+        await blueExpressService.deleteLogs();
+        setLogs([]);
+        setTotalPages(1);
+        setCurrentPage(1);
+        setSelectedLog(null);
+        alert("Logs eliminados correctamente.");
+      } catch (error2) {
+        console.error("Error deleting logs:", error2);
+        alert("Error al eliminar los logs.");
+      } finally {
+        setDeleting(false);
       }
-    ),
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.logsContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.headerControls, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          className: styles$4.backButton,
+          onClick: () => setActiveSection("configuracion"),
+          children: "← Volver"
+        }
+      ),
+      logsEnabled && logs.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          className: styles$4.deleteButton,
+          onClick: handleDeleteLogs,
+          disabled: deleting,
+          style: {
+            backgroundColor: "#dc3545",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "4px",
+            cursor: deleting ? "not-allowed" : "pointer",
+            marginLeft: "auto"
+          },
+          children: deleting ? "Eliminando..." : "Borrar Logs"
+        }
+      )
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Logs del Sistema" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Visualiza registros del funcionamiento del plugin. Uso exclusivo para soporte y monitoreo. No realices cambios sin la asesoría de Blue." }),
-    !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$2.logsDisabledMessage, children: [
+    !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$4.logsDisabledMessage, children: [
       'Para ver los logs, por favor activa la opción "Habilitar logs" en la sección de',
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "#", onClick: handleGoToConfig, children: "Configuración" }),
       "."
     ] }) }) : loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Cargando logs..." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$2.logsTable, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$4.logsTable, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Fecha" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Tipo" }),
@@ -9688,13 +19252,13 @@ const Logs = ({ settings, setActiveSection }) => {
           "tr",
           {
             onClick: () => handleLogClick(log),
-            className: `${styles$2.tableRow} ${(selectedLog == null ? void 0 : selectedLog.id) === log.id ? styles$2.selected : ""}`,
+            className: `${styles$4.tableRow} ${(selectedLog == null ? void 0 : selectedLog.id) === log.id ? styles$4.selected : ""}`,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: new Date(log.log_timestamp).toLocaleString() }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "span",
                 {
-                  className: `${styles$2.logType} ${styles$2[log.log_type]}`,
+                  className: `${styles$4.logType} ${styles$4[log.log_type]}`,
                   children: log.log_type
                 }
               ) }),
@@ -9707,11 +19271,11 @@ const Logs = ({ settings, setActiveSection }) => {
           log.id
         )) })
       ] }),
-      selectedLog && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.logDetail, children: [
+      selectedLog && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.logDetail, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Detalle del Log" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: selectedLog.log_body }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.pagination, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.pagination, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -9746,7 +19310,7 @@ const logo__image = "_logo__image_h80jo_20";
 const menu = "_menu_h80jo_25";
 const menu__item = "_menu__item_h80jo_32";
 const menu__item_active = "_menu__item_active_h80jo_49";
-const styles$1 = {
+const styles$3 = {
   sidebar,
   logo,
   logo__image,
@@ -9755,20 +19319,20 @@ const styles$1 = {
   menu__item_active
 };
 const Sidebar = ({ activeSection, setActiveSection }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sidebar, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.logo, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.sidebar, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.logo, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
         alt: "Blue Express",
-        className: styles$1.logo__image
+        className: styles$3.logo__image
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: styles$1.menu, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: styles$3.menu, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$1.menu__item} ${activeSection === "inicio" ? styles$1.menu__item_active : ""}`,
+          className: `${styles$3.menu__item} ${activeSection === "inicio" ? styles$3.menu__item_active : ""}`,
           onClick: () => setActiveSection("inicio"),
           type: "button",
           children: "Resumen"
@@ -9777,7 +19341,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$1.menu__item} ${activeSection === "configuracion" ? styles$1.menu__item_active : ""}`,
+          className: `${styles$3.menu__item} ${activeSection === "configuracion" ? styles$3.menu__item_active : ""}`,
           onClick: () => setActiveSection("configuracion"),
           type: "button",
           children: "Configuración"
@@ -9786,7 +19350,16 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$1.menu__item} ${activeSection === "conexion" ? styles$1.menu__item_active : ""}`,
+          className: `${styles$3.menu__item} ${activeSection === "zonas-envio" ? styles$3.menu__item_active : ""}`,
+          onClick: () => setActiveSection("zonas-envio"),
+          type: "button",
+          children: "Zonas de Envío"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$3.menu__item} ${activeSection === "conexion" ? styles$3.menu__item_active : ""}`,
           onClick: () => setActiveSection("conexion"),
           type: "button",
           children: "Conexión"
@@ -9796,22 +19369,24 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
   ] });
 };
 const Sidebar$1 = reactExports.memo(Sidebar);
-const home = "_home_19qak_1";
-const hero = "_hero_19qak_6";
-const hero__image = "_hero__image_19qak_20";
-const description = "_description_19qak_25";
-const highlight = "_highlight_19qak_32";
-const cards = "_cards_19qak_37";
-const card = "_card_19qak_37";
-const status = "_status_19qak_58";
-const statusContainer = "_statusContainer_19qak_65";
-const statusSuccess = "_statusSuccess_19qak_72";
-const statusError = "_statusError_19qak_73";
-const statusIcon = "_statusIcon_19qak_88";
-const connectButton = "_connectButton_19qak_93";
-const configSummary = "_configSummary_19qak_108";
-const configList = "_configList_19qak_112";
-const styles = {
+const home = "_home_15mjt_1";
+const hero = "_hero_15mjt_6";
+const hero__image = "_hero__image_15mjt_20";
+const description = "_description_15mjt_25";
+const highlight = "_highlight_15mjt_32";
+const cards = "_cards_15mjt_37";
+const card = "_card_15mjt_37";
+const status = "_status_15mjt_58";
+const statusContainer = "_statusContainer_15mjt_65";
+const statusSuccess = "_statusSuccess_15mjt_72";
+const statusError = "_statusError_15mjt_73";
+const statusIcon = "_statusIcon_15mjt_88";
+const connectButton = "_connectButton_15mjt_93";
+const configSummary = "_configSummary_15mjt_108";
+const configList = "_configList_15mjt_112";
+const helpText = "_helpText_15mjt_122";
+const helpLink = "_helpLink_15mjt_129";
+const styles$2 = {
   home,
   hero,
   hero__image,
@@ -9826,45 +19401,57 @@ const styles = {
   statusIcon,
   connectButton,
   configSummary,
-  configList
+  configList,
+  helpText,
+  helpLink
+};
+const getComunaForCode = (codeSelected) => {
+  const district = comunas.flatMap(
+    ({ ciudades }) => ciudades.flatMap(({ districts }) => districts)
+  ).find((district2) => district2.code === codeSelected);
+  return district ? district.name : "No configurado";
 };
 const Home = ({
-  connectionStatus,
-  config,
+  connectionStatus = false,
+  config = null,
   setActiveSection,
   optionsEmissionOs = []
 }) => {
-  const getStatusLabel = (statusValue) => {
-    if (!statusValue) return "No configurado";
-    const option = optionsEmissionOs.find((opt) => opt.value === statusValue);
-    return option ? option.label : statusValue;
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.home, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.hero, children: [
+  const statusLabel2 = reactExports.useMemo(() => {
+    if (!(config == null ? void 0 : config.noBlueStatus)) return "No configurado";
+    const option2 = optionsEmissionOs.find((opt) => opt.value === config.noBlueStatus);
+    return option2 ? option2.label : config.noBlueStatus;
+  }, [config == null ? void 0 : config.noBlueStatus, optionsEmissionOs]);
+  const comunaName = reactExports.useMemo(
+    () => getComunaForCode(config == null ? void 0 : config.districtCode),
+    [config == null ? void 0 : config.districtCode]
+  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.home, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.hero, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Bienvenido a Blue Express" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
           alt: "Blue Express",
-          className: styles.hero__image
+          className: styles$2.hero__image
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.description, children: "Primero realiza las configuraciones, luego conecta tu tienda y entonces podrás realizar el envío de tus pedidos con Blue Express" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.cards, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$2.description, children: "Primero realiza las configuraciones, luego conecta tu tienda y entonces podrás realizar el envío de tus pedidos con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.cards, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.card, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Resumen de la configuración" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles.configList, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$2.configList, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Código de la comuna de origen:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Comuna de origen:" }),
             " ",
-            config.districtCode || "No configurado"
+            comunaName
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Estado para crear orden en Ecommerce Blue Express:" }),
             " ",
-            getStatusLabel(config.noBlueStatus)
+            statusLabel2
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Puntos de retiro Blue Express?:" }),
@@ -9873,29 +19460,496 @@ const Home = ({
           ] })
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay configuración disponible" }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.card, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.card, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Estado de la conexión" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusSuccess, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statusIcon, children: "✓" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusSuccess, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.statusIcon, children: "✓" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Conectado" })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusContainer, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusError, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statusIcon, children: "✕" }),
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusContainer, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusError, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.statusIcon, children: "✕" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Desconectado" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
-              className: styles.connectButton,
+              className: styles$2.connectButton,
               onClick: () => setActiveSection("conexion"),
               children: "Ir a Conexión"
             }
           )
         ] }) })
       ] })
+    ] }),
+    !connectionStatus && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$2.helpText, children: [
+      "¿Necesitas ayuda con tu integración? ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://app.puente.xyz/public/243/", className: styles$2.helpLink, target: "_blank", rel: "noopener noreferrer", children: "Agenda una integración asistida" })
     ] })
   ] });
 };
+const container = "_container_1hvn9_1";
+const header = "_header_1hvn9_7";
+const title = "_title_1hvn9_11";
+const subtitle = "_subtitle_1hvn9_18";
+const statusPanel = "_statusPanel_1hvn9_24";
+const statusGrid = "_statusGrid_1hvn9_32";
+const statusCard = "_statusCard_1hvn9_39";
+const statusLabel = "_statusLabel_1hvn9_46";
+const statusValue = "_statusValue_1hvn9_53";
+const refreshButton = "_refreshButton_1hvn9_60";
+const form = "_form_1hvn9_81";
+const section = "_section_1hvn9_88";
+const sectionTitle = "_sectionTitle_1hvn9_100";
+const formRow = "_formRow_1hvn9_107";
+const formGroup = "_formGroup_1hvn9_114";
+const formHint = "_formHint_1hvn9_120";
+const regionSelector = "_regionSelector_1hvn9_126";
+const regionActions = "_regionActions_1hvn9_130";
+const btnSmall = "_btnSmall_1hvn9_136";
+const regionGrid = "_regionGrid_1hvn9_152";
+const regionItem = "_regionItem_1hvn9_164";
+const methodsGrid = "_methodsGrid_1hvn9_171";
+const methodCard = "_methodCard_1hvn9_177";
+const methodDesc = "_methodDesc_1hvn9_185";
+const optionsGrid = "_optionsGrid_1hvn9_193";
+const resultPanel = "_resultPanel_1hvn9_199";
+const summaryGrid = "_summaryGrid_1hvn9_207";
+const summaryItem = "_summaryItem_1hvn9_214";
+const summaryLabel = "_summaryLabel_1hvn9_221";
+const summaryValue = "_summaryValue_1hvn9_228";
+const warningBox = "_warningBox_1hvn9_235";
+const detailsBox = "_detailsBox_1hvn9_248";
+const detailsList = "_detailsList_1hvn9_256";
+const detailItem = "_detailItem_1hvn9_262";
+const detailIcon = "_detailIcon_1hvn9_274";
+const detailText = "_detailText_1hvn9_279";
+const linkBox = "_linkBox_1hvn9_284";
+const linkButton = "_linkButton_1hvn9_289";
+const actions = "_actions_1hvn9_306";
+const btnPrimary = "_btnPrimary_1hvn9_315";
+const btnSecondary = "_btnSecondary_1hvn9_339";
+const modal = "_modal_1hvn9_362";
+const modalContent = "_modalContent_1hvn9_375";
+const modalActions = "_modalActions_1hvn9_394";
+const styles$1 = {
+  container,
+  header,
+  title,
+  subtitle,
+  statusPanel,
+  statusGrid,
+  statusCard,
+  statusLabel,
+  statusValue,
+  refreshButton,
+  form,
+  section,
+  sectionTitle,
+  formRow,
+  formGroup,
+  formHint,
+  regionSelector,
+  regionActions,
+  btnSmall,
+  regionGrid,
+  regionItem,
+  methodsGrid,
+  methodCard,
+  methodDesc,
+  optionsGrid,
+  resultPanel,
+  summaryGrid,
+  summaryItem,
+  summaryLabel,
+  summaryValue,
+  warningBox,
+  detailsBox,
+  detailsList,
+  detailItem,
+  detailIcon,
+  detailText,
+  linkBox,
+  linkButton,
+  actions,
+  btnPrimary,
+  btnSecondary,
+  modal,
+  modalContent,
+  modalActions
+};
+const select__container = "_select__container_1opku_1";
+const select = "_select_1opku_1";
+const styles = {
+  select__container,
+  select
+};
+const Select = ({
+  register,
+  name,
+  placeholder,
+  options = [],
+  disabled = false,
+  defaultValue = "",
+  value,
+  onChange
+}) => {
+  const selectProps = register ? register(name) : { value, onChange };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "select",
+    {
+      ...selectProps,
+      disabled,
+      defaultValue,
+      value: register ? void 0 : value,
+      className: styles.select,
+      children: [
+        placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
+        options.map((option2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option2.value, children: option2.label }, option2.value))
+      ]
+    }
+  ) });
+};
+function ShippingZones() {
+  var _a, _b, _c, _d, _e, _f;
+  const { register, handleSubmit, setValue, getValues } = useForm({
+    defaultValues: {
+      strategy: "by_region",
+      mode: "create_new",
+      methods: ["bluex-ex", "bluex-py", "bluex-md"],
+      regions: [],
+      dry_run: false,
+      backup_existing: false,
+      exclude_islands: true
+    }
+  });
+  const [toast2, setToast] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  const [statusData, setStatusData] = reactExports.useState(null);
+  const [lastResult, setLastResult] = reactExports.useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = reactExports.useState(false);
+  const [pendingAction, setPendingAction] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    loadStatus();
+  }, []);
+  const loadStatus = async () => {
+    try {
+      const data = await shippingZonesStatus();
+      setStatusData(data);
+    } catch (error2) {
+      console.error("Error loading status:", error2);
+      setToast({
+        message: "Error al cargar el estado de las zonas: " + error2.message,
+        type: "error"
+      });
+    }
+  };
+  const availableMethods = [
+    { id: "bluex-ex", name: "Express", description: "Entrega rápida y segura" },
+    { id: "bluex-py", name: "Priority", description: "Tiempos optimizados" },
+    { id: "bluex-md", name: "SameDay", description: "Entrega el mismo día" }
+  ];
+  const modes = [
+    { value: "create_new", label: "Crear nuevas zonas" },
+    { value: "add_to_existing", label: "Agregar a zonas existentes" },
+    { value: "replace_existing", label: "Reemplazar métodos en zonas existentes" }
+  ];
+  const chileanRegions = (statusData == null ? void 0 : statusData.chilean_regions) || {
+    "CL-AP": "Arica y Parinacota",
+    "CL-TA": "Tarapacá",
+    "CL-AN": "Antofagasta",
+    "CL-AT": "Atacama",
+    "CL-CO": "Coquimbo",
+    "CL-VS": "Valparaíso",
+    "CL-RM": "Región Metropolitana",
+    "CL-LI": "O'Higgins",
+    "CL-ML": "Maule",
+    "CL-NB": "Ñuble",
+    "CL-BI": "Biobío",
+    "CL-AR": "La Araucanía",
+    "CL-LR": "Los Ríos",
+    "CL-LL": "Los Lagos",
+    "CL-AI": "Aysén",
+    "CL-MA": "Magallanes"
+  };
+  const handleSimulate = async (data) => {
+    executeZoneCreation({ ...data, dry_run: true });
+  };
+  const handleApply = async (data) => {
+    if (data.mode === "create_new" && (statusData == null ? void 0 : statusData.zones_with_bluex) > 0) {
+      setShowConfirmDialog(true);
+      setPendingAction(() => () => executeZoneCreation({ ...data, dry_run: false }));
+    } else {
+      executeZoneCreation({ ...data, dry_run: false });
+    }
+  };
+  const executeZoneCreation = async (formData) => {
+    try {
+      setLoading(true);
+      setShowConfirmDialog(false);
+      const currentValues = getValues();
+      console.log("Form Data:", formData);
+      console.log("Current Values:", currentValues);
+      console.log("Selected Methods:", currentValues.methods);
+      console.log("Selected Regions:", currentValues.regions);
+      const params = {
+        strategy: "by_region",
+        mode: formData.mode,
+        methods: Array.isArray(currentValues.methods) ? currentValues.methods : [],
+        dry_run: formData.dry_run,
+        backup_existing: false,
+        // Forzar false
+        exclude_islands: formData.exclude_islands
+      };
+      if (Array.isArray(currentValues.regions) && currentValues.regions.length > 0) {
+        params.regions = currentValues.regions;
+      }
+      console.log("Final params:", params);
+      const result = await shippingZonesCreate(params);
+      setLastResult(result);
+      const isDryRun = formData.dry_run;
+      const summary = result.summary || {};
+      let message2 = isDryRun ? "Simulación completada: " : "Operación completada: ";
+      const parts = [];
+      if (summary.zones_created > 0) parts.push(`${summary.zones_created} zona(s) ${isDryRun ? "a crear" : "creada(s)"}`);
+      if (summary.zones_updated > 0) parts.push(`${summary.zones_updated} zona(s) ${isDryRun ? "a actualizar" : "actualizada(s)"}`);
+      if (summary.zones_skipped > 0) parts.push(`${summary.zones_skipped} zona(s) omitida(s)`);
+      if (summary.methods_added > 0) parts.push(`${summary.methods_added} método(s) ${isDryRun ? "a agregar" : "agregado(s)"}`);
+      message2 += parts.join(", ");
+      setToast({
+        message: message2,
+        type: summary.errors_count > 0 ? "warning" : "success"
+      });
+      await loadStatus();
+    } catch (error2) {
+      setToast({
+        message: "Error: " + error2.message,
+        type: "error"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const toggleAllRegions = (select2) => {
+    if (select2) {
+      setValue("regions", Object.keys(chileanRegions));
+    } else {
+      setValue("regions", []);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.container, children: [
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Toast,
+      {
+        message: toast2.message,
+        type: toast2.type,
+        onClose: () => setToast(null)
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.header, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$1.title, children: "Automatización de Zonas de Envío Blue Express" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.subtitle, children: "Configure automáticamente las zonas de envío para los métodos Blue Express" })
+    ] }),
+    statusData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusPanel, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Estado Actual" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusGrid, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Zonas totales:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: statusData.total_zones })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Zonas con Blue Express:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: statusData.zones_with_bluex })
+        ] }),
+        statusData.bluex_methods_count && Object.keys(statusData.bluex_methods_count).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Métodos configurados:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: Object.entries(statusData.bluex_methods_count).map(([method, count]) => {
+            var _a2;
+            const methodName = ((_a2 = availableMethods.find((m) => m.id === method)) == null ? void 0 : _a2.name) || method;
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              methodName,
+              ": ",
+              count
+            ] }, method);
+          }) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          onClick: loadStatus,
+          className: styles$1.refreshButton,
+          disabled: loading,
+          children: "🔄 Actualizar estado"
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { className: styles$1.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Configuración de Zonas" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.formRow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.formGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Modo de Operación" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              register,
+              name: "mode",
+              options: modes
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.formHint, children: "Define cómo manejar zonas existentes" })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.regionSelector, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Regiones a Incluir" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.regionActions, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(true), className: styles$1.btnSmall, children: "Seleccionar todas" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(false), className: styles$1.btnSmall, children: "Limpiar selección" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.regionGrid, children: Object.entries(chileanRegions).map(([code, name]) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.regionItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Checkbox,
+            {
+              register,
+              name: "regions",
+              value: code,
+              label: `${name} (${code})`
+            }
+          ) }, code)) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.formHint, children: "Deja vacío para incluir todas las regiones" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Métodos de Envío" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.methodsGrid, children: [availableMethods[0]].map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.methodCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Checkbox,
+            {
+              register,
+              name: "methods",
+              value: method.id,
+              label: method.name
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.methodDesc, children: method.description })
+        ] }, method.id)) })
+      ] }),
+      lastResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.resultPanel, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: styles$1.sectionTitle, children: [
+          ((_a = lastResult.summary) == null ? void 0 : _a.zones_created) > 0 || ((_b = lastResult.summary) == null ? void 0 : _b.zones_updated) > 0 ? "✅" : "ℹ️",
+          " ",
+          "Resultado de la Operación"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryGrid, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas creadas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_c = lastResult.summary) == null ? void 0 : _c.zones_created) || 0 })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas actualizadas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_d = lastResult.summary) == null ? void 0 : _d.zones_updated) || 0 })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas omitidas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_e = lastResult.summary) == null ? void 0 : _e.zones_skipped) || 0 })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Métodos agregados:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_f = lastResult.summary) == null ? void 0 : _f.methods_added) || 0 })
+          ] })
+        ] }),
+        lastResult.duplicates && lastResult.duplicates.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.warningBox, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "⚠️ Zonas duplicadas encontradas:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { children: lastResult.duplicates.map((dup, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: dup }, idx)) })
+        ] }),
+        lastResult.details && lastResult.details.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailsBox, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Detalles:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailsList, children: [
+            lastResult.details.slice(0, 10).map((detail, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailItem, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailIcon, children: [
+                detail.status === "created" && "✅",
+                detail.status === "updated" && "🔄",
+                detail.status === "skipped" && "⏭️",
+                detail.status === "simulated" && "🎭"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [
+                detail.zone_name || detail.region_name || detail.commune_name,
+                detail.reason && ` - ${detail.reason}`
+              ] })
+            ] }, idx)),
+            lastResult.details.length > 10 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.detailItem, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [
+              "...y ",
+              lastResult.details.length - 10,
+              " más"
+            ] }) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.linkBox, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "a",
+          {
+            href: "/wp-admin/admin.php?page=wc-settings&tab=shipping",
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: styles$1.linkButton,
+            children: "📦 Ver Zonas de Envío en WooCommerce"
+          }
+        ) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.actions, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSubmit(handleSimulate),
+            className: styles$1.btnSecondary,
+            disabled: loading,
+            children: loading ? "⏳ Simulando..." : "🎭 Simular Cambios"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSubmit(handleApply),
+            className: styles$1.btnPrimary,
+            disabled: loading,
+            children: loading ? "⏳ Aplicando..." : "🚀 Aplicar Cambios"
+          }
+        )
+      ] })
+    ] }),
+    showConfirmDialog && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.modal, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.modalContent, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "⚠️ Confirmar Creación de Zonas" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+        "Ya existen ",
+        statusData.zones_with_bluex,
+        " zona(s) con métodos BlueX. Al crear nuevas zonas con modo “Crear nuevas”, las zonas duplicadas serán omitidas."
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Deseas continuar?" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.modalActions, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: () => setShowConfirmDialog(false),
+            className: styles$1.btnSecondary,
+            children: "Cancelar"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: () => {
+              if (pendingAction) pendingAction();
+            },
+            className: styles$1.btnPrimary,
+            children: "Sí, continuar"
+          }
+        )
+      ] })
+    ] }) })
+  ] });
+}
+const ENABLE_DEVTOOLS = String("false") === "true";
 const App = () => {
   const [loading, setLoading] = reactExports.useState(true);
   const [storeId, setStoreId] = reactExports.useState(void 0);
@@ -9955,7 +20009,8 @@ const App = () => {
     }
   }, []);
   const DeveloperToolsMemo = reactExports.useMemo(() => {
-    return developerToolsOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    if (!ENABLE_DEVTOOLS) return null;
+    return developerToolsOpen ? /* @__PURE__ */ jsxRuntimeExports.jsx(
       DeveloperToolsForm,
       {
         open: developerToolsOpen,
@@ -9964,7 +20019,7 @@ const App = () => {
         onClose: () => setDeveloperToolsOpen(false),
         saveSettings: saveSettingsDeveloperTools
       }
-    );
+    ) : null;
   }, [developerToolsOpen, settings]);
   const renderContent = () => {
     switch (activeSection) {
@@ -9989,9 +20044,12 @@ const App = () => {
             testPricing,
             optionsEmissionOs,
             setActiveSection,
-            setDeveloperToolsOpen
+            setDeveloperToolsOpen,
+            OnSaveSettings: validateIntegration
           }
         );
+      case "zonas-envio":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(ShippingZones, {});
       case "conexion":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(
           FormNewIntegrate,
@@ -10006,11 +20064,19 @@ const App = () => {
       case "logs":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Logs, { settings, setActiveSection });
       default:
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Home, { connectionStatus: activeIntegration, config: settings, setActiveSection, optionsEmissionOs });
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Home,
+          {
+            connectionStatus: activeIntegration,
+            config: settings,
+            setActiveSection,
+            optionsEmissionOs
+          }
+        );
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$c.root, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$c.appLayout, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$e.root, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$e.appLayout, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar$1,
         {
@@ -10018,7 +20084,7 @@ const App = () => {
           setActiveSection
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$c.content, children: renderContent() })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$e.content, children: renderContent() })
     ] }),
     DeveloperToolsMemo,
     loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })

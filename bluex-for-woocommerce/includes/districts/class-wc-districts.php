@@ -264,6 +264,28 @@ class WC_States_Places_Bx
         if ($allowed) {
 
             foreach ($allowed as $code => $country) {
+                if ($code === 'CL') {
+                    // Use the clean list of communes for Chile
+                    if (!function_exists('bluex_get_communes_by_region')) {
+                        $communes_file = WC_Correios::get_plugin_path() . '/includes/data/chile-communes.php';
+                        if (file_exists($communes_file)) {
+                            require_once $communes_file;
+                        }
+                    }
+
+                    if (function_exists('bluex_get_communes_by_region')) {
+                        $communes_by_region = bluex_get_communes_by_region();
+                        $places['CL'] = array();
+                        
+                        foreach ($communes_by_region as $region_code => $communes) {
+                            $places['CL'][$region_code] = array_map(function($commune) {
+                                return $commune['name'];
+                            }, $communes);
+                        }
+                        continue;
+                    }
+                }
+
                 if (!isset($places[$code]) && file_exists($this->get_plugin_path() . '/places/' . $code . '.php')) {
                     include($this->get_plugin_path() . '/places/' . $code . '.php');
                 }

@@ -89,9 +89,6 @@ class WC_Correios_Webhook
 	 */
 	public function init()
 	{
-
-
-		add_action('woocommerce_checkout_order_processed', array($this, 'send_on_create'), 10, 1);
 		add_action('woocommerce_order_status_changed', array($this, 'order_status_change'), 10, 3);
 	}
 
@@ -324,27 +321,6 @@ class WC_Correios_Webhook
 
 			$this->send_order($mappedOrder);
 		}
-	}
-
-	/**
-	 * Sends the order when created.
-	 *
-	 * Invoked when an order is created and sends the mapped order to the external service.
-	 *
-	 * @param int $order_id The order ID.
-	 */
-	public function send_on_create($order_id)
-	{
-		bluex_log('info', "Webhook: Order created hook triggered for order ID {$order_id}. Sending to BlueX.");
-
-		$mappedOrder = $this->map_order($order_id);
-
-		if (null === $mappedOrder) {
-			bluex_log('error', "Webhook: Failed to map order ID {$order_id}, not sending.");
-			return;
-		}
-
-		$this->send_order($mappedOrder);
 	}
 }
 

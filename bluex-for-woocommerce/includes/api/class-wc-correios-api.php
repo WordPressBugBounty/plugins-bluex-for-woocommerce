@@ -40,6 +40,8 @@ class WC_Correios_API {
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-save-dev-settings.php';
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-empty-autofill-db.php';
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-get-logs.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-delete-logs.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-bluex-shipping-zones-automation.php';
     }
 
     /**
@@ -101,28 +103,39 @@ class WC_Correios_API {
             'callback' => array(new WC_Correios_Get_Logs_Endpoint(), 'get_logs'),
             'permission_callback' => array($this, 'check_permission'),
             'args' => array(
-				'page' => array(
-					'default' => 1,
-					'sanitize_callback' => 'absint'
-				),
-				'per_page' => array(
-					'default' => 10,
-					'sanitize_callback' => 'absint'
-				),
-				'type' => array(
-					'default' => '',
-					'sanitize_callback' => 'sanitize_text_field'
-				),
-				'start_date' => array(
-					'default' => '',
-					'sanitize_callback' => 'sanitize_text_field'
-				),
-				'end_date' => array(
-					'default' => '',
-					'sanitize_callback' => 'sanitize_text_field'
-				)
-			)
+    'page' => array(
+     'default' => 1,
+     'sanitize_callback' => 'absint'
+    ),
+    'per_page' => array(
+     'default' => 10,
+     'sanitize_callback' => 'absint'
+    ),
+    'type' => array(
+     'default' => '',
+     'sanitize_callback' => 'sanitize_text_field'
+    ),
+    'start_date' => array(
+     'default' => '',
+     'sanitize_callback' => 'sanitize_text_field'
+    ),
+    'end_date' => array(
+     'default' => '',
+     'sanitize_callback' => 'sanitize_text_field'
+    )
+   )
         ));
+
+        // Delete logs
+        register_rest_route('wc-bluex/v1', '/delete-logs', array(
+            'methods' => 'DELETE',
+            'callback' => array(new WC_Correios_Delete_Logs_Endpoint(), 'delete_logs'),
+            'permission_callback' => array($this, 'check_permission'),
+        ));
+
+        // Shipping zones automation endpoints
+        $automation_endpoint = new WC_BlueX_Shipping_Zones_Automation_Endpoint();
+        $automation_endpoint->register_routes();
     }
 
     /**

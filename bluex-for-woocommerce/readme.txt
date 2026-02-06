@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 6.8.2
-Stable tag: 3.1.1
+Stable tag: 3.1.5
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -84,4 +84,10 @@ create a rest api user, this must be in the advanced options and deliver it to B
 = 3.1.1 - 2025-08-28
 * Changes for compatibility with old php versions
 = 3.1.2 - 2025-09-01
-* Improve
+* Delete send_on_create flag
+= 3.1.3 - 2025-10-29 =
+* Improve on pickups points on Blue embed map.
+= 3.1.4 - 2025-12-10 =
+* Fix issues, new shipping zone module.
+= 3.1.5 - 2025-12-10 =
+* Improve on api integration.

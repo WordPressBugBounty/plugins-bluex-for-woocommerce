@@ -79,7 +79,7 @@ class BlueX_API_Client
 
         $headers = array_merge([
             'Content-Type' => 'application/json',
-            'apikey'       => $api_key,
+            'x-api-key'       => $api_key,
         ], $extra_headers);
 
         $args = [
@@ -138,7 +138,7 @@ class BlueX_API_Client
      */
     public function get_pricing(array $from, array $to, string $service_type, array $bultos, float $declared_value, string $familia_producto, ?array $userData = null)
     {
-        $endpoint = '/api/ecommerce/pricing/v1';
+        $endpoint = '/eplin/pricing/v1';
         $data = [
             'from'          => $from,
             'to'            => $to,

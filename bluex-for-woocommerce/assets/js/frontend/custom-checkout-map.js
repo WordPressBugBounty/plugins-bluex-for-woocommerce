@@ -168,16 +168,63 @@ function getStateDetails(name) {
   return states.find((state) => state.nameFromIframe === name) || {};
 }
 
-// Function to select a shipping method
+// Function to select a shipping method - updated for modern WooCommerce
 function selectShipping(shippingMethod) {
+  console.log('BlueX PUDOS: selectShipping called with:', shippingMethod);
+  
   const pudoIdInput = document.getElementById("isPudoSelected");
-  pudoIdInput.value = shippingMethod; // Set the shipping method
+  const widgetContainer = document.getElementById("bluex-pudo-widget-container") || 
+                         document.getElementById("bluex-pudo-widget-container-emergency") ||
+                         document.getElementById("bluex-pudo-widget-container-optimized") ||
+                         document.getElementById("bluex-pudo-widget-container-native") ||
+                         document.getElementById("bluex-pudo-widget-container-debug") ||
+                         document.getElementById("bluex-pudo-widget-container-sidebar") ||
+                         document.getElementById("bluex-pudo-widget-container-simple");
+  
+  if (pudoIdInput) {
+    pudoIdInput.value = shippingMethod; // Set the shipping method
+    console.log('BlueX PUDOS: Set isPudoSelected to:', shippingMethod);
+  } else {
+    console.warn('BlueX PUDOS: isPudoSelected input not found');
+  }
 
   if (shippingMethod === "normalShipping") {
     const elements = getDOMElements();
-    clearElements(elements); // Clear elements
+    if (elements.agencyIdInput && elements.inputDir && elements.inputDir2) {
+      clearElements(elements); // Clear elements only if they exist
+      console.log('BlueX PUDOS: Cleared elements');
+    } else {
+      console.log('BlueX PUDOS: Some elements not found, skipping clearElements');
+    }
+    
+    // Hide PUDO widget
+    if (widgetContainer) {
+      widgetContainer.style.display = "none";
+      console.log('BlueX PUDOS: Hidden widget container');
+    }
 
-    triggerChangeEvent(elements.inputState); // Trigger change event on state input
+    if (elements.inputState) {
+      triggerChangeEvent(elements.inputState); // Trigger change event on state input
+    }
+  } else if (shippingMethod === "pudoShipping") {
+    // Show PUDO widget
+    if (widgetContainer) {
+      widgetContainer.style.display = "block";
+      console.log('BlueX PUDOS: Shown widget container');
+      
+      // Load widget if not already loaded
+      if (!widgetContainer.querySelector('iframe')) {
+        loadPudoWidget();
+        console.log('BlueX PUDOS: Loading PUDO widget');
+      }
+    } else {
+      console.warn('BlueX PUDOS: Widget container not found');
+    }
+  }
+  
+  // Trigger WooCommerce checkout update
+  if (typeof jQuery !== 'undefined') {
+    jQuery(document.body).trigger('update_checkout');
   }
   clearWooCommerceShippingCache(); // Clear WooCommerce shipping cache
 }
@@ -196,16 +243,97 @@ function triggerUpdateCheckout() {
   document.body.dispatchEvent(event); // Dispatch the event
 }
 
-// Function to clear WooCommerce shipping cache
+// Function to load PUDO widget dynamically
+function loadPudoWidget() {
+  if (typeof bluex_checkout_params === 'undefined') {
+    console.error('BlueX checkout parameters not loaded');
+    return;
+  }
+
+  const widgetContainer = document.getElementById("bluex-pudo-widget-container") || 
+                         document.getElementById("bluex-pudo-widget-container-emergency") ||
+                         document.getElementById("bluex-pudo-widget-container-optimized") ||
+                         document.getElementById("bluex-pudo-widget-container-native") ||
+                         document.getElementById("bluex-pudo-widget-container-debug") ||
+                         document.getElementById("bluex-pudo-widget-container-sidebar") ||
+                         document.getElementById("bluex-pudo-widget-container-simple");
+  if (!widgetContainer) {
+    console.error('BlueX PUDOS: No widget container found');
+    return;
+  }
+
+  // For optimized/native/debug/sidebar/simple containers, load widget into the specific content area
+  const targetContainer = document.getElementById("widget-content-optimized") || 
+                          document.getElementById("widget-content-native") || 
+                          document.getElementById("widget-content-debug") ||
+                          document.getElementById("widget-content-sidebar") ||
+                          document.getElementById("widget-content-simple") ||
+                          widgetContainer;
+
+  // Determine environment and build widget URL
+  const baseUrl = bluex_checkout_params.base_path_url;
+  let widgetUrl = bluex_checkout_params.widget_base_urls.prod; // default
+
+  if (baseUrl.includes('qa')) {
+    widgetUrl = bluex_checkout_params.widget_base_urls.qa;
+  } else if (baseUrl.includes('dev')) {
+    widgetUrl = bluex_checkout_params.widget_base_urls.dev;
+  }
+
+  const params = new URLSearchParams();
+
+  const agencyIdInput = document.getElementById("agencyId");
+  if (agencyIdInput && agencyIdInput.value) {
+    params.append('id', agencyIdInput.value);
+  }
+
+  if (params.toString()) {
+    widgetUrl += '?' + params.toString();
+  }
+
+  // Create iframe
+  const iframe = document.createElement('iframe');
+  iframe.id = 'bluex-pudo-iframe';
+  iframe.src = widgetUrl;
+  iframe.style.width = '100%';
+  iframe.style.height = '600px';
+  iframe.style.border = 'none';
+  iframe.title = 'Selector de Punto Blue Express';
+
+  // Wrap in container div
+  const wrapper = document.createElement('div');
+  wrapper.className = 'bluex-pudo-widget-wrapper';
+  wrapper.style.border = '1px solid #ccc';
+  wrapper.style.borderRadius = '5px';
+  wrapper.style.overflow = 'hidden';
+  wrapper.appendChild(iframe);
+
+  targetContainer.innerHTML = '';
+  targetContainer.appendChild(wrapper);
+}
+
+// Function to clear WooCommerce shipping cache - updated with nonce
 function clearWooCommerceShippingCache() {
-  const data = { action: "clear_shipping_cache" };
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "/wp-admin/admin-ajax.php", true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.onload = function () {
-    if (xhr.status === 200) {
+  if (typeof bluex_checkout_params === 'undefined') {
+    console.error('BlueX checkout parameters not loaded');
+    return;
+  }
+
+  const data = new FormData();
+  data.append('action', 'clear_shipping_cache');
+  data.append('nonce', bluex_checkout_params.nonce);
+
+  fetch(bluex_checkout_params.ajax_url, {
+    method: 'POST',
+    body: data
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.success) {
       triggerUpdateCheckout(); // Trigger checkout update on successful request
     }
-  };
-  xhr.send(`action=${data.action}`); // Send the request
+  })
+  .catch(error => {
+    console.error('Error clearing shipping cache:', error);
+  });
 }

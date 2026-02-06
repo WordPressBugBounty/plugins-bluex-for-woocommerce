@@ -104,7 +104,6 @@ class WC_Correios_Integration extends WC_Integration
 		$this->tracking_bxkey          = $settings_handler->get_tracking_bxkey(); // Needed?
 		$this->noBlueStatus          	= $settings_handler->get_setting('noBlueStatus');
 		$this->districtCode          	= $settings_handler->get_setting('districtCode');
-		$this->googleKey        = $settings_handler->get_setting('googleKey');
 		$this->pudoEnable          = $settings_handler->get_setting('pudoEnable');
 		$this->devOptions          = $settings_handler->get_setting('devOptions');
 		$this->alternativeBasePath        = $settings_handler->get_setting('alternativeBasePath'); // Needed?
@@ -176,13 +175,6 @@ class WC_Correios_Integration extends WC_Integration
 				'label'       => __('Marcar para habilitar', 'woocommerce-correios'),
 				'default'     => 'no',
 			),
-			'googleKey' => array(
-				'title'       => __('Clave API de Google', 'woocommerce-correios'),
-				'type'        => 'text',
-				'description' => __('Tu clave API personalizada de Google, utilizada en el mapa de puntos de recogida.', 'woocommerce-correios'),
-				'desc_tip'    => true,
-				'default'     => '',
-			),
 			'districtsEnable' => array(
 				'title'       => __('Habilitar funcionalidad de distritos', 'woocommerce-correios'),
 				'type'        => 'checkbox',
@@ -209,7 +201,7 @@ class WC_Correios_Integration extends WC_Integration
 				'type'        => 'text',
 				'description' => __('Tu ruta base alternativa.', 'woocommerce-correios'),
 				'desc_tip'    => true,
-				'default'     => 'https://apigw.bluex.cl',
+				'default'     => 'https://eplin.api.bluex.cl',
 			);
 		}
 	}
@@ -223,6 +215,9 @@ class WC_Correios_Integration extends WC_Integration
 		$GLOBALS['hide_save_button'] = true;
 
 		include WC_Correios::get_plugin_path() . 'includes/admin/views/html-admin-help-message.php';
+
+		// Add BlueX Zones Configuration section
+		// $this->display_zones_configuration_section();
 
 		/* if (class_exists('SoapClient')) {
 			echo '<div><input type="hidden" name="section" value="' . esc_attr($this->id) . '" /></div>';
@@ -264,7 +259,9 @@ class WC_Correios_Integration extends WC_Integration
 				'i18n_confirm_message' => __('Are you sure you want to delete all postcodes from the database?', 'woocommerce-correios'),
 				'empty_database_nonce' => wp_create_nonce('woocommerce_correios_autofill_addresses_nonce'),
 				'ajax_url' => admin_url('admin-ajax.php'), // URL para peticiones AJAX
-				'nonce'    => wp_create_nonce('correios_integration_nonce') // Token de seguridad
+				'nonce'    => wp_create_nonce('correios_integration_nonce'), // Token de seguridad para AJAX
+				'rest_url' => rest_url('wc-bluex/v1/'), // URL base para REST API
+				'rest_nonce' => wp_create_nonce('wp_rest') // Token de seguridad para REST API
 			)
 		);
 	}
@@ -306,8 +303,99 @@ class WC_Correios_Integration extends WC_Integration
 				</fieldset>
 			</td>
 		</tr>
-<?php
+	<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Display zones configuration section
+	 */
+	public function display_zones_configuration_section()
+	{
+		if (!class_exists('WC_BlueX_Zones_Validator')) {
+			return;
+		}
+
+		echo '<div class="bluex-zones-configuration-section">';
+		echo '<h2><span class="dashicons dashicons-admin-site-alt3" style="margin-right: 8px;"></span>Configuración de Zonas de Envío BlueExpress</h2>';
+
+		// Show validation results
+		echo '<div id="bluex-zones-validation-results">';
+		$validation_results = WC_BlueX_Zones_Validator::validate_configuration();
+		echo WC_BlueX_Zones_Validator::generate_html_report($validation_results);
+		echo '</div>';
+
+		// Add refresh button
+		echo '<div style="margin-top: 15px;">';
+		echo '<button type="button" class="button" id="bluex-refresh-validation">';
+		echo '<span class="dashicons dashicons-update" style="margin-right: 5px;"></span>';
+		echo 'Actualizar Validación';
+		echo '</button>';
+		echo '</div>';
+
+		echo '</div>';
+
+		// Add JavaScript for refresh functionality
+	?>
+		<script>
+			jQuery(document).ready(function($) {
+				// Refresh validation
+				$('#bluex-refresh-validation').click(function() {
+					var $btn = $(this);
+					$btn.prop('disabled', true).find('.dashicons').addClass('fa-spin');
+
+					$.post(ajaxurl, {
+							action: 'bluex_validate_zones',
+							nonce: '<?php echo wp_create_nonce('bluex_validate_zones'); ?>'
+						})
+						.done(function(response) {
+							if (response.success) {
+								$('#bluex-zones-validation-results').html(response.data.html);
+							} else {
+								alert('Error al actualizar la validación: ' + response.data);
+							}
+						})
+						.fail(function() {
+							alert('Error de conexión al actualizar la validación.');
+						})
+						.always(function() {
+							$btn.prop('disabled', false).find('.dashicons').removeClass('fa-spin');
+						});
+				});
+			});
+		</script>
+
+		<style>
+			.bluex-zones-configuration-section {
+				background: white;
+				border: 1px solid #ccd0d4;
+				border-radius: 4px;
+				padding: 20px;
+				margin-top: 20px;
+			}
+
+			.bluex-zones-configuration-section h2 {
+				margin-top: 0;
+				color: #2271b1;
+				border-bottom: 1px solid #e5e5e5;
+				padding-bottom: 10px;
+			}
+
+			.fa-spin {
+				animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+<?php
 	}
 
 	/**
@@ -632,7 +720,6 @@ class WC_Correios_Integration extends WC_Integration
 			// Sanitize and update settings from POST data
 			$settings['noBlueStatus'] = isset($_POST['noBlueStatus']) ? sanitize_text_field(wp_unslash($_POST['noBlueStatus'])) : $settings['noBlueStatus'];
 			$settings['districtCode'] = isset($_POST['districtCode']) ? sanitize_text_field(wp_unslash($_POST['districtCode'])) : $settings['districtCode'];
-			$settings['googleKey'] = isset($_POST['googleKey']) ? sanitize_text_field(wp_unslash($_POST['googleKey'])) : $settings['googleKey'];
 			$settings['pudoEnable'] = isset($_POST['pudoEnable']) ? sanitize_key(wp_unslash($_POST['pudoEnable'])) : $settings['pudoEnable']; // Should be 'yes' or 'no'
 			$settings['districtsEnable'] = isset($_POST['districtsEnable']) ? sanitize_key(wp_unslash($_POST['districtsEnable'])) : $settings['districtsEnable']; // Should be 'yes' or 'no'
 			$settings['active_logs'] = isset($_POST['active_logs']) ? sanitize_key(wp_unslash($_POST['active_logs'])) : $settings['active_logs']; // Should be 'yes' or 'no'

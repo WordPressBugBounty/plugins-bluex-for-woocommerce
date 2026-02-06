@@ -70,7 +70,6 @@ class WC_Correios_Settings
 				'districtCode' => "SCL",
 				'districtsEnable' => 'yes',
 				'pudoEnable' => 'no',
-				'googleKey' => NULL,
 				'active_logs' => 'no',
 			);
 
@@ -172,18 +171,22 @@ class WC_Correios_Settings
 		}
 	}
 
-	// TODO: Remove this function when we have the real development mode
+	// Dev mode controlado por flag de build y setting almacenado
 	/**
 	 * Get development mode.
+	 *
+	 * Retorna true solo si:
+	 * - El build fue realizado con --debug (define('BLUEX_DEBUG', true)), y
+	 * - En ajustes, devOptions está habilitado ("yes").
 	 *
 	 * @return bool
 	 */
 	public function get_dev_mode()
 	{
-		return true;
-		// $settings = $this->get_settings();
-		// return defined('DEV_OPTIONS') && DEV_OPTIONS && 
-		// 	   isset($settings['devOptions']) && $settings['devOptions'] === 'yes';
+		$settings = $this->get_settings();
+		$dev_options = isset($settings['devOptions']) ? $settings['devOptions'] : 'no';
+
+		return (defined('BLUEX_DEBUG') && BLUEX_DEBUG === true) && ($dev_options === 'yes');
 	}
 
 	/**
@@ -193,9 +196,11 @@ class WC_Correios_Settings
 	 */
 	public function get_tracking_bxkey()
 	{
+		$apiKeyBase = "QUoO07ZRZ12tzkkF8yJM9am7uhxUJCbR7f6kU5Dz";
+		// $apiKeyBaseOld = "W6FGzkovqEQaklVLCgzXKNt5UPJiqWml";
 		$dev_mode = $this->get_dev_mode();
-		$key = $dev_mode ? $this->get_setting('tracking_bxkey') : 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
-		return $key ? $key : 'W6FGzkovqEQaklVLCgzXKNt5UPJiqWml';
+		$key = $dev_mode ? $this->get_setting('tracking_bxkey') : $apiKeyBase;
+		return $key ? $key : $apiKeyBase;
 	}
 
 	/**
@@ -205,11 +210,13 @@ class WC_Correios_Settings
 	 */
 	public function get_base_path()
 	{
+		$baseUrl = "https://eplin.api.blue.cl";
+		// $baseUrlOld = "https://apigw.bluex.cl";
 		$dev_mode = $this->get_dev_mode();
 		$alternative_base_path = $this->get_setting('alternativeBasePath');
 		return ($dev_mode && !empty($alternative_base_path))
 			? $alternative_base_path
-			: 'https://apigw.bluex.cl';
+			: $baseUrl;
 	}
 
 	// Añade aquí más métodos específicos para obtener configuraciones comunes

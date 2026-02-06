@@ -476,8 +476,20 @@ class WC_Correios_Webservice
 	}
 	protected function float_to_string($value)
 	{
-		$value = str_replace('.', ',', $value);
-		return $value;
+		try {
+			if (!is_string($value)) {
+				$value = (string) $value;
+			}
+			$value = str_replace('.', ',', $value);
+			return $value;
+		} catch (\Throwable $e) {
+			if (function_exists('bluex_log')) {
+				bluex_log('error', 'float_to_string error: ' . $e->getMessage());
+			} elseif ($this->log instanceof WC_Logger) {
+				$this->log->error('float_to_string error: ' . $e->getMessage(), array('source' => $this->id));
+			}
+			return (string) $value;
+		}
 	}
 	/**
 	 * Get the shipping details.
@@ -611,6 +623,8 @@ class WC_Correios_Webservice
 		bluex_log('info', "Log de precio enviado al pricing" . $price);
 
 		$pricingResponse = $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
+
+		bluex_log('info', 'Pricing API response: ' . print_r($pricingResponse, true));
 
 		if (is_wp_error($pricingResponse) || empty($pricingResponse['data'])) {
 			bluex_log('error', 'Failed to fetch pricing. Error: ' . (is_wp_error($pricingResponse) ? $pricingResponse->get_error_message() : 'Empty data in response'));

@@ -18763,10 +18763,14 @@ const FormNewIntegrate = ({
     }
   };
   const renderText = (errorMsg) => {
+    const normalizedError = (errorMsg || "").toLowerCase();
+    if (normalizedError.includes("cloudflare")) {
+      return "La IP de tu servidor está siendo bloqueada por Cloudflare, nuestro proveedor de seguridad. Comunícate con el soporte de Blue Express para ayudarte con la guía.";
+    }
     if (errorMsg.includes("401")) {
       return "La Url o Api Key de Blue Express no son correctas";
     }
-    if (errorMsg.includes("404") || errorMsg.toLowerCase().includes("no encontramos tu dominio")) {
+    if (errorMsg.includes("404") || normalizedError.includes("no encontramos tu dominio")) {
       return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
         "¿Aún no estás registrado? Ingresa a",
         " ",
@@ -19487,50 +19491,53 @@ const Home = ({
     ] })
   ] });
 };
-const container = "_container_1hvn9_1";
-const header = "_header_1hvn9_7";
-const title = "_title_1hvn9_11";
-const subtitle = "_subtitle_1hvn9_18";
-const statusPanel = "_statusPanel_1hvn9_24";
-const statusGrid = "_statusGrid_1hvn9_32";
-const statusCard = "_statusCard_1hvn9_39";
-const statusLabel = "_statusLabel_1hvn9_46";
-const statusValue = "_statusValue_1hvn9_53";
-const refreshButton = "_refreshButton_1hvn9_60";
-const form = "_form_1hvn9_81";
-const section = "_section_1hvn9_88";
-const sectionTitle = "_sectionTitle_1hvn9_100";
-const formRow = "_formRow_1hvn9_107";
-const formGroup = "_formGroup_1hvn9_114";
-const formHint = "_formHint_1hvn9_120";
-const regionSelector = "_regionSelector_1hvn9_126";
-const regionActions = "_regionActions_1hvn9_130";
-const btnSmall = "_btnSmall_1hvn9_136";
-const regionGrid = "_regionGrid_1hvn9_152";
-const regionItem = "_regionItem_1hvn9_164";
-const methodsGrid = "_methodsGrid_1hvn9_171";
-const methodCard = "_methodCard_1hvn9_177";
-const methodDesc = "_methodDesc_1hvn9_185";
-const optionsGrid = "_optionsGrid_1hvn9_193";
-const resultPanel = "_resultPanel_1hvn9_199";
-const summaryGrid = "_summaryGrid_1hvn9_207";
-const summaryItem = "_summaryItem_1hvn9_214";
-const summaryLabel = "_summaryLabel_1hvn9_221";
-const summaryValue = "_summaryValue_1hvn9_228";
-const warningBox = "_warningBox_1hvn9_235";
-const detailsBox = "_detailsBox_1hvn9_248";
-const detailsList = "_detailsList_1hvn9_256";
-const detailItem = "_detailItem_1hvn9_262";
-const detailIcon = "_detailIcon_1hvn9_274";
-const detailText = "_detailText_1hvn9_279";
-const linkBox = "_linkBox_1hvn9_284";
-const linkButton = "_linkButton_1hvn9_289";
-const actions = "_actions_1hvn9_306";
-const btnPrimary = "_btnPrimary_1hvn9_315";
-const btnSecondary = "_btnSecondary_1hvn9_339";
-const modal = "_modal_1hvn9_362";
-const modalContent = "_modalContent_1hvn9_375";
-const modalActions = "_modalActions_1hvn9_394";
+const container = "_container_urh6r_1";
+const header = "_header_urh6r_7";
+const title = "_title_urh6r_11";
+const subtitle = "_subtitle_urh6r_18";
+const statusPanel = "_statusPanel_urh6r_24";
+const statusGrid = "_statusGrid_urh6r_32";
+const statusCard = "_statusCard_urh6r_39";
+const statusLabel = "_statusLabel_urh6r_46";
+const statusValue = "_statusValue_urh6r_53";
+const warningBadge = "_warningBadge_urh6r_60";
+const refreshButton = "_refreshButton_urh6r_71";
+const warningMessage = "_warningMessage_urh6r_92";
+const infoMessage = "_infoMessage_urh6r_103";
+const form = "_form_urh6r_114";
+const section = "_section_urh6r_121";
+const sectionTitle = "_sectionTitle_urh6r_133";
+const formRow = "_formRow_urh6r_140";
+const formGroup = "_formGroup_urh6r_147";
+const formHint = "_formHint_urh6r_153";
+const regionSelector = "_regionSelector_urh6r_159";
+const regionActions = "_regionActions_urh6r_163";
+const btnSmall = "_btnSmall_urh6r_169";
+const regionGrid = "_regionGrid_urh6r_185";
+const regionItem = "_regionItem_urh6r_197";
+const methodsGrid = "_methodsGrid_urh6r_204";
+const methodCard = "_methodCard_urh6r_210";
+const methodDesc = "_methodDesc_urh6r_218";
+const optionsGrid = "_optionsGrid_urh6r_226";
+const resultPanel = "_resultPanel_urh6r_232";
+const summaryGrid = "_summaryGrid_urh6r_240";
+const summaryItem = "_summaryItem_urh6r_247";
+const summaryLabel = "_summaryLabel_urh6r_254";
+const summaryValue = "_summaryValue_urh6r_261";
+const warningBox = "_warningBox_urh6r_268";
+const detailsBox = "_detailsBox_urh6r_281";
+const detailsList = "_detailsList_urh6r_289";
+const detailItem = "_detailItem_urh6r_295";
+const detailIcon = "_detailIcon_urh6r_307";
+const detailText = "_detailText_urh6r_312";
+const linkBox = "_linkBox_urh6r_317";
+const linkButton = "_linkButton_urh6r_322";
+const actions = "_actions_urh6r_339";
+const btnPrimary = "_btnPrimary_urh6r_348";
+const btnSecondary = "_btnSecondary_urh6r_372";
+const modal = "_modal_urh6r_395";
+const modalContent = "_modalContent_urh6r_408";
+const modalActions = "_modalActions_urh6r_427";
 const styles$1 = {
   container,
   header,
@@ -19541,7 +19548,10 @@ const styles$1 = {
   statusCard,
   statusLabel,
   statusValue,
+  warningBadge,
   refreshButton,
+  warningMessage,
+  infoMessage,
   form,
   section,
   sectionTitle,
@@ -19615,7 +19625,7 @@ function ShippingZones() {
     defaultValues: {
       strategy: "by_region",
       mode: "create_new",
-      methods: ["bluex-ex", "bluex-py", "bluex-md"],
+      methods: ["bluex-ex"],
       regions: [],
       dry_run: false,
       backup_existing: false,
@@ -19651,7 +19661,7 @@ function ShippingZones() {
   const modes = [
     { value: "create_new", label: "Crear nuevas zonas" },
     { value: "add_to_existing", label: "Agregar a zonas existentes" },
-    { value: "replace_existing", label: "Reemplazar métodos en zonas existentes" }
+    { value: "replace_existing", label: "Editar zonas existentes" }
   ];
   const chileanRegions = (statusData == null ? void 0 : statusData.chilean_regions) || {
     "CL-AP": "Arica y Parinacota",
@@ -19698,7 +19708,9 @@ function ShippingZones() {
         dry_run: formData.dry_run,
         backup_existing: false,
         // Forzar false
-        exclude_islands: formData.exclude_islands
+        exclude_islands: formData.exclude_islands,
+        vat: "19%"
+        // IVA fijo según ley chilena
       };
       if (Array.isArray(currentValues.regions) && currentValues.regions.length > 0) {
         params.regions = currentValues.regions;
@@ -19872,7 +19884,8 @@ function ShippingZones() {
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [
                 detail.zone_name || detail.region_name || detail.commune_name,
-                detail.reason && ` - ${detail.reason}`
+                detail.reason && ` - ${detail.reason}`,
+                (detail.fee_set || detail.fee_updated) && " - 💰 IVA actualizado"
               ] })
             ] }, idx)),
             lastResult.details.length > 10 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.detailItem, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [

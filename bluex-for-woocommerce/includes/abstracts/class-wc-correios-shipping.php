@@ -50,6 +50,9 @@ abstract class WC_Correios_Shipping extends WC_Shipping_Method
 		// Load the form fields.
 		$this->init_form_fields();
 
+		// Load settings.
+		$this->init_settings();
+
 		// Define user set variables.
 		$this->enabled            = $this->get_option('enabled');
 		$this->title              = $this->get_option('title');

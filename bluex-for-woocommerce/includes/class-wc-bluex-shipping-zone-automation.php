@@ -92,7 +92,8 @@ class WC_BlueX_Shipping_Zone_Automation {
             'include_pudos' => true,
             'dry_run' => false,
             'backup_existing' => false,  // Deshabilitado por defecto
-            'exclude_islands' => true
+            'exclude_islands' => true,
+            'fee' => null // IVA / Handling Fee (null = no cambiar, '' = borrar, valor = setear)
         ];
 
         $options = array_merge($default_options, $options);
@@ -205,73 +206,75 @@ class WC_BlueX_Shipping_Zone_Automation {
         }
 
         // Manejar según el modo
-        if ($existing_zone && $options['mode'] === 'create_new') {
-            // Zona duplicada - skip
-            $summary['zones_skipped']++;
-            $duplicates[] = $existing_zone['zone_name'];
-            
-            $details[] = [
-                'zone_name' => $zone_name,
-                'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
-                'zone_id' => $existing_zone['zone_id'],
-                'action' => 'skipped',
-                'reason' => 'Ya existe una zona nacional BlueX',
-                'status' => 'skipped'
-            ];
-        } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
-            // Actualizar zona existente
-            if (!$options['dry_run']) {
-                $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode']);
-                $summary['methods_added'] += $methods_added;
-                $summary['zones_updated']++;
-            } else {
-                $summary['zones_updated']++;
-                $summary['methods_added'] += count($options['methods']);
-            }
-            
-            $details[] = [
-                'zone_name' => $existing_zone['zone_name'],
-                'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
-                'zone_id' => $existing_zone['zone_id'],
-                'action' => $options['mode'],
-                'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
-                'status' => $options['dry_run'] ? 'simulated' : 'updated'
-            ];
+    if ($existing_zone && $options['mode'] === 'create_new') {
+        // Zona duplicada - skip
+        $summary['zones_skipped']++;
+        $duplicates[] = $existing_zone['zone_name'];
+        
+        $details[] = [
+            'zone_name' => $zone_name,
+            'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
+            'zone_id' => $existing_zone['zone_id'],
+            'action' => 'skipped',
+            'reason' => 'Ya existe una zona nacional BlueX',
+            'status' => 'skipped'
+        ];
+    } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
+        // Actualizar zona existente
+        if (!$options['dry_run']) {
+            $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode'], $options['fee']);
+            $summary['methods_added'] += $methods_added;
+            $summary['zones_updated']++;
         } else {
-            // Crear nueva zona
-            $zone_id = null;
-            
-            if (!$options['dry_run']) {
-                $zone_data = [
-                    'zone_name' => $zone_name,
-                    'zone_order' => $this->get_next_zone_order()
-                ];
-                
-                $zone_id = $this->create_woocommerce_zone($zone_data);
-
-                // Agregar todas las regiones de Chile a la zona
-                foreach (array_keys($this->chilean_regions) as $region_code) {
-                    // add_region_to_zone ya maneja el prefijo CL:
-                    $this->add_region_to_zone($zone_id, $region_code);
-                }
-
-                $this->add_shipping_methods_to_zone($zone_id, $options['methods']);
-                $summary['methods_added'] += count($options['methods']);
-            } else {
-                $summary['methods_added'] += count($options['methods']);
-            }
-            
-            $summary['zones_created']++;
-            
-            $details[] = [
-                'zone_name' => $zone_name,
-                'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
-                'zone_id' => $zone_id,
-                'action' => 'created',
-                'methods_added' => count($options['methods']),
-                'status' => $options['dry_run'] ? 'simulated' : 'created'
-            ];
+            $summary['zones_updated']++;
+            $summary['methods_added'] += count($options['methods']);
         }
+        
+        $details[] = [
+            'zone_name' => $existing_zone['zone_name'],
+            'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
+            'zone_id' => $existing_zone['zone_id'],
+            'action' => $options['mode'],
+            'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
+            'status' => $options['dry_run'] ? 'simulated' : 'updated',
+            'fee_updated' => !empty($options['fee'])
+        ];
+    } else {
+        // Crear nueva zona
+        $zone_id = null;
+        
+        if (!$options['dry_run']) {
+            $zone_data = [
+                'zone_name' => $zone_name,
+                'zone_order' => $this->get_next_zone_order()
+            ];
+            
+            $zone_id = $this->create_woocommerce_zone($zone_data);
+
+            // Agregar todas las regiones de Chile a la zona
+            foreach (array_keys($this->chilean_regions) as $region_code) {
+                // add_region_to_zone ya maneja el prefijo CL:
+                $this->add_region_to_zone($zone_id, $region_code);
+            }
+
+            $this->add_shipping_methods_to_zone($zone_id, $options['methods'], $options['fee']);
+            $summary['methods_added'] += count($options['methods']);
+        } else {
+            $summary['methods_added'] += count($options['methods']);
+        }
+        
+        $summary['zones_created']++;
+        
+        $details[] = [
+            'zone_name' => $zone_name,
+            'coverage' => 'Todo Chile (' . count($this->chilean_regions) . ' regiones)',
+            'zone_id' => $zone_id,
+            'action' => 'created',
+            'methods_added' => count($options['methods']),
+            'status' => $options['dry_run'] ? 'simulated' : 'created',
+            'fee_set' => !empty($options['fee'])
+        ];
+    }
 
         return [
             'summary' => $summary,
@@ -352,7 +355,7 @@ class WC_BlueX_Shipping_Zone_Automation {
             } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
                 // Actualizar zona existente
                 if (!$options['dry_run']) {
-                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode']);
+                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode'], $options['fee']);
                     $summary['methods_added'] += $methods_added;
                     $summary['zones_updated']++;
                 } else {
@@ -367,7 +370,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_name' => $existing_zone['zone_name'],
                     'action' => $options['mode'],
                     'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
-                    'status' => $options['dry_run'] ? 'simulated' : 'updated'
+                    'status' => $options['dry_run'] ? 'simulated' : 'updated',
+                    'fee_updated' => !empty($options['fee'])
                 ];
             } else {
                 // Crear nueva zona
@@ -381,7 +385,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                     
                     $zone_id = $this->create_woocommerce_zone($zone_data);
                     $this->add_region_to_zone($zone_id, $region_code);
-                    $this->add_shipping_methods_to_zone($zone_id, $options['methods']);
+                    $this->add_shipping_methods_to_zone($zone_id, $options['methods'], $options['fee']);
                     $summary['methods_added'] += count($options['methods']);
                 } else {
                     $summary['methods_added'] += count($options['methods']);
@@ -396,7 +400,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_id' => $zone_id,
                     'action' => 'created',
                     'methods_added' => count($options['methods']),
-                    'status' => $options['dry_run'] ? 'simulated' : 'created'
+                    'status' => $options['dry_run'] ? 'simulated' : 'created',
+                    'fee_set' => !empty($options['fee'])
                 ];
             }
         }
@@ -458,7 +463,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                     ];
                 } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
                     if (!$options['dry_run']) {
-                        $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode']);
+                        $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode'], $options['fee']);
                         $summary['methods_added'] += $methods_added;
                         $summary['zones_updated']++;
                     } else {
@@ -473,7 +478,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                         'zone_name' => $existing_zone['zone_name'],
                         'action' => $options['mode'],
                         'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
-                        'status' => $options['dry_run'] ? 'simulated' : 'updated'
+                        'status' => $options['dry_run'] ? 'simulated' : 'updated',
+                        'fee_updated' => !empty($options['fee'])
                     ];
                 } else {
                     $zone_id = null;
@@ -517,7 +523,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                             'locations_count' => count($final_locations)
                         ]);
 
-                        $this->add_shipping_methods_to_zone($zone_id, $options['methods']);
+                        $this->add_shipping_methods_to_zone($zone_id, $options['methods'], $options['fee']);
                         $summary['methods_added'] += count($options['methods']);
                     } else {
                         $summary['methods_added'] += count($options['methods']);
@@ -532,7 +538,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                         'zone_id' => $zone_id,
                         'action' => 'created',
                         'methods_added' => count($options['methods']),
-                        'status' => $options['dry_run'] ? 'simulated' : 'created'
+                        'status' => $options['dry_run'] ? 'simulated' : 'created',
+                        'fee_set' => !empty($options['fee'])
                     ];
                 }
             }
@@ -586,7 +593,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                 ];
             } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
                 if (!$options['dry_run']) {
-                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode']);
+                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode'], $options['fee']);
                     $summary['methods_added'] += $methods_added;
                     $summary['zones_updated']++;
                 } else {
@@ -601,7 +608,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_id' => $existing_zone['zone_id'],
                     'action' => $options['mode'],
                     'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
-                    'status' => $options['dry_run'] ? 'simulated' : 'updated'
+                    'status' => $options['dry_run'] ? 'simulated' : 'updated',
+                    'fee_updated' => !empty($options['fee'])
                 ];
             } else {
                 $zone_id = null;
@@ -614,7 +622,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                     
                     $zone_id = $this->create_woocommerce_zone($zone_data);
                     $this->add_region_to_zone($zone_id, $region_code);
-                    $this->add_shipping_methods_to_zone($zone_id, $options['methods']);
+                    $this->add_shipping_methods_to_zone($zone_id, $options['methods'], $options['fee']);
                     $summary['methods_added'] += count($options['methods']);
                 } else {
                     $summary['methods_added'] += count($options['methods']);
@@ -630,7 +638,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_id' => $zone_id,
                     'action' => 'created',
                     'methods_added' => count($options['methods']),
-                    'status' => $options['dry_run'] ? 'simulated' : 'created'
+                    'status' => $options['dry_run'] ? 'simulated' : 'created',
+                    'fee_set' => !empty($options['fee'])
                 ];
             }
         }
@@ -660,7 +669,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                 ];
             } elseif ($existing_zone && ($options['mode'] === 'add_to_existing' || $options['mode'] === 'replace_existing')) {
                 if (!$options['dry_run']) {
-                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode']);
+                    $methods_added = $this->update_methods_in_zone($existing_zone['zone_id'], $options['methods'], $options['mode'], $options['fee']);
                     $summary['methods_added'] += $methods_added;
                     $summary['zones_updated']++;
                 } else {
@@ -675,7 +684,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_id' => $existing_zone['zone_id'],
                     'action' => $options['mode'],
                     'methods_added' => $options['dry_run'] ? count($options['methods']) : $methods_added,
-                    'status' => $options['dry_run'] ? 'simulated' : 'updated'
+                    'status' => $options['dry_run'] ? 'simulated' : 'updated',
+                    'fee_updated' => !empty($options['fee'])
                 ];
             } else {
                 $zone_id = null;
@@ -688,7 +698,7 @@ class WC_BlueX_Shipping_Zone_Automation {
                     
                     $zone_id = $this->create_woocommerce_zone($zone_data);
                     $this->add_region_to_zone($zone_id, $region_code);
-                    $this->add_shipping_methods_to_zone($zone_id, $options['methods']);
+                    $this->add_shipping_methods_to_zone($zone_id, $options['methods'], $options['fee']);
                     $summary['methods_added'] += count($options['methods']);
                 } else {
                     $summary['methods_added'] += count($options['methods']);
@@ -704,7 +714,8 @@ class WC_BlueX_Shipping_Zone_Automation {
                     'zone_id' => $zone_id,
                     'action' => 'created',
                     'methods_added' => count($options['methods']),
-                    'status' => $options['dry_run'] ? 'simulated' : 'created'
+                    'status' => $options['dry_run'] ? 'simulated' : 'created',
+                    'fee_set' => !empty($options['fee'])
                 ];
             }
         }
@@ -793,23 +804,31 @@ class WC_BlueX_Shipping_Zone_Automation {
     /**
      * Agregar métodos de envío a zona
      */
-    private function add_shipping_methods_to_zone($zone_id, $methods) {
+    private function add_shipping_methods_to_zone($zone_id, $methods, $fee = '') {
+        $zone = WC_Shipping_Zones::get_zone($zone_id);
+        
         foreach ($methods as $method_id) {
-            $zone = WC_Shipping_Zones::get_zone($zone_id);
-
             // Verificar si el método ya está en la zona
             $zone_methods = $zone->get_shipping_methods();
             $method_exists = false;
+            $instance_id = 0;
 
             foreach ($zone_methods as $zone_method) {
                 if ($zone_method->id === $method_id) {
                     $method_exists = true;
+                    $instance_id = $zone_method->instance_id;
                     break;
                 }
             }
 
             if (!$method_exists) {
-                $zone->add_shipping_method($method_id);
+                $instance_id = $zone->add_shipping_method($method_id);
+                $this->log_operation('method_added', ['method_id' => $method_id, 'instance_id' => $instance_id]);
+            }
+            
+            // Actualizar fee si se proporcionó (null significa no cambiar)
+            if ($instance_id && $fee !== null) {
+                $this->update_method_fee($instance_id, $method_id, $fee);
             }
         }
 
@@ -915,7 +934,7 @@ class WC_BlueX_Shipping_Zone_Automation {
      * @param string $mode Modo de operación
      * @return int Cantidad de métodos agregados
      */
-    private function update_methods_in_zone($zone_id, $methods, $mode = 'add_to_existing') {
+    private function update_methods_in_zone($zone_id, $methods, $mode = 'add_to_existing', $fee = '') {
         $zone = WC_Shipping_Zones::get_zone($zone_id);
         $existing_methods = $zone->get_shipping_methods();
         $methods_added = 0;
@@ -927,25 +946,33 @@ class WC_BlueX_Shipping_Zone_Automation {
                     $zone->delete_shipping_method($instance_id);
                 }
             }
+            // Recargar métodos después de borrar
+            $zone->save();
+            $existing_methods = $zone->get_shipping_methods();
         }
         
         // Agregar métodos solicitados
         foreach ($methods as $method_id) {
             $method_exists = false;
+            $instance_id = 0;
             
-            // Verificar si el método ya existe (solo para add_to_existing)
-            if ($mode === 'add_to_existing') {
-                foreach ($existing_methods as $existing_method) {
-                    if ($existing_method->id === $method_id) {
-                        $method_exists = true;
-                        break;
-                    }
+            // Verificar si el método ya existe
+            foreach ($existing_methods as $existing_method) {
+                if ($existing_method->id === $method_id) {
+                    $method_exists = true;
+                    $instance_id = $existing_method->instance_id;
+                    break;
                 }
             }
             
             if (!$method_exists) {
-                $zone->add_shipping_method($method_id);
+                $instance_id = $zone->add_shipping_method($method_id);
                 $methods_added++;
+            }
+
+            // Actualizar fee si se proporcionó y tenemos un instance_id válido
+            if ($instance_id && $fee !== null) {
+                $this->update_method_fee($instance_id, $method_id, $fee);
             }
         }
         
@@ -1124,11 +1151,41 @@ class WC_BlueX_Shipping_Zone_Automation {
         ];
     }
 
+    /**
+     * Actualizar el fee (IVA) de un método de envío
+     * 
+     * IMPORTANTE: WooCommerce guarda los settings de instancias de métodos de envío
+     * con el formato: woocommerce_{method_id}_{instance_id}_settings
+     * 
+     * El método get_option_key() de WC_Settings_API retorna el key global (sin instance_id),
+     * por lo que debemos construir el key correcto manualmente.
+     * 
+     * @param int $instance_id ID de la instancia del método de envío
+     * @param string $method_id ID del método de envío (ej: bluex-ex)
+     * @param string $fee Valor del fee a establecer
+     */
+    private function update_method_fee($instance_id, $method_id, $fee) {
+        // Construir el option_key correcto para instance settings
+        // Formato: woocommerce_{method_id}_{instance_id}_settings
+        $option_key = 'woocommerce_' . $method_id . '_' . $instance_id . '_settings';
+        
+        // Leer settings actuales de la instancia
+        $current_settings = get_option($option_key, []);
+        if (!is_array($current_settings)) {
+            $current_settings = [];
+        }
+        
+        $current_settings['fee'] = $fee;
+        
+        update_option($option_key, $current_settings);
+    }
+
     public function get_zones_status() {
         $zones_data = WC_Shipping_Zones::get_zones();
         $stats = [
             'total_zones' => count($zones_data),
             'zones_with_bluex' => 0,
+            'zones_without_vat' => 0,
             'bluex_methods_count' => []
         ];
 
@@ -1140,11 +1197,28 @@ class WC_BlueX_Shipping_Zone_Automation {
             $zone = new WC_Shipping_Zone((int) $zone_data['id']);
             $methods = $zone->get_shipping_methods();
             $has_bluex = false;
+            $bluex_without_vat = false;
 
             foreach ($methods as $method) {
                 if (strpos($method->id, 'bluex') === 0) {
                     $has_bluex = true;
                     $method_id = $method->id;
+
+                    // Check for fee
+                    $fee_configured = !empty($method->fee);
+                    
+                    // Double check directly from options if property is empty
+                    if (!$fee_configured) {
+                        $option_key = $method->get_option_key();
+                        $settings = get_option($option_key);
+                        if (!empty($settings['fee'])) {
+                            $fee_configured = true;
+                        }
+                    }
+
+                    if (!$fee_configured) {
+                        $bluex_without_vat = true;
+                    }
 
                     if (!isset($stats['bluex_methods_count'][$method_id])) {
                         $stats['bluex_methods_count'][$method_id] = 0;
@@ -1156,6 +1230,9 @@ class WC_BlueX_Shipping_Zone_Automation {
 
             if ($has_bluex) {
                 $stats['zones_with_bluex']++;
+                if ($bluex_without_vat) {
+                    $stats['zones_without_vat']++;
+                }
             }
         }
 
@@ -1166,11 +1243,28 @@ class WC_BlueX_Shipping_Zone_Automation {
         if (!empty($rest_methods)) {
             $stats['total_zones']++;
             $has_bluex = false;
+            $bluex_without_vat = false;
 
             foreach ($rest_methods as $method) {
                 if (strpos($method->id, 'bluex') === 0) {
                     $has_bluex = true;
                     $method_id = $method->id;
+
+                    // Check for fee
+                    $fee_configured = !empty($method->fee);
+                    
+                    // Double check directly from options if property is empty
+                    if (!$fee_configured) {
+                        $option_key = $method->get_option_key();
+                        $settings = get_option($option_key);
+                        if (!empty($settings['fee'])) {
+                            $fee_configured = true;
+                        }
+                    }
+
+                    if (!$fee_configured) {
+                        $bluex_without_vat = true;
+                    }
 
                     if (!isset($stats['bluex_methods_count'][$method_id])) {
                         $stats['bluex_methods_count'][$method_id] = 0;
@@ -1182,6 +1276,9 @@ class WC_BlueX_Shipping_Zone_Automation {
 
             if ($has_bluex) {
                 $stats['zones_with_bluex']++;
+                if ($bluex_without_vat) {
+                    $stats['zones_without_vat']++;
+                }
             }
         }
 

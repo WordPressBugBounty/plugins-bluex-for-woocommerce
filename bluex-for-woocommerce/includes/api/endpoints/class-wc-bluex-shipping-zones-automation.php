@@ -79,6 +79,11 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
      */
     public function create_zones($request) {
         try {
+            // Log received parameters for debugging
+            if (function_exists('bluex_log')) {
+                bluex_log('info', 'API create_zones received params: ' . wp_json_encode($request->get_params()));
+            }
+
             $automation = WC_BlueX_Shipping_Zone_Automation();
             // Forzar saneo de "methods" y normalizar booleanos provenientes del frontend
             $options = [
@@ -91,6 +96,7 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
                 'dry_run' => function_exists('wc_string_to_bool') ? wc_string_to_bool((string) $request->get_param('dry_run')) : (bool) $request->get_param('dry_run'),
                 'backup_existing' => function_exists('wc_string_to_bool') ? wc_string_to_bool((string) $request->get_param('backup_existing')) : (bool) $request->get_param('backup_existing'),
                 'exclude_islands' => function_exists('wc_string_to_bool') ? wc_string_to_bool((string) $request->get_param('exclude_islands')) : (bool) $request->get_param('exclude_islands'),
+                'fee' => $request->get_param('vat'), // Mapear 'vat' del frontend a 'fee' (puede ser null, string vacío o valor)
             ];
 
             $result = $automation->create_zones($options);
@@ -197,7 +203,7 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
                 'type' => 'string',
                 'enum' => ['create_new', 'add_to_existing', 'replace_existing'],
                 'default' => 'create_new',
-                'description' => 'Modo de operación: create_new (crear nuevas zonas), add_to_existing (agregar a zonas existentes), replace_existing (reemplazar métodos en zonas existentes)'
+                'description' => 'Modo de operación: create_new (crear nuevas zonas), add_to_existing (agregar a zonas existentes), replace_existing (editar zonas existentes)'
             ],
             'include_pudos' => [
                 'required' => false,
@@ -222,6 +228,11 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
                 'type' => 'boolean',
                 'default' => false,
                 'description' => 'Excluir islas de Valparaíso (Isla de Pascua, Juan Fernández) creando zona de exclusión'
+            ],
+            'vat' => [
+                'required' => false,
+                'type' => 'string',
+                'description' => 'Valor del IVA (Handling Fee) a aplicar a los métodos de envío'
             ]
         ];
     }
@@ -249,9 +260,9 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
      */
     public function sanitize_methods_param( $value, $request, $param ) {
         $allowed = ['bluex-ex', 'bluex-py', 'bluex-md'];
-        $default = $allowed;
+        $default = ['bluex-ex'];
 
-        // Si viene vacío o null, usar por defecto.
+        // Si viene vacío o null, usar por defecto (solo Express).
         if ($value === null || $value === '' ) {
             return $default;
         }

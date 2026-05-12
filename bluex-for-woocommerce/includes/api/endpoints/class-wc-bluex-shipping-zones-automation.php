@@ -125,7 +125,7 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
             // Agregar información adicional usando el nuevo getter público
             $status['chilean_regions'] = $automation->get_chilean_regions();
             $status['available_strategies'] = $automation->get_available_strategies();
-            $status['available_methods'] = ['bluex-ex', 'bluex-py', 'bluex-md'];
+            $status['available_methods'] = ['bluex-ex', 'bluex-py', 'bluex-md', 'bluex-pudo'];
 
             return new WP_REST_Response($status, 200);
 
@@ -181,9 +181,9 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
                 'type' => 'array',
                 'items' => [
                     'type' => 'string',
-                    'enum' => ['bluex-ex', 'bluex-py', 'bluex-md'],
+                    'enum' => ['bluex-ex', 'bluex-py', 'bluex-md', 'bluex-pudo'],
                 ],
-                'default' => ['bluex-ex', 'bluex-py', 'bluex-md'],
+                'default' => ['bluex-ex', 'bluex-py', 'bluex-md', 'bluex-pudo'],
                 'sanitize_callback' => [$this, 'sanitize_methods_param'],
                 'validate_callback' => [$this, 'validate_methods_param'],
                 'description' => 'Métodos de envío a incluir'
@@ -259,7 +259,7 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
      * @return array Lista de métodos saneada.
      */
     public function sanitize_methods_param( $value, $request, $param ) {
-        $allowed = ['bluex-ex', 'bluex-py', 'bluex-md'];
+        $allowed = ['bluex-ex', 'bluex-py', 'bluex-md', 'bluex-pudo'];
         $default = ['bluex-ex'];
 
         // Si viene vacío o null, usar por defecto (solo Express).

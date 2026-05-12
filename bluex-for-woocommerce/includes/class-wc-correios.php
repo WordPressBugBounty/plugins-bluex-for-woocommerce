@@ -58,9 +58,27 @@ class WC_Correios
 				WC_BlueX_City_Zone_Matcher::init();
 			}
 
+			// Wire the Action Scheduler callback so queued batches resolve
+			// regardless of which page-load triggers the runner. Zero cost
+			// at boot — only one add_action call.
+			if (class_exists('WC_BlueX_Pudo_Zone_Migrator')) {
+				WC_BlueX_Pudo_Zone_Migrator::init();
+			}
+
+			// Toggle watcher + admin notice. Only needed in admin contexts;
+			// the AJAX handlers also live there.
+			if (is_admin() && class_exists('WC_BlueX_Pudo_Zone_Notice')) {
+				WC_BlueX_Pudo_Zone_Notice::init();
+			}
+
 			add_filter('woocommerce_integrations', array(__CLASS__, 'include_integrations'));
 			add_filter('woocommerce_shipping_methods', array(__CLASS__, 'include_methods'));
 			add_filter('woocommerce_email_classes', array(__CLASS__, 'include_emails'));
+
+			// Normalize the bluex-pudo rate so its cost mirrors the bluex-ex rate
+			// in the same package (see class-wc-bluex-pudo.php docstring for why).
+			// Priority 99 runs after other plugins that may add/remove rates.
+			add_filter('woocommerce_package_rates', array(__CLASS__, 'normalize_bluex_pudo_rate'), 99, 2);
 		} else {
 			add_action('admin_notices', array(__CLASS__, 'woocommerce_missing_notice'));
 		}
@@ -141,6 +159,14 @@ class WC_Correios
 		// Blue Express Shipping Zone Automation
 		include_once dirname(__FILE__) . '/class-wc-bluex-shipping-zone-automation.php';
 
+		// Blue Express PUDO Zone Migrator (Action Scheduler-driven, runs on
+		// upgrade or first install when pudoEnable=yes; idempotent).
+		include_once dirname(__FILE__) . '/class-wc-bluex-pudo-zone-migrator.php';
+
+		// Blue Express PUDO Zone Notice (admin notice + AJAX dismiss/retry
+		// handlers; warns about new zones missing PUDO after a toggle off→on).
+		include_once dirname(__FILE__) . '/class-wc-bluex-pudo-zone-notice.php';
+
 		// Blue Express Quick Checker
 		include_once dirname(__FILE__) . '/class-bluex-quick-checker.php';
 
@@ -182,6 +208,11 @@ class WC_Correios
 
 		// Update to 3.0.0.
 		WC_Correios_Install::upgrade_300();
+
+		// Schedule the bluex-pudo zone migration if needed. Cheap to call
+		// on every page load (option compare + early return); the actual
+		// work runs async via Action Scheduler.
+		WC_Correios_Install::upgrade_zones_migration();
 	}
 
 	/**
@@ -223,6 +254,7 @@ class WC_Correios
 			$methods['bluex-ex']					= 'WC_BlueX_EX';
 			$methods['bluex-py']					= 'WC_BlueX_PY';
 			$methods['bluex-md']					= 'WC_BlueX_MD';
+			$methods['bluex-pudo']					= 'WC_BlueX_Pudo';
 			$old_options = get_option('woocommerce_correios_settings');
 			if (empty($old_options)) {
 				unset($methods['correios-legacy']);
@@ -230,6 +262,98 @@ class WC_Correios
 		}
 
 		return $methods;
+	}
+
+	/**
+	 * Normalize Blue Express shipping rates: mirror pudo's cost/taxes to the
+	 * bluex-ex rate, and order the package so all Blue rates come first
+	 * (pudo ahead of the rest) with non-Blue carriers after.
+	 *
+	 * Why:
+	 * - bluex-pudo is a UX wrapper around bluex-ex. The customer picks a
+	 *   pickup point, but the order itself is processed by the BlueX Express
+	 *   service. Showing PUDO with a different price than Express would
+	 *   confuse users at place-order (total changes). The order's
+	 *   shipping_method is rewritten to `bluex-ex` at creation time (see
+	 *   WC_BlueX_Pudo), so the cost MUST already match Express.
+	 * - Ordering Blue carriers first is a UX decision: the store owner's
+	 *   primary courier should lead the list regardless of whether pudo is
+	 *   enabled. When pudo is off (WC_BlueX_Pudo::calculate_shipping early-
+	 *   returns and nothing arrives here under that id), we still sort ex/
+	 *   py/md ahead of flat_rate / free_shipping / local_pickup.
+	 *
+	 * @param WC_Shipping_Rate[] $rates   Keyed by rate id.
+	 * @param array              $package Shipping package.
+	 * @return WC_Shipping_Rate[]
+	 */
+	public static function normalize_bluex_pudo_rate($rates, $package)
+	{
+		if (empty($rates) || !is_array($rates)) {
+			return $rates;
+		}
+
+		// Partition by category in a single pass: pudo, ex, other-blue, other.
+		$pudo_key = null;
+		$ex_key   = null;
+		$bluex_non_pudo = array();
+		$other          = array();
+		foreach ($rates as $key => $rate) {
+			if (!is_object($rate) || !method_exists($rate, 'get_method_id')) {
+				$other[$key] = $rate;
+				continue;
+			}
+			$method_id = $rate->get_method_id();
+			if ($method_id === 'bluex-pudo' && $pudo_key === null) {
+				$pudo_key = $key;
+				continue;
+			}
+			if ($method_id === 'bluex-ex' && $ex_key === null) {
+				$ex_key = $key;
+				continue;
+			}
+			if (is_string($method_id) && strpos($method_id, 'bluex-') === 0) {
+				$bluex_non_pudo[$key] = $rate;
+				continue;
+			}
+			$other[$key] = $rate;
+		}
+
+		// If pudo arrived but no ex is available in this package, pudo can't
+		// mirror a parent price — drop it to avoid showing a free/zero cost
+		// option that would differ from the eventual order total.
+		if ($pudo_key !== null && $ex_key === null) {
+			unset($rates[$pudo_key]);
+			$pudo_key = null;
+		}
+
+		// Mirror cost + taxes from ex onto pudo when both exist.
+		if ($pudo_key !== null && $ex_key !== null) {
+			$ex_rate   = $rates[$ex_key];
+			$pudo_rate = $rates[$pudo_key];
+			if (method_exists($ex_rate, 'get_cost') && method_exists($pudo_rate, 'set_cost')) {
+				$pudo_rate->set_cost($ex_rate->get_cost());
+			}
+			if (method_exists($ex_rate, 'get_taxes') && method_exists($pudo_rate, 'set_taxes')) {
+				$pudo_rate->set_taxes($ex_rate->get_taxes());
+			}
+		}
+
+		// If there is no Blue rate at all, leave the caller-provided order
+		// untouched — nothing to prioritize.
+		if ($pudo_key === null && $ex_key === null && empty($bluex_non_pudo)) {
+			return $rates;
+		}
+
+		// Final order: pudo (if any), ex (if any), remaining bluex-* (py/md
+		// in the order WC received them), then everything else.
+		$ordered = array();
+		if ($pudo_key !== null) {
+			$ordered[$pudo_key] = $rates[$pudo_key];
+		}
+		if ($ex_key !== null) {
+			$ordered[$ex_key] = $rates[$ex_key];
+		}
+		return $ordered + $bluex_non_pudo + $other;
 	}
 
 	/**

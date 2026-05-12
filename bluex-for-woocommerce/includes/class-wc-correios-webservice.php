@@ -504,8 +504,22 @@ class WC_Correios_Webservice
 			parse_str($_POST['post_data'], $output);
 		}
 
-		// Extract the 'agencyId' value if present.
-		$agencyId = (isset($output['agencyId']) && $output['agencyId'] != "") ? sanitize_text_field($output['agencyId']) : null;
+		// Only the bluex-pudo shipping method cares about `agencyId`. Reading
+		// it from POST for every consumer caused cross-contamination: in the
+		// classic checkout flow the browser submits `agencyId` via the
+		// update_checkout AJAX post_data, and because this webservice is
+		// shared by all bluex-* methods, the response's `nameService`
+		// (agency name for PUDO) overwrote the label of bluex-ex / bluex-py
+		// / bluex-md too (see class-wc-correios-shipping.php:577). The Blocks
+		// flow never submitted `post_data` so it was invisible there — this
+		// scopes the read to the one method that actually needs it.
+		$agencyId = null;
+		if ($this->id === 'bluex-pudo'
+			&& isset($output['agencyId'])
+			&& $output['agencyId'] !== ''
+		) {
+			$agencyId = sanitize_text_field($output['agencyId']);
+		}
 
 		// Default fallback response structure
 		$default_shipping = (
@@ -574,6 +588,36 @@ class WC_Correios_Webservice
 			$regionCode = substr($regionCodeToFormat, strlen($siglas));
 		} else {
 			$regionCode = $regionCodeToFormat;
+		}
+
+		// --- Per-request response cache ---------------------------------------
+		// BlueX's external webservice (geo + pricing) is the dominant latency
+		// of the checkout. When a customer toggles between shipping rates for
+		// the SAME destination + cart contents, the inputs to this method are
+		// identical and the output will be identical too — so we cache it by
+		// transient for 5 minutes. This is pure performance; no functional
+		// behavior changes. The cache key includes everything that drives the
+		// webservice response: destination, contents, agency, service family,
+		// and price. Mutating any of those produces a new key (= new call).
+		$familiaProducto_for_key = $agencyId ? 'PUDO' : 'PAQU';
+		$cache_key_payload = array(
+			'dest'   => array(
+				'country'  => (string) ($destination['country']  ?? ''),
+				'state'    => (string) ($destination['state']    ?? ''),
+				'city'     => (string) $city_normalized,
+				'region'   => (string) $regionCode,
+				'postcode' => (string) ($destination['postcode'] ?? ''),
+			),
+			'bultos'          => $bultos,
+			'price'           => round((float) $price, 2),
+			'agencyId'        => (string) ($agencyId ?? ''),
+			'service'         => (string) $this->service,
+			'familiaProducto' => $familiaProducto_for_key,
+		);
+		$cache_key = 'bluex_ws_rate_' . md5(wp_json_encode($cache_key_payload));
+		$cached_shipping = get_transient($cache_key);
+		if ($cached_shipping !== false && is_object($cached_shipping)) {
+			return $cached_shipping;
 		}
 
 		// Get Geolocation data
@@ -665,6 +709,13 @@ class WC_Correios_Webservice
 			$shipping->ValorAvisoRecebimento,
 			$shipping->ValorValorDeclarado
 		);
+
+		// Cache only successful responses so a transient error doesn't poison
+		// the store. $shipping->Erro is '0'/'' on success and '-888' etc. on failure.
+		$err = isset($shipping->Erro) ? (string) $shipping->Erro : '';
+		if ($err === '' || $err === '0') {
+			set_transient($cache_key, $shipping, 5 * MINUTE_IN_SECONDS);
+		}
 
 		return $shipping;
 	}

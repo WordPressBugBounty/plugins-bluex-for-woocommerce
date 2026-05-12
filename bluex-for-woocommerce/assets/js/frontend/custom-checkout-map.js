@@ -1,339 +1,523 @@
-// Listen for the DOM content to be loaded
-document.addEventListener("DOMContentLoaded", () => {
-  clearWooCommerceShippingCache(); // Clear the WooCommerce shipping cache
-  handleMessagesFromWindow(); // Handle messages from the window
-});
+/**
+ * BlueX PUDO integration — classic (shortcode) checkout.
+ *
+ * Unified with the Blocks flow on the server side: the native WC shipping
+ * method radios are the single source of truth. On the client side legacy
+ * uses a modal-based UX:
+ *
+ *   1. Customer selects the bluex-pudo radio with no agency yet → modal
+ *      auto-opens (the iframe lives in a body-level <dialog>).
+ *   2. Customer picks a point inside the iframe → modal closes, rate label
+ *      flips to "Retiro en <agency>" via the next update_checkout AJAX,
+ *      and a "Cambiar punto Blue Express" link renders below the rate.
+ *   3. Customer can click the link to reopen the modal with `?id=` so the
+ *      previously-chosen point comes pre-selected.
+ *   4. Customer switches to a non-PUDO rate → modal closes, link is
+ *      removed, the original (pre-PUDO) address is restored.
+ *
+ * The dialog is appended to document.body so WC's AJAX rebuilds of
+ * #order_review (which fire on every update_checkout) never touch it. The
+ * "change point" link DOES live inside the rate <li>, so it is re-injected
+ * on every updated_checkout pass via syncFromNativeRate.
+ *
+ * Canonical classic-checkout lifecycle events (verified against WC core
+ * client/legacy/js/frontend/checkout.js):
+ *   - update_checkout  → client requests a refresh (fires AJAX)
+ *   - updated_checkout → AJAX response applied, DOM rebuilt
+ */
 
-// Function to handle messages received by the window
+const BLUEX_PUDO_DIALOG_ID = "bluex-pudo-dialog";
+const BLUEX_PUDO_IFRAME_ID = "bluex-pudo-iframe";
+const BLUEX_PUDO_CHANGE_LINK_ID = "bluex-pudo-change-link";
+const BLUEX_PUDO_ADDRESS_SNAPSHOT_KEY = "bluex_pudo_address_snapshot_classic";
+
+// Tracks whether the previous render pass had bluex-pudo active so we can
+// detect transitions (entering/leaving PUDO) and only auto-open the modal
+// on entry, not on every updated_checkout tick.
+let lastWasPudo = false;
+
+// Boot pattern: support BOTH early-loaded scripts (DOMContentLoaded pending)
+// and late-loaded scripts (DOMContentLoaded already fired, e.g. when the
+// tag is injected `in_footer=true` by wp_enqueue_script). Without this
+// fallback the listener registers too late and `init` never runs.
+function bluexPudoBoot() {
+  clearWooCommerceShippingCache();
+  handleMessagesFromWindow();
+
+  if (typeof jQuery !== "undefined") {
+    jQuery(document.body).on("updated_checkout", function () {
+      syncFromNativeRate();
+    });
+  }
+
+  syncFromNativeRate();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bluexPudoBoot);
+} else {
+  bluexPudoBoot();
+}
+
+// -----------------------------------------------------------------------------
+// Native rate detection
+
+function getSelectedShippingRateId() {
+  const checked = document.querySelector(
+    'input[name^="shipping_method"]:checked'
+  );
+  return checked ? checked.value : null;
+}
+
+function isBluexPudoSelected() {
+  const rateId = getSelectedShippingRateId();
+  return typeof rateId === "string" && rateId.indexOf("bluex-pudo") === 0;
+}
+
+// Find the WC-rendered <li> element that contains the bluex-pudo radio. The
+// "change point" link is appended inside it so it sits under the rate label.
+function getPudoRateElement() {
+  const input = document.querySelector(
+    'input[name^="shipping_method"][value^="bluex-pudo"]'
+  );
+  if (!input) return null;
+  return input.closest("li") || input.parentElement;
+}
+
+// -----------------------------------------------------------------------------
+// Modal (native <dialog> in document.body)
+
+// Lazy-create the dialog once and reuse it. Living in document.body means
+// WC AJAX rebuilds of #order_review do not destroy it, so the iframe state
+// is preserved across updated_checkout passes.
+function ensurePudoDialog() {
+  let dialog = document.getElementById(BLUEX_PUDO_DIALOG_ID);
+  if (dialog) return dialog;
+
+  dialog = document.createElement("dialog");
+  dialog.id = BLUEX_PUDO_DIALOG_ID;
+  dialog.className = "bluex-pudo-dialog";
+
+  const header = document.createElement("div");
+  header.className = "bluex-pudo-dialog__header";
+
+  const title = document.createElement("h3");
+  title.className = "bluex-pudo-dialog__title";
+  title.textContent = "Seleccioná tu punto Blue Express";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "bluex-pudo-dialog__close";
+  closeBtn.setAttribute("aria-label", "Cerrar");
+  closeBtn.innerHTML = "&times;";
+  closeBtn.addEventListener("click", function () {
+    closePudoModal();
+  });
+
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+
+  const body = document.createElement("div");
+  body.className = "bluex-pudo-dialog__body";
+
+  const iframe = document.createElement("iframe");
+  iframe.id = BLUEX_PUDO_IFRAME_ID;
+  iframe.title = "Selector de Punto Blue Express";
+  body.appendChild(iframe);
+
+  dialog.appendChild(header);
+  dialog.appendChild(body);
+  document.body.appendChild(dialog);
+
+  return dialog;
+}
+
+function buildWidgetUrl(preselectId) {
+  if (typeof bluex_checkout_params === "undefined") {
+    console.error("[BlueX PUDO] checkout params not loaded");
+    return "";
+  }
+  const baseUrl = bluex_checkout_params.base_path_url || "";
+  let widgetUrl = bluex_checkout_params.widget_base_urls.prod;
+  if (baseUrl.indexOf("qa") !== -1) widgetUrl = bluex_checkout_params.widget_base_urls.qa;
+  if (baseUrl.indexOf("dev") !== -1) widgetUrl = bluex_checkout_params.widget_base_urls.dev;
+
+  if (preselectId) {
+    widgetUrl +=
+      (widgetUrl.indexOf("?") >= 0 ? "&" : "?") +
+      "id=" +
+      encodeURIComponent(preselectId);
+  }
+  return widgetUrl;
+}
+
+function openPudoModal() {
+  const dialog = ensurePudoDialog();
+  const iframe = document.getElementById(BLUEX_PUDO_IFRAME_ID);
+  const agencyIdInput = document.getElementById("agencyId");
+  const preselectId = agencyIdInput ? agencyIdInput.value : "";
+  const url = buildWidgetUrl(preselectId);
+  if (!url) return;
+
+  // Always rebuild src so reopening with a different agencyId pre-selects
+  // correctly. Setting iframe.src triggers a reload.
+  if (iframe) iframe.src = url;
+
+  if (typeof dialog.showModal === "function" && !dialog.open) {
+    try {
+      dialog.showModal();
+    } catch (e) {
+      // showModal throws if the dialog is already open in some browsers;
+      // ignore and let the user keep using it.
+    }
+  } else if (!dialog.open) {
+    // Fallback for browsers without <dialog> support — show as block.
+    dialog.setAttribute("open", "");
+  }
+}
+
+function closePudoModal() {
+  const dialog = document.getElementById(BLUEX_PUDO_DIALOG_ID);
+  if (!dialog) return;
+  if (typeof dialog.close === "function" && dialog.open) {
+    dialog.close();
+  } else {
+    dialog.removeAttribute("open");
+  }
+}
+
+// -----------------------------------------------------------------------------
+// "Seleccionar / Cambiar punto" link below the rate label
+
+function renderChangePointLink(mode) {
+  const anchor = getPudoRateElement();
+  if (!anchor) return;
+
+  let link = document.getElementById(BLUEX_PUDO_CHANGE_LINK_ID);
+  if (!link) {
+    link = document.createElement("button");
+    link.type = "button";
+    link.id = BLUEX_PUDO_CHANGE_LINK_ID;
+    link.className = "bluex-pudo-change-link";
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      openPudoModal();
+    });
+    anchor.appendChild(link);
+  } else if (link.parentElement !== anchor) {
+    // WC rebuilt the rate <li>; re-attach the link to the new node.
+    anchor.appendChild(link);
+  }
+
+  link.textContent =
+    mode === "change"
+      ? "Cambiar punto Blue Express"
+      : "Seleccionar punto Blue Express";
+}
+
+function removeChangePointLink() {
+  const link = document.getElementById(BLUEX_PUDO_CHANGE_LINK_ID);
+  if (link) link.remove();
+}
+
+// -----------------------------------------------------------------------------
+// Main sync driver — reconciles modal + change-link against the currently
+// selected native shipping rate. Called on DOMContentLoaded, on every
+// updated_checkout, and after handlePudoSelect.
+
+function syncFromNativeRate() {
+  const nowPudo = isBluexPudoSelected();
+  const agencyIdInput = document.getElementById("agencyId");
+  const hasAgency = !!(agencyIdInput && agencyIdInput.value);
+
+  if (nowPudo && !lastWasPudo) {
+    // Transition: entering PUDO.
+    // Only snapshot if there is no snapshot yet AND no agency already
+    // persisted — if an agency is already in the form (page reload with
+    // PUDO mid-flow), the "current" form address is the pickup address
+    // and snapshotting would poison the restore.
+    if (!readAddressSnapshot() && !hasAgency) {
+      saveAddressSnapshot();
+    }
+    // Auto-open the modal on PUDO entry when no agency is picked yet.
+    if (!hasAgency) {
+      openPudoModal();
+    }
+  } else if (!nowPudo && lastWasPudo) {
+    // Transition: leaving PUDO. Restore the original address (if any) and
+    // blank the hidden agency inputs so the next update_checkout POST
+    // triggers the server callback's unset path.
+    closePudoModal();
+    const snap = readAddressSnapshot();
+    if (snap) {
+      restoreAddressFromSnapshot(snap);
+      clearAddressSnapshot();
+    }
+    clearAgencyHiddenInputs();
+  }
+
+  if (nowPudo) {
+    renderChangePointLink(hasAgency ? "change" : "select");
+  } else {
+    removeChangePointLink();
+  }
+
+  lastWasPudo = nowPudo;
+}
+
+// -----------------------------------------------------------------------------
+// Iframe postMessage handling
+
 function handleMessagesFromWindow() {
   window.addEventListener("message", (event) => {
-    const elements = getDOMElements(); // Get DOM elements
-
-    switch (event.data.type) {
-      case "pudo:select":
-        handlePudoSelect(event, elements); // Handle 'pudo:select' messages
-        break;
-      case "pudo:change":
-        // some action for 'pudo:change' messages
-        break;
+    const elements = getDOMElements();
+    if (event.data && event.data.type === "pudo:select") {
+      handlePudoSelect(event, elements);
     }
   });
 }
 
-// Function to get specific DOM elements
 function getDOMElements() {
   return {
-    inputState: document.getElementById("billing_state"), // Input for billing state
-    inputDir: document.getElementById("billing_address_1"), // Input for billing address line 1
-    inputDir2: document.getElementById("billing_address_2"), // Input for billing address line 2
+    inputState: document.getElementById("billing_state"),
+    inputDir: document.getElementById("billing_address_1"),
+    inputDir2: document.getElementById("billing_address_2"),
     countryContainer: document.getElementById(
       "select2-billing_country-container"
-    ), // Input for billing country
-    stateContainer: document.querySelector("#select2-billing_state-container"), // Container for billing state
-    inputCity: document.getElementById("billing_city"), // Input for billing city
-    agencyIdInput: document.getElementById("agencyId"), // Input for agency ID
+    ),
+    stateContainer: document.querySelector("#select2-billing_state-container"),
+    inputCity: document.getElementById("billing_city"),
+    agencyIdInput: document.getElementById("agencyId"),
   };
 }
 
-// Function to handle 'pudo:select' event
 function handlePudoSelect(event, elements) {
-  const data = event.data.payload; // Payload of the event
+  const data = event.data.payload;
+  if (!data || !data.location) return;
 
-  if (data && data.location) {
-    const {
-      street_name = "",
-      street_number = "",
-      city_name = "",
-      country_name = "",
-      state_name = "",
-    } = data.location; // Destructure location data
+  const {
+    street_name = "",
+    street_number = "",
+    city_name = "",
+    country_name = "",
+    state_name = "",
+  } = data.location;
 
-    // Set values to elements based on the event data
-    elements.agencyIdInput.value = data.agency_id;
-    elements.inputDir.value = `${street_name} ${street_number}`;
-    elements.inputDir2.value = data.agency_name;
-    if (elements.countryContainer)
-      elements.countryContainer.value = country_name;
+  const fullStreet = `${street_name} ${street_number}`.trim();
+  const agencyName = data.agency_name || "";
+  const fullAddress = [fullStreet, city_name]
+    .filter(function (s) { return s && s !== ""; })
+    .join(", ");
 
-    const state = getStateDetails(state_name); // Get state details
-    elements.stateContainer.innerHTML = state.fullName; // Set the state's full name
-    elements.inputState.value = state.abreviation; // Set the state's abbreviation
-    elements.inputState.title = state.fullName; // Set the state's full name as title
-    cityToInput(elements.inputCity, city_name); // Set the city name to the input
+  // Populate the form address fields with the pickup-point location so the
+  // customer sees the pickup address in the shipping block. The original
+  // customer address is preserved in sessionStorage and restored if they
+  // switch away from PUDO — see syncFromNativeRate.
+  if (elements.agencyIdInput) elements.agencyIdInput.value = data.agency_id || "";
+  if (elements.inputDir) elements.inputDir.value = fullStreet;
+  if (elements.inputDir2) elements.inputDir2.value = agencyName;
 
-    triggerUpdateCheckout(); // Trigger checkout update
+  const state = getStateDetails(state_name);
+  setSelectValueQuietly("billing_state", state.abreviation || "");
+  if (elements.inputState && state.fullName) {
+    elements.inputState.title = state.fullName;
+  }
+  setCityQuietly(city_name);
+
+  // Hidden inputs that travel in the update_checkout AJAX post_data
+  // alongside agencyId. The server-side callback
+  // (update_order_review_callback in class-wc-correios-pudos-map.php)
+  // copies all three into the WC session; WC_BlueX_Pudo::calculate_shipping
+  // reads `bluex_agency_name` to build the dynamic rate label
+  // "Retiro en Punto Blue Express - <agency>".
+  const nameInput = document.getElementById("agency_name");
+  if (nameInput) nameInput.value = agencyName;
+  const addressInput = document.getElementById("agency_address");
+  if (addressInput) addressInput.value = fullAddress;
+
+  // Close the modal immediately. The link below the rate will flip to
+  // "Cambiar punto Blue Express" on the next syncFromNativeRate (which
+  // fires after the update_checkout AJAX completes).
+  closePudoModal();
+
+  triggerUpdateCheckout();
+}
+
+// -----------------------------------------------------------------------------
+// Address snapshot / restore — parity with the Blocks flow.
+//
+// When the customer enters PUDO for the first time in this browser session,
+// we capture the billing address they typed. Once they pick a point, the
+// form fields get rewritten with the pickup-point address. If they then
+// switch away from PUDO, we restore the captured address so their original
+// "Envío a domicilio" form is intact.
+//
+// Using sessionStorage (not the WC server session) because the snapshot is
+// a pure UX concern: the server only needs the current state, not the
+// "before-PUDO" state.
+
+function saveAddressSnapshot() {
+  try {
+    const snap = {
+      address_1: valueOf("billing_address_1"),
+      address_2: valueOf("billing_address_2"),
+      city: valueOf("billing_city"),
+      state: valueOf("billing_state"),
+      country: valueOf("billing_country"),
+      postcode: valueOf("billing_postcode"),
+    };
+    window.sessionStorage.setItem(
+      BLUEX_PUDO_ADDRESS_SNAPSHOT_KEY,
+      JSON.stringify(snap)
+    );
+  } catch (e) {
+    /* storage disabled */
   }
 }
 
-// Function to set city name to the input field
-function cityToInput(citybox, city_name) {
-  // Check if the element is an input
-  if (citybox.tagName === "INPUT") {
-    citybox.value = city_name; // Set the city name
+function readAddressSnapshot() {
+  try {
+    const raw = window.sessionStorage.getItem(BLUEX_PUDO_ADDRESS_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearAddressSnapshot() {
+  try {
+    window.sessionStorage.removeItem(BLUEX_PUDO_ADDRESS_SNAPSHOT_KEY);
+  } catch (e) {}
+}
+
+function valueOf(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : "";
+}
+
+// Set a WC <select> value and ask its select2/selectWoo wrapper to resync
+// its visible container WITHOUT firing `change` — that would cascade an
+// `update_checkout` AJAX while we are still inside one, causing either a
+// recursion or a lost-write race.
+//
+// The `refresh` event is the canonical signal per WC core
+// (client/legacy/js/frontend/country-select.js:118).
+function setSelectValueQuietly(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = value || "";
+  if (typeof jQuery !== "undefined") {
+    jQuery(el).trigger("refresh");
+  }
+}
+
+function restoreAddressFromSnapshot(snap) {
+  if (!snap) return;
+  const byId = function (id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value || "";
+  };
+  byId("billing_address_1", snap.address_1);
+  byId("billing_address_2", snap.address_2);
+  byId("billing_postcode", snap.postcode);
+  setSelectValueQuietly("billing_country", snap.country);
+  setSelectValueQuietly("billing_state", snap.state);
+  const stateEl = document.getElementById("billing_state");
+  if (stateEl) stateEl.removeAttribute("title");
+  setCityQuietly(snap.city);
+}
+
+function clearAgencyHiddenInputs() {
+  ["agencyId", "agency_name", "agency_address"].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+}
+
+// -----------------------------------------------------------------------------
+// Helpers preserved from the previous implementation
+
+// Set #billing_city to a given value without destroying the <select> element.
+function setCityQuietly(value) {
+  const el = document.getElementById("billing_city");
+  if (!el) return;
+  const wanted = value || "";
+
+  if (el.tagName === "INPUT") {
+    el.value = wanted;
     return;
   }
 
-  // Get attributes from the element
-  var input_name = citybox.getAttribute("name");
-  var input_id = citybox.getAttribute("id");
-  var placeholder = citybox.getAttribute("placeholder");
+  if (el.tagName === "SELECT") {
+    const options = Array.from(el.options);
+    const byValue = options.find(function (o) { return o.value === wanted; });
+    const byText = options.find(function (o) {
+      return o.textContent.trim().toLowerCase() === wanted.trim().toLowerCase();
+    });
+    let target = byValue || byText;
 
-  // Remove the select2 container if it exists
-  var select2Container = citybox.parentNode.querySelector(".select2-container");
-  if (select2Container) {
-    select2Container.parentNode.removeChild(select2Container);
+    if (!target && wanted !== "") {
+      target = document.createElement("option");
+      target.value = wanted;
+      target.textContent = wanted;
+      el.appendChild(target);
+    }
+
+    el.value = target ? target.value : "";
+    if (typeof jQuery !== "undefined") {
+      jQuery(el).trigger("refresh");
+    }
+    return;
   }
 
-  // Create a new input element and configure it
-  var newInput = document.createElement("input");
-  newInput.type = "text";
-  newInput.className = "input-text";
-  newInput.name = input_name;
-  newInput.id = input_id;
-  newInput.placeholder = placeholder;
-  newInput.value = city_name;
-
-  // Replace the original element with the new input
-  citybox.parentNode.replaceChild(newInput, citybox);
+  if ("value" in el) el.value = wanted;
 }
 
-// Function to trigger a change event
-function triggerChangeEvent(inputElement) {
-  // Dispatch the change event
-  let event = new Event("change", {
-    bubbles: true,
-    cancelable: true,
-  });
-  inputElement.dispatchEvent(event);
+function triggerUpdateCheckout() {
+  if (typeof jQuery !== "undefined") {
+    jQuery(document.body).trigger("update_checkout");
+    return;
+  }
+  document.body.dispatchEvent(new CustomEvent("update_checkout"));
 }
 
-// Function to get state details based on name
 function getStateDetails(name) {
   const states = [
-    {
-      abreviation: "CL-AI",
-      fullName: "Aisén del General Carlos Ibañez del Campo",
-      nameFromIframe: "Aysén",
-    },
-    {
-      abreviation: "CL-AN",
-      fullName: "Antofagasta",
-      nameFromIframe: "Antofagasta",
-    },
-    {
-      abreviation: "CL-AP",
-      fullName: "Arica y Parinacota",
-      nameFromIframe: "Arica y Parinacota",
-    },
-    {
-      abreviation: "CL-AR",
-      fullName: "La Araucanía",
-      nameFromIframe: "Araucanía",
-    },
+    { abreviation: "CL-AI", fullName: "Aisén del General Carlos Ibañez del Campo", nameFromIframe: "Aysén" },
+    { abreviation: "CL-AN", fullName: "Antofagasta", nameFromIframe: "Antofagasta" },
+    { abreviation: "CL-AP", fullName: "Arica y Parinacota", nameFromIframe: "Arica y Parinacota" },
+    { abreviation: "CL-AR", fullName: "La Araucanía", nameFromIframe: "Araucanía" },
     { abreviation: "CL-AT", fullName: "Atacama", nameFromIframe: "Atacama" },
     { abreviation: "CL-BI", fullName: "Biobío", nameFromIframe: "Bío - Bío" },
     { abreviation: "CL-CO", fullName: "Coquimbo", nameFromIframe: "Coquimbo" },
-    {
-      abreviation: "CL-LI",
-      fullName: "Libertador General Bernardo O'Higgins",
-      nameFromIframe: "Libertador General Bernardo O`Higgins",
-    },
-    {
-      abreviation: "CL-LL",
-      fullName: "Los Lagos",
-      nameFromIframe: "Los Lagos",
-    },
+    { abreviation: "CL-LI", fullName: "Libertador General Bernardo O'Higgins", nameFromIframe: "Libertador General Bernardo O`Higgins" },
+    { abreviation: "CL-LL", fullName: "Los Lagos", nameFromIframe: "Los Lagos" },
     { abreviation: "CL-LR", fullName: "Los Ríos", nameFromIframe: "Los Ríos" },
-    {
-      abreviation: "CL-MA",
-      fullName: "Magallanes",
-      nameFromIframe: "Magallanes y la Antartica Chilena",
-    },
+    { abreviation: "CL-MA", fullName: "Magallanes", nameFromIframe: "Magallanes y la Antartica Chilena" },
     { abreviation: "CL-ML", fullName: "Maule", nameFromIframe: "Maule" },
     { abreviation: "CL-NB", fullName: "Ñuble", nameFromIframe: "Ñuble" },
-    {
-      abreviation: "CL-RM",
-      fullName: "Región Metropolitana de Santiago",
-      nameFromIframe: "Metropolitana de Santiago",
-    },
+    { abreviation: "CL-RM", fullName: "Región Metropolitana de Santiago", nameFromIframe: "Metropolitana de Santiago" },
     { abreviation: "CL-TA", fullName: "Tarapacá", nameFromIframe: "Tarapacá" },
-    {
-      abreviation: "CL-VS",
-      fullName: "Valparaíso",
-      nameFromIframe: "Valparaiso",
-    },
+    { abreviation: "CL-VS", fullName: "Valparaíso", nameFromIframe: "Valparaiso" },
     { abreviation: "", fullName: "", nameFromIframe: "" },
   ];
-
   return states.find((state) => state.nameFromIframe === name) || {};
 }
 
-// Function to select a shipping method - updated for modern WooCommerce
-function selectShipping(shippingMethod) {
-  console.log('BlueX PUDOS: selectShipping called with:', shippingMethod);
-  
-  const pudoIdInput = document.getElementById("isPudoSelected");
-  const widgetContainer = document.getElementById("bluex-pudo-widget-container") || 
-                         document.getElementById("bluex-pudo-widget-container-emergency") ||
-                         document.getElementById("bluex-pudo-widget-container-optimized") ||
-                         document.getElementById("bluex-pudo-widget-container-native") ||
-                         document.getElementById("bluex-pudo-widget-container-debug") ||
-                         document.getElementById("bluex-pudo-widget-container-sidebar") ||
-                         document.getElementById("bluex-pudo-widget-container-simple");
-  
-  if (pudoIdInput) {
-    pudoIdInput.value = shippingMethod; // Set the shipping method
-    console.log('BlueX PUDOS: Set isPudoSelected to:', shippingMethod);
-  } else {
-    console.warn('BlueX PUDOS: isPudoSelected input not found');
-  }
-
-  if (shippingMethod === "normalShipping") {
-    const elements = getDOMElements();
-    if (elements.agencyIdInput && elements.inputDir && elements.inputDir2) {
-      clearElements(elements); // Clear elements only if they exist
-      console.log('BlueX PUDOS: Cleared elements');
-    } else {
-      console.log('BlueX PUDOS: Some elements not found, skipping clearElements');
-    }
-    
-    // Hide PUDO widget
-    if (widgetContainer) {
-      widgetContainer.style.display = "none";
-      console.log('BlueX PUDOS: Hidden widget container');
-    }
-
-    if (elements.inputState) {
-      triggerChangeEvent(elements.inputState); // Trigger change event on state input
-    }
-  } else if (shippingMethod === "pudoShipping") {
-    // Show PUDO widget
-    if (widgetContainer) {
-      widgetContainer.style.display = "block";
-      console.log('BlueX PUDOS: Shown widget container');
-      
-      // Load widget if not already loaded
-      if (!widgetContainer.querySelector('iframe')) {
-        loadPudoWidget();
-        console.log('BlueX PUDOS: Loading PUDO widget');
-      }
-    } else {
-      console.warn('BlueX PUDOS: Widget container not found');
-    }
-  }
-  
-  // Trigger WooCommerce checkout update
-  if (typeof jQuery !== 'undefined') {
-    jQuery(document.body).trigger('update_checkout');
-  }
-  clearWooCommerceShippingCache(); // Clear WooCommerce shipping cache
-}
-
-// Function to clear input elements
-function clearElements(elements) {
-  // Clear values of elements
-  elements.agencyIdInput.value = "";
-  elements.inputDir.value = "";
-  elements.inputDir2.value = "";
-}
-
-// Function to trigger update checkout event
-function triggerUpdateCheckout() {
-  const event = new CustomEvent("update_checkout");
-  document.body.dispatchEvent(event); // Dispatch the event
-}
-
-// Function to load PUDO widget dynamically
-function loadPudoWidget() {
-  if (typeof bluex_checkout_params === 'undefined') {
-    console.error('BlueX checkout parameters not loaded');
-    return;
-  }
-
-  const widgetContainer = document.getElementById("bluex-pudo-widget-container") || 
-                         document.getElementById("bluex-pudo-widget-container-emergency") ||
-                         document.getElementById("bluex-pudo-widget-container-optimized") ||
-                         document.getElementById("bluex-pudo-widget-container-native") ||
-                         document.getElementById("bluex-pudo-widget-container-debug") ||
-                         document.getElementById("bluex-pudo-widget-container-sidebar") ||
-                         document.getElementById("bluex-pudo-widget-container-simple");
-  if (!widgetContainer) {
-    console.error('BlueX PUDOS: No widget container found');
-    return;
-  }
-
-  // For optimized/native/debug/sidebar/simple containers, load widget into the specific content area
-  const targetContainer = document.getElementById("widget-content-optimized") || 
-                          document.getElementById("widget-content-native") || 
-                          document.getElementById("widget-content-debug") ||
-                          document.getElementById("widget-content-sidebar") ||
-                          document.getElementById("widget-content-simple") ||
-                          widgetContainer;
-
-  // Determine environment and build widget URL
-  const baseUrl = bluex_checkout_params.base_path_url;
-  let widgetUrl = bluex_checkout_params.widget_base_urls.prod; // default
-
-  if (baseUrl.includes('qa')) {
-    widgetUrl = bluex_checkout_params.widget_base_urls.qa;
-  } else if (baseUrl.includes('dev')) {
-    widgetUrl = bluex_checkout_params.widget_base_urls.dev;
-  }
-
-  const params = new URLSearchParams();
-
-  const agencyIdInput = document.getElementById("agencyId");
-  if (agencyIdInput && agencyIdInput.value) {
-    params.append('id', agencyIdInput.value);
-  }
-
-  if (params.toString()) {
-    widgetUrl += '?' + params.toString();
-  }
-
-  // Create iframe
-  const iframe = document.createElement('iframe');
-  iframe.id = 'bluex-pudo-iframe';
-  iframe.src = widgetUrl;
-  iframe.style.width = '100%';
-  iframe.style.height = '600px';
-  iframe.style.border = 'none';
-  iframe.title = 'Selector de Punto Blue Express';
-
-  // Wrap in container div
-  const wrapper = document.createElement('div');
-  wrapper.className = 'bluex-pudo-widget-wrapper';
-  wrapper.style.border = '1px solid #ccc';
-  wrapper.style.borderRadius = '5px';
-  wrapper.style.overflow = 'hidden';
-  wrapper.appendChild(iframe);
-
-  targetContainer.innerHTML = '';
-  targetContainer.appendChild(wrapper);
-}
-
-// Function to clear WooCommerce shipping cache - updated with nonce
 function clearWooCommerceShippingCache() {
-  if (typeof bluex_checkout_params === 'undefined') {
-    console.error('BlueX checkout parameters not loaded');
+  if (typeof bluex_checkout_params === "undefined") {
+    console.error("[BlueX PUDO] checkout params not loaded");
     return;
   }
-
   const data = new FormData();
-  data.append('action', 'clear_shipping_cache');
-  data.append('nonce', bluex_checkout_params.nonce);
-
-  fetch(bluex_checkout_params.ajax_url, {
-    method: 'POST',
-    body: data
-  })
-  .then(response => response.json())
-  .then(result => {
-    if (result.success) {
-      triggerUpdateCheckout(); // Trigger checkout update on successful request
-    }
-  })
-  .catch(error => {
-    console.error('Error clearing shipping cache:', error);
-  });
+  data.append("action", "clear_shipping_cache");
+  data.append("nonce", bluex_checkout_params.nonce);
+  fetch(bluex_checkout_params.ajax_url, { method: "POST", body: data })
+    .then((response) => response.json())
+    .then((result) => {
+      if (result && result.success) triggerUpdateCheckout();
+    })
+    .catch((error) => {
+      console.error("[BlueX PUDO] clear_shipping_cache failed:", error);
+    });
 }

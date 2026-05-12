@@ -15,9 +15,6 @@ if (!defined('ABSPATH')) {
  */
 class WC_Correios_PudosMap
 {
-	// Global flag to prevent multiple renders across all instances
-	private static $widget_rendered = false;
-
 	protected $_basePathUrl;
 	protected $_devMode;
 
@@ -55,21 +52,30 @@ class WC_Correios_PudosMap
 	{		
 		// Enqueue scripts and styles
 		add_action('wp_enqueue_scripts', array($this, 'frontend_scripts'));
-		
-		// Use WooCommerce standard hooks according to official documentation
-		// https://developer.woocommerce.com/docs/
-		
-		// Primary hook - after order review (right sidebar)
-		add_action('woocommerce_review_order_after_order_total', array($this, 'render_shipping_selector_native'), 10);
-		
-		// Fallback for themes that don't follow WooCommerce standards (only if native doesn't render)
-		add_action('wp_footer', array($this, 'render_shipping_selector_optimized'), 10);
-		
-		// Render hidden inputs
+
+		// Legacy checkout now uses the native WC shipping-method radios as the
+		// single source of truth: `bluex-pudo` is a registered WC_Shipping_Method
+		// (see class-wc-bluex-pudo.php). The custom shippingBlue radio group
+		// was removed — the widget and hint are driven from JS based on which
+		// native rate is selected. Only `agencyId` is still persisted via a
+		// hidden input so it travels with the checkout POST.
 		add_action('woocommerce_checkout_after_order_review', array($this, 'render_custom_input'), 10);
 		
 		// Handle form processing
 		add_action('woocommerce_checkout_update_order_meta', array($this, 'save_custom_input_to_order_meta'), 10);
+
+		// Safety net: if a user picks the native bluex-pudo rate in legacy checkout
+		// (possible since bluex-pudo is now a registered shipping method), rewrite
+		// the item to bluex-ex before it's attached to the order so the saved
+		// shipping_method matches what the BlueX backend expects. The dominant
+		// legacy flow (native bluex-ex + custom pudoShipping radio) is unaffected
+		// because this hook is a no-op for non-pudo items.
+		//
+		// Hook choice verified against WC source (includes/class-wc-checkout.php
+		// create_order_shipping_lines): `woocommerce_checkout_create_order_shipping_item`
+		// fires per item BEFORE $order->add_item(), which is why the helper here
+		// does not save() — WC's own persist cycle handles it.
+		add_action('woocommerce_checkout_create_order_shipping_item', array($this, 'rewrite_bluex_pudo_to_ex_on_create'), 10, 4);
 		
 		// AJAX handlers
 		add_action('wp_ajax_clear_shipping_cache', array($this, 'clear_shipping_cache'));
@@ -96,14 +102,23 @@ class WC_Correios_PudosMap
 
 		if (is_checkout()) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
-			
+
 			// Enqueue the main script with proper dependencies
 			wp_enqueue_script(
-				'bluex-checkout-pudo', 
-				plugins_url('assets/js/frontend/custom-checkout-map' . $suffix . '.js', WC_Correios::get_main_file()), 
-				array('jquery', 'wc-checkout'), 
-				WC_CORREIOS_VERSION ?? '1.0.0', 
+				'bluex-checkout-pudo',
+				plugins_url('assets/js/frontend/custom-checkout-map' . $suffix . '.js', WC_Correios::get_main_file()),
+				array('jquery', 'wc-checkout'),
+				WC_CORREIOS_VERSION ?? '1.0.0',
 				true
+			);
+
+			// Modal styles for the pickup-point picker dialog and the
+			// "Seleccionar / Cambiar punto" link rendered below the rate.
+			wp_enqueue_style(
+				'bluex-checkout-pudo-modal',
+				plugins_url('assets/css/frontend/bluex-pudo-modal.css', WC_Correios::get_main_file()),
+				array(),
+				WC_CORREIOS_VERSION ?? '1.0.0'
 			);
 			
 			// Localize script with AJAX URL and nonce for security
@@ -121,382 +136,113 @@ class WC_Correios_PudosMap
 		}
 	}
 	/**
-	 * Render custom hidden input fields.
+	 * Render the hidden PUDO inputs so the selection travels with the classic
+	 * checkout POST and the `woocommerce_checkout_update_order_review` AJAX.
+	 *
+	 * `agencyId` is the BlueX pickup-point identifier; `agency_name` and
+	 * `agency_address` hydrate the WC session so `WC_BlueX_Pudo::calculate_shipping`
+	 * can render the dynamic "Retiro en Punto Blue Express - <agency>" label.
+	 * Without those two, the label stays as the base title because the session
+	 * read returns empty strings.
+	 *
+	 * The legacy `isPudoSelected` hidden input is gone: the active WC shipping
+	 * method radio already conveys that state (bluex-pudo selected ⇔ PUDO).
+	 *
+	 * On initial render we hydrate the `value` attribute from the WC session
+	 * so that (a) page reloads keep the selection visible, and (b) the JS
+	 * side can tell "an agency is already persisted" on first paint and
+	 * avoid snapshotting the pickup address as if it were the customer's
+	 * original address (see syncFromNativeRate).
 	 */
 	function render_custom_input()
 	{
+		$agency_id      = WC()->session ? (string) WC()->session->get('bluex_agency_id', '') : '';
+		$agency_name    = WC()->session ? (string) WC()->session->get('bluex_agency_name', '') : '';
+		$agency_address = WC()->session ? (string) WC()->session->get('bluex_agency_address', '') : '';
 ?>
-		<input type="hidden" name="agencyId" id="agencyId" placeholder="" value='' />
-		<input type="hidden" name="isPudoSelected" id="isPudoSelected" placeholder="" value='' />
+		<input type="hidden" name="agencyId" id="agencyId" value="<?php echo esc_attr($agency_id); ?>" />
+		<input type="hidden" name="agency_name" id="agency_name" value="<?php echo esc_attr($agency_name); ?>" />
+		<input type="hidden" name="agency_address" id="agency_address" value="<?php echo esc_attr($agency_address); ?>" />
 	<?php
 	}
+
 	/**
-	 * Save custom input values to order meta.
+	 * Normalize the saved shipping method from bluex-pudo to bluex-ex.
+	 *
+	 * Hooked on `woocommerce_checkout_create_order_shipping_item` which fires
+	 * per shipping item BEFORE it's attached to the order — no-op for non-pudo
+	 * items. Delegates to WC_BlueX_Pudo::rewrite_shipping_item_to_bluex_ex
+	 * which is the single source of truth for the rewrite rule (shared with
+	 * the Blocks flow).
+	 *
+	 * @param WC_Order_Item_Shipping $item
+	 * @param int                    $package_key
+	 * @param array                  $package
+	 * @param WC_Order               $order
+	 */
+	public function rewrite_bluex_pudo_to_ex_on_create($item, $package_key, $package, $order)
+	{
+		if (class_exists('WC_BlueX_Pudo')) {
+			WC_BlueX_Pudo::rewrite_shipping_item_to_bluex_ex($item);
+		}
+	}
+
+	/**
+	 * Persist PUDO data onto the order meta at checkout save time.
+	 *
+	 * Writes:
+	 *   - agencyId        — from POST (the hidden input carried by the form).
+	 *   - isPudoSelected  — derived: 'pudoShipping' iff the order currently has
+	 *     an agencyId present, else 'normalShipping'. Kept for downstream
+	 *     consumers that may read it. Not read from POST anymore.
 	 *
 	 * @param int $order_id The order ID.
 	 */
-
 	function save_custom_input_to_order_meta($order_id)
 	{
-		// Retrieve the order object using WooCommerce function
 		$order = wc_get_order($order_id);
-		// Define the fields you want to check and update
-		$fields_to_update = ['agencyId', 'isPudoSelected'];
-
-		foreach ($fields_to_update as $field) {
-			// Check if the field exists in the POST request
-			if (isset($_POST[$field])) {
-				// Sanitize the 'agencyId' field to ensure clean data; other fields are directly used
-				$value = $field === 'agencyId' ? sanitize_text_field($_POST[$field]) : $_POST[$field];
-				// Check if the order object has the 'update_meta_data' method for compatibility
-				if (method_exists($order, 'update_meta_data')) {
-					// Update the order meta data with the field value
-					$order->update_meta_data($field, $value);
-					// Save the changes to the order
-					$order->save();
-				} else {
-					// Fallback for older WooCommerce versions: directly update post meta
-					update_post_meta($order_id, $field, $value);
-				}
-			}
+		if (!$order) {
+			return;
 		}
+
+		$agency_id = isset($_POST['agencyId']) ? sanitize_text_field($_POST['agencyId']) : '';
+
+		if ($agency_id !== '') {
+			$order->update_meta_data('agencyId', $agency_id);
+			$order->update_meta_data('isPudoSelected', 'pudoShipping');
+		} else {
+			$order->update_meta_data('isPudoSelected', 'normalShipping');
+		}
+		$order->save();
 	}
-
 	/**
-	 * Native WooCommerce hook-based renderer following official documentation
-	 * https://developer.woocommerce.com/docs/
-	 */
-	public function render_shipping_selector_native()
-	{
-		// Skip if using Blocks Checkout
-		if (has_block('woocommerce/checkout')) {
-			return;
-		}
-		
-		// CRITICAL: Check global flag to prevent ANY duplicate rendering
-		if (self::$widget_rendered) {
-			bluex_log('warning', 'PUDOS: Widget already rendered globally, preventing duplicate');
-			return;
-		}
-		
-		// Set global flag immediately to prevent race conditions
-		self::$widget_rendered = true;
-		
-		// CRITICAL: Remove this action immediately to prevent WooCommerce AJAX from calling it again
-		remove_action('woocommerce_review_order_after_order_total', array($this, 'render_shipping_selector_native'), 10);
-		
-		// Get current values from session or POST data
-		$isPudoSelected = false;
-		$agencyId = null;
-		
-		if (WC()->session) {
-			$isPudoSelected = WC()->session->get('bluex_pudo_selected', false);
-			$agencyId = WC()->session->get('bluex_agency_id', null);
-		}
-		
-		// Check POST data for updates
-		if (!empty($_POST['post_data'])) {
-		$output = [];
-			parse_str($_POST['post_data'], $output);
-		$isPudoSelected = isset($output['isPudoSelected']) && $output['isPudoSelected'] == "pudoShipping";
-			$agencyId = !empty($output['agencyId']) ? sanitize_text_field($output['agencyId']) : null;
-		}
-		
-		// Render the widget using WooCommerce-compatible markup
-		?>
-		<div id="bluex-shipping-selector-native" class="woocommerce-checkout-section" style="margin: 20px 0; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff;">
-			<h3 style="margin-top: 0; font-size: 16px; margin-bottom: 10px;">
-				<?php _e('Método de Entrega', 'woocommerce-correios'); ?>
-			</h3>
-			
-			<div class="bluex-shipping-options" style="margin: 10px 0;">
-				<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-					<input type="radio"
-						   id="normalShipping_native"
-						   name="shippingBlue"
-						   value="normalShipping"
-						   <?php checked(!$isPudoSelected); ?>
-						   style="margin-right: 10px; width: auto !important;"
-						   onchange="selectShipping('normalShipping')">
-					<span style="font-size: 14px;">Envío a Domicilio</span>
-				</label>
-
-				<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-					<input type="radio"
-						   id="pudoShipping_native"
-						   name="shippingBlue"
-						   value="pudoShipping"
-						   <?php checked($isPudoSelected); ?>
-						   style="margin-right: 10px; width: auto !important;"
-						   onchange="selectShipping('pudoShipping')">
-					<span style="font-size: 14px;">Retiro en Punto Blue Express</span>
-				</label>
-			</div>
-
-			<div id="bluex-pudo-widget-container-native" style="<?php echo $isPudoSelected ? 'display: block;' : 'display: none;'; ?> margin-top: 15px; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; background-color: white;">
-				<div id="widget-content-native" style="min-height: 500px; position: relative;">
-					<?php if ($isPudoSelected): ?>
-						<?php $this->render_pudo_widget_native($agencyId); ?>
-					<?php else: ?>
-						<p style="padding: 20px; text-align: center; color: #666; font-style: italic;">
-							<?php _e('Cargando mapa de puntos Blue Express...', 'woocommerce-correios'); ?>
-						</p>
-					<?php endif; ?>
-				</div>
-			</div>
-		</div>
-
-		<script type="text/javascript">
-		// CRITICAL: Aggressive duplicate prevention for AJAX contexts
-		(function() {
-			// Mark document that widget has been rendered
-			if (!document.bluexWidgetRendered) {
-				document.bluexWidgetRendered = true;
-				console.log('BlueX PUDOS: First widget marked in document');
-			}
-			
-			// Immediate duplicate check and removal
-			var removeDuplicates = function() {
-				var nativeWidgets = document.querySelectorAll('#bluex-shipping-selector-native');
-				if (nativeWidgets.length > 1) {
-					console.warn('BlueX PUDOS: Found ' + nativeWidgets.length + ' native widgets, removing duplicates...');
-					// Keep first, remove all others
-					for (var i = 1; i < nativeWidgets.length; i++) {
-						nativeWidgets[i].remove();
-						console.log('BlueX PUDOS: Removed duplicate widget #' + i);
-					}
-				}
-			};
-			
-			// Run immediately
-			removeDuplicates();
-			
-			// Setup MutationObserver to catch AJAX-added duplicates
-			var observer = new MutationObserver(function(mutations) {
-				mutations.forEach(function(mutation) {
-					if (mutation.addedNodes.length > 0) {
-						mutation.addedNodes.forEach(function(node) {
-							if (node.nodeType === 1 && (node.id === 'bluex-shipping-selector-native' ||
-								(node.querySelector && node.querySelector('#bluex-shipping-selector-native')))) {
-								console.warn('BlueX PUDOS: Detected duplicate widget being added via AJAX, removing...');
-								setTimeout(removeDuplicates, 10);
-							}
-						});
-					}
-				});
-			});
-			
-			// Observe the order review section for changes
-			var orderReview = document.querySelector('#order_review, .woocommerce-checkout-review-order');
-			if (orderReview) {
-				observer.observe(orderReview.parentElement || document.body, {
-					childList: true,
-					subtree: true
-				});
-				console.log('BlueX PUDOS: MutationObserver active to prevent AJAX duplicates');
-			}
-			
-			// jQuery enhancement after DOM ready
-			jQuery(document).ready(function($) {
-				// Final cleanup
-				removeDuplicates();
-				
-				// Add hover effects for native widget
-				// Removed hover effects for cleaner look
-			});
-		})();
-		</script>
-		<?php
-		
-	}
-
-	/**
-	 * Optimized render method for better placement in checkout (fallback only)
-	 */
-	public function render_shipping_selector_optimized()
-	{
-		// Only render on checkout page
-		if (!is_checkout()) {
-			return;
-		}
-
-		// Skip if using Blocks Checkout
-		if (has_block('woocommerce/checkout')) {
-			return;
-		}
-		
-		// Check if we already rendered via normal hooks
-		static $optimized_rendered = false;
-		if ($optimized_rendered) {
-			return;
-		}
-		$optimized_rendered = true;
-
-		// Use JavaScript to inject the widget ONLY if native widget doesn't exist
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			// Check if native widget already exists
-			if ($('#bluex-shipping-selector-native').length > 0) {
-				console.log('BlueX PUDOS: Native widget found, skipping optimized render');
-				return;
-			}
-			
-			console.log('BlueX PUDOS: Native widget NOT found, using optimized fallback render');
-			
-			// Target selectors for right sidebar placement (after order summary)
-			var targetSelectors = [
-				'#order_review', // Order review section - right sidebar
-				'.woocommerce-checkout-review-order', // Order review wrapper
-				'.shop_table.woocommerce-checkout-review-order-table', // Order table
-				'.woocommerce-checkout-review-order-table', // Order table fallback
-				'#order_review_heading', // Order review heading
-				'.checkout-review-order-table', // Some themes
-				'[id*="order_review"]', // Any element with order_review in ID
-				'.woocommerce-checkout .col-2', // Right column in checkout
-				'form.checkout .col-2' // Right column fallback
-			];
-			
-			var injected = false;
-			for (var i = 0; i < targetSelectors.length; i++) {
-				var target = $(targetSelectors[i]);
-				if (target.length > 0 && !injected) {
-					console.log('BlueX PUDOS: Found optimized target:', targetSelectors[i]);
-					
-					// Insert after the order review section in right sidebar
-					target.after(`
-						<div id="bluex-shipping-selector-optimized" class="woocommerce-checkout-section" style="margin: 20px 0; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff;">
-							<h3 style="margin-top: 0; font-size: 16px; margin-bottom: 10px;">
-								Método de Entrega
-							</h3>
-							
-							<div class="bluex-shipping-options" style="margin: 10px 0;">
-								<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-									<input type="radio" id="normalShipping_opt" name="shippingBlue" value="normalShipping" checked style="margin-right: 10px; width: auto !important;" onchange="selectShipping('normalShipping')">
-									<span style="font-size: 14px;">Envío a Domicilio</span>
-								</label>
-
-								<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-									<input type="radio" id="pudoShipping_opt" name="shippingBlue" value="pudoShipping" style="margin-right: 10px; width: auto !important;" onchange="selectShipping('pudoShipping')">
-									<span style="font-size: 14px;">Retiro en Punto Blue Express</span>
-								</label>
-							</div>
-
-							<div id="bluex-pudo-widget-container-optimized" style="display: none; margin-top: 15px; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; background-color: white;">
-								<div id="widget-content-optimized" style="min-height: 500px; position: relative;">
-									<p style="padding: 20px; text-align: center; color: #666; font-style: italic;">
-										Cargando mapa de puntos Blue Express...
-									</p>
-								</div>
-							</div>
-						</div>
-						<!-- Hidden inputs required by JavaScript -->
-						<input type="hidden" name="agencyId" id="agencyId" value="" />
-						<input type="hidden" name="isPudoSelected" id="isPudoSelected" value="" />
-					`);
-					
-					// Add hover effects
-					// Removed hover effects for cleaner look
-					
-					injected = true;
-					break;
-				}
-			}
-			
-			if (!injected) {
-				console.warn('BlueX PUDOS: No suitable target found for optimized render');
-				
-				// Try alternative approach - find right column and append
-				var rightColumn = $('.woocommerce-checkout .col-2, form.checkout .col-2, .checkout-review-order');
-				if (rightColumn.length > 0) {
-					console.log('BlueX PUDOS: Found right column, appending widget');
-					rightColumn.append(`
-						<div id="bluex-shipping-selector-optimized" class="woocommerce-checkout-section" style="margin: 20px 0; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fff;">
-							<h3 style="margin-top: 0; font-size: 16px; margin-bottom: 10px;">
-								Método de Entrega
-							</h3>
-							
-							<div class="bluex-shipping-options" style="margin: 10px 0;">
-								<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-									<input type="radio" id="normalShipping_opt2" name="shippingBlue" value="normalShipping" checked style="margin-right: 10px; width: auto !important;" onchange="selectShipping('normalShipping')">
-									<span style="font-size: 14px;">Envío a Domicilio</span>
-								</label>
-
-								<label class="bluex-shipping-option" style="display: flex !important; flex-direction: row !important; align-items: center !important; margin: 10px 0; cursor: pointer;">
-									<input type="radio" id="pudoShipping_opt2" name="shippingBlue" value="pudoShipping" style="margin-right: 10px; width: auto !important;" onchange="selectShipping('pudoShipping')">
-									<span style="font-size: 14px;">Retiro en Punto Blue Express</span>
-								</label>
-							</div>
-
-							<div id="bluex-pudo-widget-container-optimized" style="display: none; margin-top: 15px; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; background-color: white;">
-								<div id="widget-content-optimized" style="min-height: 500px; position: relative;">
-									<p style="padding: 20px; text-align: center; color: #666; font-style: italic;">
-										Cargando mapa de puntos Blue Express...
-									</p>
-								</div>
-							</div>
-						</div>
-						<!-- Hidden inputs required by JavaScript -->
-						<input type="hidden" name="agencyId" id="agencyId" value="" />
-						<input type="hidden" name="isPudoSelected" id="isPudoSelected" value="" />
-					`);
-					injected = true;
-				}
-			}
-			
-			if (injected) {
-				console.log('BlueX PUDOS: Optimized widget injected successfully');
-			} else {
-				console.error('BlueX PUDOS: Failed to inject optimized widget anywhere');
-			}
-		});
-		</script>
-		<?php
-		
-	}
-
-	/**
-	 * Native PUDO widget renderer for WooCommerce hooks
-	 *
-	 * @param string|null $agencyId Selected agency ID.
-	 */
-	public function render_pudo_widget_native($agencyId = null)
-	{
-		
-		$widgetUrl = $this->getWidgetURL($this->_basePathUrl, $agencyId);
-		?>
-		<iframe 
-			id="bluex-pudo-iframe-native" 
-			src="<?php echo esc_url($widgetUrl); ?>" 
-			frameborder="0" 
-			style="width: 100%; height: 500px; border: none; background-color: white;"
-			title="<?php _e('Selector de Punto Blue Express', 'woocommerce-correios'); ?>"
-			onload="console.log('BlueX PUDO native iframe loaded successfully');"
-			onerror="console.error('BlueX PUDO native iframe failed to load');">
-			<p style="padding: 20px; text-align: center; color: #666;">
-				<?php _e('Tu navegador no soporta iframes.', 'woocommerce-correios'); ?>
-				<a href="<?php echo esc_url($widgetUrl); ?>" target="_blank">
-					<?php _e('Abrir widget en nueva ventana', 'woocommerce-correios'); ?>
-				</a>
-			</p>
-		</iframe>
-<?php
-	}
-
-	/**
-	 * Handle checkout field validation.
+	 * Block place-order when the customer chose bluex-pudo without picking a
+	 * point. The POST carries `shipping_method[<index>]=bluex-pudo:<instance>`
+	 * directly now (the old `shippingBlue` custom radio is gone).
 	 */
 	public function validate_checkout_fields()
 	{
-		if (isset($_POST['shippingBlue']) && $_POST['shippingBlue'] === 'pudoShipping') {
-			if (empty($_POST['agencyId'])) {
-				wc_add_notice(__('Por favor selecciona un punto Blue Express.', 'woocommerce-correios'), 'error');
-			}
+		if (!$this->is_bluex_pudo_selected_in_post()) {
+			return;
+		}
+		if (empty($_POST['agencyId'])) {
+			wc_add_notice(
+				__('Por favor selecciona un punto Blue Express.', 'woocommerce-correios'),
+				'error'
+			);
 		}
 	}
 
 	/**
-	 * Handle order review updates via AJAX.
+	 * Mirror the PUDO state into the WC session on every AJAX checkout refresh.
+	 * Session values are what `WC_BlueX_Pudo::calculate_shipping` reads to
+	 * build the dynamic "Retiro en Punto Blue Express - <agency>" label and
+	 * what the Blocks Store API extension_data_callback also reads for its
+	 * client hydration. Keeping this in sync from the classic POST is what
+	 * lets the legacy checkout feed the same session the shipping method
+	 * relies on.
+	 *
+	 * @param string $post_data Serialized form data.
 	 */
 	public function update_order_review_callback($post_data)
 	{
@@ -505,18 +251,76 @@ class WC_Correios_PudosMap
 		}
 
 		parse_str($post_data, $data);
-		
-		if (WC()->session) {
-			// Store PUDO selection in session
-			$isPudoSelected = isset($data['shippingBlue']) && $data['shippingBlue'] === 'pudoShipping';
-			WC()->session->set('bluex_pudo_selected', $isPudoSelected);
-			
-			if ($isPudoSelected && !empty($data['agencyId'])) {
-				WC()->session->set('bluex_agency_id', sanitize_text_field($data['agencyId']));
-			} else {
-				WC()->session->__unset('bluex_agency_id');
+
+		if (!WC()->session) {
+			return;
+		}
+
+		$is_pudo_selected = $this->is_bluex_pudo_method_id_in_array(
+			isset($data['shipping_method']) && is_array($data['shipping_method']) ? $data['shipping_method'] : array()
+		);
+		WC()->session->set('bluex_pudo_selected', $is_pudo_selected);
+
+		if ($is_pudo_selected && !empty($data['agencyId'])) {
+			// Persist all three agency fields: `agency_id` is what the order
+			// key by, `agency_name` drives the dynamic rate label in
+			// WC_BlueX_Pudo::calculate_shipping ("Retiro en Punto Blue Express
+			// - <agency>"), and `agency_address` is surfaced to downstream
+			// consumers that need the display address.
+			WC()->session->set('bluex_agency_id', sanitize_text_field($data['agencyId']));
+			WC()->session->set(
+				'bluex_agency_name',
+				isset($data['agency_name']) ? sanitize_text_field($data['agency_name']) : ''
+			);
+			WC()->session->set(
+				'bluex_agency_address',
+				isset($data['agency_address']) ? sanitize_text_field($data['agency_address']) : ''
+			);
+		} else {
+			// Switching out of PUDO: clear ALL three keys so a stale agency
+			// name from a previous selection does not leak into a new PUDO
+			// render, and so `calculate_shipping` falls back to the base title.
+			WC()->session->__unset('bluex_agency_id');
+			WC()->session->__unset('bluex_agency_name');
+			WC()->session->__unset('bluex_agency_address');
+		}
+
+		// Invalidate the shipping-rate cache so `calculate_shipping()` — which
+		// fires immediately after this hook in WC_AJAX::update_order_review —
+		// regenerates rates using the freshly-set session values. Without
+		// this, WC keeps returning the cached rate labels because the package
+		// signature (destination, cart contents) did not change, only our
+		// session did. This is the classic-checkout equivalent of the cache
+		// invalidation the Blocks callback does in
+		// class-wc-correios-blocks-integration.php::register_store_api_update_callback.
+		if (WC()->cart) {
+			foreach (array_keys(WC()->cart->get_shipping_packages()) as $package_key) {
+				WC()->session->__unset('shipping_for_package_' . $package_key);
 			}
 		}
+	}
+
+	/**
+	 * True iff any `shipping_method[<index>]` value in the current POST
+	 * corresponds to the bluex-pudo method. WC posts rate IDs as
+	 * `bluex-pudo:<instance_id>` so we match by prefix.
+	 */
+	private function is_bluex_pudo_selected_in_post()
+	{
+		$post_methods = isset($_POST['shipping_method']) && is_array($_POST['shipping_method'])
+			? $_POST['shipping_method']
+			: array();
+		return $this->is_bluex_pudo_method_id_in_array($post_methods);
+	}
+
+	private function is_bluex_pudo_method_id_in_array($methods)
+	{
+		foreach ($methods as $rate_id) {
+			if (is_string($rate_id) && strpos($rate_id, 'bluex-pudo') === 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

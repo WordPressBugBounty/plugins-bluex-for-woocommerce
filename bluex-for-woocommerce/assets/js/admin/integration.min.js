@@ -19625,7 +19625,7 @@ function ShippingZones() {
     defaultValues: {
       strategy: "by_region",
       mode: "create_new",
-      methods: ["bluex-ex"],
+      methods: ["bluex-ex", "bluex-pudo"],
       regions: [],
       dry_run: false,
       backup_existing: false,
@@ -19656,7 +19656,8 @@ function ShippingZones() {
   const availableMethods = [
     { id: "bluex-ex", name: "Express", description: "Entrega rápida y segura" },
     { id: "bluex-py", name: "Priority", description: "Tiempos optimizados" },
-    { id: "bluex-md", name: "SameDay", description: "Entrega el mismo día" }
+    { id: "bluex-md", name: "SameDay", description: "Entrega el mismo día" },
+    { id: "bluex-pudo", name: "Retiro en Punto Blue Express", description: "Cliente retira en un Punto PUDO" }
   ];
   const modes = [
     { value: "create_new", label: "Crear nuevas zonas" },
@@ -19831,7 +19832,7 @@ function ShippingZones() {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.section, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Métodos de Envío" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.methodsGrid, children: [availableMethods[0]].map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.methodCard, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.methodsGrid, children: availableMethods.map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.methodCard, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Checkbox,
             {

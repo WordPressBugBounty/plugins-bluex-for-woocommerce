@@ -32,6 +32,26 @@ class WC_Correios_Integration extends WC_Integration
 	private $api_client = null;
 
 	/**
+	 * Explicitly declared properties to avoid PHP 8.2 dynamic property deprecation.
+	 */
+	protected $tracking_bxkey = '';
+	protected $noBlueStatus = '';
+	protected $districtCode = '';
+	protected $pudoEnable = 'no';
+	protected $devOptions = 'no';
+	protected $alternativeBasePath = '';
+	protected $districtsEnable = 'no';
+	protected $account_name = '';
+	protected $active_logs = 'no';
+	protected $tracking_enable = 'no';
+	protected $tracking_debug = 'no';
+	protected $autofill_enable = 'no';
+	protected $autofill_validity = '';
+	protected $autofill_force = 'no';
+	protected $autofill_empty_database = 'no';
+	protected $autofill_debug = 'no';
+
+	/**
 	 * Get settings handler instance
 	 *
 	 * @return WC_Correios_Settings

@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 6.8.2
-Stable tag: 3.1.6
+Stable tag: 3.2.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -93,3 +93,15 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Improve on api integration.
 = 3.1.6 - 2026-02-16 =
 * Handling of fee field on shipping zone module
+= 3.1.7 - 2026-03-17 =
+* Fix declaration of class properties for PHP 8.2 compatibility
+= 3.2.0 - 2026-04-28 =
+* PUDO unified as a native WooCommerce shipping method (`bluex-pudo`) — single source of truth across legacy and Blocks checkouts.
+* Legacy checkout: pickup-point selection now opens in a modal dialog. After picking a point, a "Cambiar punto Blue Express" button under the rate label lets the customer reopen the modal with the previous selection pre-loaded.
+* Dynamic rate label: "Retiro en [agency_name]" once a point is selected (server-side, session-driven).
+* Automatic zone migration on install/upgrade: when PUDO is enabled in the integration config, the plugin schedules a background Action Scheduler job that idempotently adds `bluex-pudo` to every zone that already has another Blue Express method (ex/py/md). Batched, lock-protected, with exponential backoff and admin-side retry.
+* On toggle off → on: dismissible admin notice listing zones missing PUDO (auto-insertion is intentionally NOT performed on reactivation, to respect deliberate removals).
+* Integration panel "Zonas de Envío" exposes all four Blue Express methods (Express, Priority, SameDay, Retiro en Punto Blue Express) for bulk add.
+* Backend rewrite: `bluex-pudo` is rewritten to `bluex-ex` on order creation so fulfillment carries the correct method.
+* Scoped agencyId reads in the webservice to prevent label contamination across non-PUDO Blue Express rates.
+* HPOS compatibility declared; legacy `update_post_meta` fallback removed in favor of `WC_Data` API.

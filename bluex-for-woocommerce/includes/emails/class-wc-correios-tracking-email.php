@@ -15,6 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Correios_TrackingEmail extends WC_Email {
 
 	/**
+	 * Explicitly declared properties to avoid PHP 8.2 dynamic property deprecation.
+	 */
+	public $message = '';
+	public $tracking_message = '';
+
+	/**
 	 * Initialize tracking template.
 	 */
 	public function __construct() {

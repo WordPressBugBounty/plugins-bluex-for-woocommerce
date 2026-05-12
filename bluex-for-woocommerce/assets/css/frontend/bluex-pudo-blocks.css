@@ -1,0 +1,28 @@
+/* BlueX PUDO — blocks checkout styles.
+   Since bluex-pudo is a native shipping method, WC Blocks renders the radio
+   and its selected/unselected states natively. We only style the widget iframe. */
+
+#bluex-pudo-widget-container-blocks {
+	margin: 10px 0 16px 0;
+}
+
+#bluex-pudo-widget-container-blocks iframe {
+	width: 100%;
+	height: 600px;
+	border: none;
+	display: block;
+}
+
+/* "Pick a point" hint shown above the iframe while PUDO is selected but no
+   agency has been chosen yet. Paired with a server-side RouteException that
+   blocks order placement in the same condition. */
+.bluex-pudo-hint {
+	margin-bottom: 10px;
+	padding: 10px 14px;
+	background: #fff4e5;
+	border: 1px solid #f0c36d;
+	color: #7a4b00;
+	border-radius: 4px;
+	font-size: 14px;
+	line-height: 1.4;
+}

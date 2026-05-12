@@ -44,6 +44,20 @@ class WC_Correios_Install {
 	}
 
 	/**
+	 * Trigger the bluex-pudo zones migration if the installed plugin
+	 * version is past the migration's MIGRATION_VERSION and PUDO is
+	 * enabled. Cheap to call on every load: the migrator's
+	 * maybe_schedule_migration() returns immediately if migration was
+	 * already completed for the current schema, or if a batch is already
+	 * queued. The actual work runs in Action Scheduler.
+	 */
+	public static function upgrade_zones_migration() {
+		if ( class_exists( 'WC_BlueX_Pudo_Zone_Migrator' ) ) {
+			WC_BlueX_Pudo_Zone_Migrator::maybe_schedule_migration();
+		}
+	}
+
+	/**
 	 * Upgrade to 3.0.0 while using WooCommerce 2.6.0.
 	 */
 	public static function upgrade_300_fromWc260() {

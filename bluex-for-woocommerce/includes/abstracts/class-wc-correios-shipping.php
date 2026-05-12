@@ -33,6 +33,27 @@ abstract class WC_Correios_Shipping extends WC_Shipping_Method
 	protected $corporate_code = '';
 
 	/**
+	 * Explicitly declared properties to avoid PHP 8.2 dynamic property deprecation.
+	 */
+	protected $origin_postcode = '';
+	protected $shipping_class_id = -1;
+	protected $show_delivery_time = 'no';
+	protected $additional_time = '0';
+	public $fee = '';
+	protected $receipt_notice = 'no';
+	protected $own_hands = 'no';
+	protected $declare_value = 'yes';
+	protected $custom_code = '';
+	protected $service_type = 'conventional';
+	protected $login = '';
+	protected $password = '';
+	protected $minimum_height = '2';
+	protected $minimum_width = '11';
+	protected $minimum_length = '16';
+	protected $extra_weight = '0';
+	protected $debug = 'no';
+
+	/**
 	 * Initialize the Correios shipping method.
 	 *
 	 * @param int $instance_id Shipping zone instance ID.

@@ -158,6 +158,28 @@
 	}
 
 	/**
+	 * Remove stray forecast elements from the Order Summary sidebar.
+	 *
+	 * The sidebar totals-item is rendered by React and keeps its DOM identity
+	 * across rate changes — it only updates the text nodes for label/price.
+	 * Our previously-injected <small class="bluex-delivery-forecast"> is a
+	 * non-React child, so React does not reconcile it. When the user switches
+	 * from a rate WITH forecast (bluex-ex "Hasta 4 días hábiles") to one
+	 * WITHOUT (bluex-pudo, a pickup), the render path for PUDO early-returns
+	 * without touching the DOM, leaving the stale forecast hanging under the
+	 * new rate. Running this cleanup at the start of every pass removes that
+	 * stale state so the subsequent render (or no-render) produces a clean UI.
+	 *
+	 * Safe to call globally: the `.bluex-delivery-forecast` class is ours.
+	 */
+	function cleanupSummaryForecasts() {
+		const stale = document.querySelectorAll(
+			'.wc-block-components-totals-item .bluex-delivery-forecast'
+		);
+		stale.forEach(function(el) { el.remove(); });
+	}
+
+	/**
 	 * Remove existing delivery forecast elements
 	 */
 	function removeExistingForecasts(container) {
@@ -282,6 +304,13 @@
 		isProcessing = true;
 
 		try {
+			// Clear stale forecast elements from the sidebar before any render
+			// decision. Required because PUDO rates have no forecast — if we
+			// don't wipe here, a previously-rendered "Hasta N días hábiles"
+			// survives the rate switch. Per-rate render below re-injects as
+			// needed for rates that actually carry a forecast.
+			cleanupSummaryForecasts();
+
 			// Get shipping rates from the store
 			const cartStore = select(STORE_KEY);
 			if (!cartStore) {

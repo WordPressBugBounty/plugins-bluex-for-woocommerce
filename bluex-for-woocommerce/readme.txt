@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 6.8.2
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -105,3 +105,5 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Backend rewrite: `bluex-pudo` is rewritten to `bluex-ex` on order creation so fulfillment carries the correct method.
 * Scoped agencyId reads in the webservice to prevent label contamination across non-PUDO Blue Express rates.
 * HPOS compatibility declared; legacy `update_post_meta` fallback removed in favor of `WC_Data` API.
+= 3.2.1 - 2026-05-28 =
+* Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.

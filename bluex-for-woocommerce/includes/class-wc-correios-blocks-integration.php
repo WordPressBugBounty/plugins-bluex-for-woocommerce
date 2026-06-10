@@ -78,14 +78,6 @@ class WC_Correios_Blocks_Integration
 			return $rate_data;
 		}
 
-		// PUDO is pickup — not a time-bound delivery — so we don't show a
-		// forecast line under it. Explicitly clear any forecast that a cached
-		// rate or upstream filter may have set on the response.
-		if ($rate->get_method_id() === 'bluex-pudo') {
-			unset($rate_data['delivery_forecast']);
-			return $rate_data;
-		}
-
 		// Get metadata
 		$meta_data = $rate->get_meta_data();
 

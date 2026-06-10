@@ -2,16 +2,16 @@
 /**
  * BlueX PUDO Shipping Method.
  *
- * Registers `bluex-pudo` as a native WooCommerce shipping method. The method
- * itself is intentionally lightweight: fixed cost per instance, no webservice
- * call (PUDO is a pickup, not a courier service — the real SLA/address comes
- * from the widget + Store API extension once the customer picks a point).
+ * Registers `bluex-pudo` as a native WooCommerce shipping method. Before a
+ * pickup point is selected it emits a lightweight wrapper rate so the widget
+ * can be shown. Once the session has an agency id, it quotes the selected
+ * pickup point through the BlueX webservice using familiaProducto=PUDO.
  *
  * Dynamic label: if the session has `bluex_agency_name` set (persisted by the
  * blocks integration's Store API update_callback when the customer picks a
  * point in the iframe), the rate label renders as "Retiro en <agency_name>"
- * with the agency address as the delivery forecast line. Otherwise it renders
- * the configured title/forecast. This is read on every calculate_shipping so
+ * and the quoted delivery promise is exposed as rate metadata. Otherwise it
+ * renders the configured title. This is read on every calculate_shipping so
  * label flips naturally as the cart refreshes after point selection.
  *
  * @package WooCommerce_Correios/Classes/Shipping
@@ -80,9 +80,9 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 				],
 			],
 			'cost' => [
-				'title'       => __('Costo base (se sobreescribe con el costo de Express)', 'woocommerce-correios'),
+				'title'       => __('Costo base (fallback antes de cotizar PUDO)', 'woocommerce-correios'),
 				'type'        => 'price',
-				'description' => __('Este valor se ignora en tiempo de cálculo: el costo final de PUDO siempre copia el del rate Blue Express Express. Queda aquí solo por compatibilidad.', 'woocommerce-correios'),
+				'description' => __('Se usa antes de seleccionar un punto o si la cotización PUDO no responde. Cuando hay punto seleccionado, el costo final viene de la tarifa PUDO del backend.', 'woocommerce-correios'),
 				'default'     => '0',
 				'desc_tip'    => true,
 			],
@@ -92,13 +92,10 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	/**
 	 * Calculate the rate for this package.
 	 *
-	 * IMPORTANT: the cost emitted here is a placeholder. The final cost is
-	 * resolved by the `woocommerce_package_rates` filter in class-wc-correios.php,
-	 * which copies the cost from the `bluex-ex` rate in the same package so the
-	 * PUDO rate's price mirrors the Express service exactly. This is the UX
-	 * expectation (no price jump at place-order) AND the backend expectation
-	 * (the order is rewritten to method_id=bluex-ex on create — see blocks
-	 * integration — so the cost must match upstream).
+	 * When an agency is selected, this method quotes the backend as PUDO and emits
+	 * the returned tariff and delivery promise. Without an agency, or if the quote
+	 * fails, it keeps the historical wrapper-rate fallback; the package-rates
+	 * filter may then mirror the bluex-ex cost to preserve the previous UX.
 	 *
 	 * Respects the plugin-wide `pudoEnable` master switch.
 	 *
@@ -126,15 +123,25 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			'_bluex_agency_address' => $agency_address,
 		];
 
+		$cost = $this->cost;
+		if ($agency_id !== '') {
+			$quoted_shipping = $this->get_quoted_pudo_shipping($package);
+			if ($quoted_shipping) {
+				$cost = $this->normalize_quoted_cost($quoted_shipping->Valor);
+				$meta_data['_bluex_pudo_quoted'] = 'yes';
+				$meta_data['_delivery_forecast'] = (string) $quoted_shipping->PrazoEntrega;
+			}
+		}
+
 		// Label: include the agency name as a suffix when available so the
 		// rate's own label carries the selected pickup point everywhere it's
 		// rendered (list, order summary sidebar, emails, admin). A Store API
 		// response filter would only cover blocks render; setting it here on
 		// the rate object makes every consumer see the same label.
 		//
-		// Cost is the admin-configured base (typically 0). The package-rates
-		// filter in class-wc-correios.php will overwrite it with the bluex-ex
-		// cost before rendering.
+		// Cost is the quoted PUDO tariff when available. Otherwise it remains the
+		// admin-configured fallback and can still be normalized from bluex-ex by the
+		// package-rates filter for backward compatibility.
 		$label = $agency_name !== ''
 			? $this->title . ' - ' . $agency_name
 			: $this->title;
@@ -142,9 +149,66 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 		$this->add_rate([
 			'id'        => $this->get_rate_id(),
 			'label'     => $label,
-			'cost'      => $this->cost,
+			'cost'      => $cost,
 			'meta_data' => $meta_data,
 		]);
+	}
+
+	/**
+	 * Quote the selected pickup point through the same webservice used by BlueX.
+	 *
+	 * @param array $package Shipping package.
+	 * @return object|null
+	 */
+	private function get_quoted_pudo_shipping($package)
+	{
+		if (!class_exists('WC_Correios_Webservice')) {
+			return null;
+		}
+
+		$api = new WC_Correios_Webservice($this->id, $this->instance_id);
+		$api->set_service('EX');
+		$api->set_package($package);
+
+		if (isset($package['destination']['postcode'])) {
+			$api->set_destination_postcode($package['destination']['postcode']);
+		}
+
+		if (isset($package['contents_cost'])) {
+			$api->set_declared_value(18 >= (float) $package['contents_cost'] ? 0 : $package['contents_cost']);
+		}
+
+		$shipping = $api->get_shipping();
+		if (!is_object($shipping) || !isset($shipping->Erro, $shipping->Valor, $shipping->PrazoEntrega)) {
+			return null;
+		}
+
+		$error_number = (string) $shipping->Erro;
+		if ($error_number !== '0' && $error_number !== '') {
+			return null;
+		}
+
+		$cost = $this->normalize_quoted_cost($shipping->Valor);
+		if (empty($shipping->isShipmentFree) && 0 === intval($cost)) {
+			return null;
+		}
+
+		return $shipping;
+	}
+
+	/**
+	 * Normalize BlueX pricing response value into a WooCommerce rate cost.
+	 *
+	 * @param mixed $value Raw pricing response value.
+	 * @return float
+	 */
+	private function normalize_quoted_cost($value)
+	{
+		if (function_exists('wc_correios_normalizePrice')) {
+			return (float) wc_correios_normalizePrice(esc_attr((string) $value));
+		}
+
+		return (float) str_replace(',', '.', (string) $value);
 	}
 
 	/**

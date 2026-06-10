@@ -499,6 +499,7 @@ class WC_Correios_Webservice
 	public function get_shipping()
 	{
 		global $wp;
+		$output = array();
 		// Convert POST data string into an associative array.
 		if (isset($_POST['post_data'])) {
 			parse_str($_POST['post_data'], $output);
@@ -519,6 +520,14 @@ class WC_Correios_Webservice
 			&& $output['agencyId'] !== ''
 		) {
 			$agencyId = sanitize_text_field($output['agencyId']);
+		}
+		if ($this->id === 'bluex-pudo'
+			&& !$agencyId
+			&& function_exists('WC')
+			&& WC()->session
+			&& WC()->session->get('bluex_agency_id')
+		) {
+			$agencyId = sanitize_text_field((string) WC()->session->get('bluex_agency_id'));
 		}
 
 		// Default fallback response structure

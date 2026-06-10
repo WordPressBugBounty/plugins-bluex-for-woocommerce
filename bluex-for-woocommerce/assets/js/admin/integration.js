@@ -8784,27 +8784,28 @@ const Checkbox = ({
     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.checkmark })
   ] });
 };
-const formContainer$1 = "_formContainer_1huci_1";
-const form$2 = "_form_1huci_1";
-const formTitle$1 = "_formTitle_1huci_16";
-const subTitle$1 = "_subTitle_1huci_23";
-const notificationBanner = "_notificationBanner_1huci_31";
-const notificationText = "_notificationText_1huci_42";
-const errorText$1 = "_errorText_1huci_48";
-const successText$1 = "_successText_1huci_56";
-const checkboxSection = "_checkboxSection_1huci_64";
-const checkboxSectionTitle = "_checkboxSectionTitle_1huci_72";
-const button$2 = "_button_1huci_79";
-const rowControls$1 = "_rowControls_1huci_102";
-const rowControlsItem$1 = "_rowControlsItem_1huci_111";
-const buttonSecondary = "_buttonSecondary_1huci_119";
-const rowControlsItemLabel$1 = "_rowControlsItemLabel_1huci_138";
-const inputContainer = "_inputContainer_1huci_145";
-const buttonTest = "_buttonTest_1huci_149";
-const link$1 = "_link_1huci_161";
-const inputDisabled = "_inputDisabled_1huci_166";
-const labelWithMargin = "_labelWithMargin_1huci_171";
-const helpText$1 = "_helpText_1huci_175";
+const formContainer$1 = "_formContainer_ofims_1";
+const form$2 = "_form_ofims_1";
+const formTitle$1 = "_formTitle_ofims_16";
+const subTitle$1 = "_subTitle_ofims_23";
+const notificationBanner = "_notificationBanner_ofims_31";
+const notificationText = "_notificationText_ofims_42";
+const errorText$1 = "_errorText_ofims_48";
+const successText$1 = "_successText_ofims_56";
+const checkboxSection = "_checkboxSection_ofims_64";
+const checkboxSectionTitle = "_checkboxSectionTitle_ofims_72";
+const button$2 = "_button_ofims_79";
+const rowControls$1 = "_rowControls_ofims_102";
+const rowControlsItem$1 = "_rowControlsItem_ofims_111";
+const buttonSecondary = "_buttonSecondary_ofims_119";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_ofims_138";
+const inputContainer = "_inputContainer_ofims_145";
+const buttonTest = "_buttonTest_ofims_149";
+const link$1 = "_link_ofims_161";
+const inputDisabled = "_inputDisabled_ofims_166";
+const labelWithMargin = "_labelWithMargin_ofims_171";
+const helpText$1 = "_helpText_ofims_175";
+const pudoReminderText = "_pudoReminderText_ofims_184";
 const styles$9 = {
   formContainer: formContainer$1,
   form: form$2,
@@ -8826,7 +8827,8 @@ const styles$9 = {
   link: link$1,
   inputDisabled,
   labelWithMargin,
-  helpText: helpText$1
+  helpText: helpText$1,
+  pudoReminderText
 };
 async function validateIntegrationStatus() {
   try {
@@ -18569,6 +18571,7 @@ const FormConfig = ({
     }
   };
   const isEnabledLogs = watch("active_logs");
+  const isPudoEnabled = watch("pudoEnable");
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
@@ -18607,14 +18610,17 @@ const FormConfig = ({
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Opciones generales" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Checkbox,
-          {
-            register,
-            name: "pudoEnable",
-            label: "Habilitar Puntos de retiro Blue Express"
-          }
-        ) }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Checkbox,
+            {
+              register,
+              name: "pudoEnable",
+              label: "Habilitar Puntos de retiro Blue Express"
+            }
+          ),
+          isPudoEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.pudoReminderText, children: "Importante: para que los Puntos de retiro Blue Express se visualicen en el checkout, debes agregarlos como método de envío en cada zona de envío donde quieras ofrecerlos." })
+        ] }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Checkout y Direcciones" }),

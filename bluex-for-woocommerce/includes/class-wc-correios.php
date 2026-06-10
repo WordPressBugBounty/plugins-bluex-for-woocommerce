@@ -318,16 +318,21 @@ class WC_Correios
 			$other[$key] = $rate;
 		}
 
+		$quoted_pudo = false;
+		if ($pudo_key !== null && method_exists($rates[$pudo_key], 'get_meta_data')) {
+			$pudo_meta = $rates[$pudo_key]->get_meta_data();
+			$quoted_pudo = isset($pudo_meta['_bluex_pudo_quoted']) && $pudo_meta['_bluex_pudo_quoted'] === 'yes';
+		}
+
 		// If pudo arrived but no ex is available in this package, pudo can't
-		// mirror a parent price — drop it to avoid showing a free/zero cost
-		// option that would differ from the eventual order total.
-		if ($pudo_key !== null && $ex_key === null) {
+		// mirror a parent price — unless it already has a successful PUDO quote.
+		if ($pudo_key !== null && $ex_key === null && !$quoted_pudo) {
 			unset($rates[$pudo_key]);
 			$pudo_key = null;
 		}
 
-		// Mirror cost + taxes from ex onto pudo when both exist.
-		if ($pudo_key !== null && $ex_key !== null) {
+		// Mirror cost + taxes from ex onto unquoted pudo when both exist.
+		if ($pudo_key !== null && $ex_key !== null && !$quoted_pudo) {
 			$ex_rate   = $rates[$ex_key];
 			$pudo_rate = $rates[$pudo_key];
 			if (method_exists($ex_rate, 'get_cost') && method_exists($pudo_rate, 'set_cost')) {

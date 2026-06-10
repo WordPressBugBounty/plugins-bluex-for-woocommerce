@@ -220,13 +220,13 @@
 ._checkboxInput_154vz_13:disabled ~ ._label_154vz_60 {
   color: #6c757d;
   cursor: not-allowed;
-}._formContainer_1huci_1 {
+}._formContainer_ofims_1 {
   margin-bottom: 30px;
   width: 100%;
   padding: 30px;
 }
 
-._form_1huci_1 {
+._form_ofims_1 {
   width: 100%;
   background-color: white;
   border-radius: 10px;
@@ -235,14 +235,14 @@
   margin-bottom: 30px;
 }
 
-._formTitle_1huci_16 {
+._formTitle_ofims_16 {
   font-size: 22px;
   color: #073e99;
   margin-bottom: 25px;
   font-weight: 600;
 }
 
-._subTitle_1huci_23 {
+._subTitle_ofims_23 {
   font-size: 18px;
   margin-bottom: 25px;
   color: #073e99;
@@ -250,7 +250,7 @@
   text-align: left;
 }
 
-._notificationBanner_1huci_31 {
+._notificationBanner_ofims_31 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -261,13 +261,13 @@
   margin-bottom: 30px;
 }
 
-._notificationText_1huci_42 {
+._notificationText_ofims_42 {
   font-size: 16px;
   color: #fff;
   line-height: 1.5;
 }
 
-._errorText_1huci_48 {
+._errorText_ofims_48 {
   color: #dc3545;
   font-size: 15px;
   margin-bottom: 20px;
@@ -275,7 +275,7 @@
   font-weight: 500;
 }
 
-._successText_1huci_56 {
+._successText_ofims_56 {
   color: #28a745;
   font-size: 15px;
   margin-bottom: 20px;
@@ -283,7 +283,7 @@
   font-weight: 500;
 }
 
-._checkboxSection_1huci_64 {
+._checkboxSection_ofims_64 {
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 20px;
@@ -291,14 +291,14 @@
   border: 1px solid #eee;
 }
 
-._checkboxSectionTitle_1huci_72 {
+._checkboxSectionTitle_ofims_72 {
   font-size: 16px;
   color: #073e99;
   margin-bottom: 20px;
   font-weight: 600;
 }
 
-._button_1huci_79 {
+._button_ofims_79 {
   width: 100%;
   padding: 14px;
   background-color: #ff7e44;
@@ -312,16 +312,16 @@
   transition: background-color 0.2s;
 }
 
-._button_1huci_79:hover {
+._button_ofims_79:hover {
   background-color: #e06c00;
 }
 
-._button_1huci_79:disabled {
+._button_ofims_79:disabled {
   background-color: #ffb08a;
   cursor: not-allowed;
 }
 
-._rowControls_1huci_102 {
+._rowControls_ofims_102 {
   display: flex;
   width: 100%;
   margin-bottom: 25px;
@@ -330,7 +330,7 @@
   gap: 20px;
 }
 
-._rowControlsItem_1huci_111 {
+._rowControlsItem_ofims_111 {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -338,7 +338,7 @@
   text-align: left;
 }
 
-._buttonSecondary_1huci_119 {
+._buttonSecondary_ofims_119 {
   padding: 10px 15px;
   background-color: #f0f0f0;
   color: #073e99;
@@ -352,23 +352,23 @@
   width: auto;
 }
 
-._buttonSecondary_1huci_119:hover {
+._buttonSecondary_ofims_119:hover {
   background-color: #e0e0e0;
   border-color: #ccc;
 }
 
-._rowControlsItemLabel_1huci_138 {
+._rowControlsItemLabel_ofims_138 {
   font-size: 15px;
   margin-bottom: 10px;
   font-weight: 500;
   color: #444;
 }
 
-._inputContainer_1huci_145 {
+._inputContainer_ofims_145 {
   width: 100%;
 }
 
-._buttonTest_1huci_149 {
+._buttonTest_ofims_149 {
   width: 100%;
   padding: 10px;
   background-color: #2bb9ff;
@@ -380,28 +380,41 @@
   margin-top: 20px;
 }
 
-._link_1huci_161 {
+._link_ofims_161 {
   color: #2bb9ff;
   text-decoration: none;
 }
 
-._inputDisabled_1huci_166 {
+._inputDisabled_ofims_166 {
   width: 60%;
   margin-bottom: 10px;
 }
 
-._labelWithMargin_1huci_171 {
+._labelWithMargin_ofims_171 {
   margin-right: 10px;
 }
 
-._helpText_1huci_175 {
+._helpText_ofims_175 {
   font-size: 13px;
   color: #666;
   margin-top: 8px;
   margin-bottom: 0;
   line-height: 1.4;
   font-style: italic;
-}._container_qzsko_1 {
+}
+
+._pudoReminderText_ofims_184 {
+  font-size: 13px;
+  color: #073e99;
+  background-color: #eaf4ff;
+  border-left: 4px solid #073e99;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 0;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+._container_qzsko_1 {
   position: relative;
   width: 100%;
   border: none !important;

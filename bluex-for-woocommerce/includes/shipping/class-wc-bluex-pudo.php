@@ -33,7 +33,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 		$this->id                 = 'bluex-pudo';
 		$this->instance_id        = absint($instance_id);
 		$this->method_title       = __('Retiro en Punto Blue Express', 'woocommerce-correios');
-		$this->method_description = __('Permite al cliente elegir un punto PUDO de Blue Express como destino de retiro.', 'woocommerce-correios');
+		$this->method_description = __('Permite al cliente elegir un Punto Blue Express de Blue Express como destino de retiro.', 'woocommerce-correios');
 		$this->supports           = [
 			'shipping-zones',
 			'instance-settings',

@@ -349,14 +349,19 @@ class WC_Correios
 			return $rates;
 		}
 
-		// Final order: pudo (if any), ex (if any), remaining bluex-* (py/md
-		// in the order WC received them), then everything else.
+		// Final order: ex (if any) FIRST so "Envío a domicilio" is WooCommerce's
+		// default-selected rate. PUDO must NOT be the default: WC auto-selects the
+		// first rate when none is chosen, and the classic-checkout JS auto-opens
+		// the pickup modal on PUDO entry — so a pudo-first order makes the modal
+		// pop open on address completion without any user click (reported bug).
+		// Then pudo, remaining bluex-* (py/md in the order WC received them), then
+		// everything else.
 		$ordered = array();
-		if ($pudo_key !== null) {
-			$ordered[$pudo_key] = $rates[$pudo_key];
-		}
 		if ($ex_key !== null) {
 			$ordered[$ex_key] = $rates[$ex_key];
+		}
+		if ($pudo_key !== null) {
+			$ordered[$pudo_key] = $rates[$pudo_key];
 		}
 		return $ordered + $bluex_non_pudo + $other;
 	}

@@ -1,4 +1,7 @@
 <?php
+
+defined('ABSPATH') || exit;
+
 // 1. Función para crear/actualizar la tabla de logs
 function bluex_create_logs_table() {
     global $wpdb;

@@ -19663,7 +19663,7 @@ function ShippingZones() {
     { id: "bluex-ex", name: "Express", description: "Entrega rápida y segura" },
     { id: "bluex-py", name: "Priority", description: "Tiempos optimizados" },
     { id: "bluex-md", name: "SameDay", description: "Entrega el mismo día" },
-    { id: "bluex-pudo", name: "Retiro en Punto Blue Express", description: "Cliente retira en un Punto PUDO" }
+    { id: "bluex-pudo", name: "Retiro en Punto Blue Express", description: "Cliente retira en Puntos Blue Express" }
   ];
   const modes = [
     { value: "create_new", label: "Crear nuevas zonas" },

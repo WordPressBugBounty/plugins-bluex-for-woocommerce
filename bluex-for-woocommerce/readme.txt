@@ -2,9 +2,9 @@
 Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
-Tested up to: 6.8.2
-Stable tag: 3.2.1
-Requires PHP: 7.0
+Tested up to: 7.0
+Stable tag: 3.2.2
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,4 +106,8 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Scoped agencyId reads in the webservice to prevent label contamination across non-PUDO Blue Express rates.
 * HPOS compatibility declared; legacy `update_post_meta` fallback removed in favor of `WC_Data` API.
 = 3.2.1 - 2026-05-28 =
+* Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.
+= 3.2.2- 2026-06-17 =
+* Fix: the pickup-point (PUDO) modal no longer auto-opens when the customer completes their address. "Envío a domicilio" (bluex-ex) is now WooCommerce's default-selected rate; the pickup modal only opens when the customer explicitly selects the "Retiro en Punto Blue Express" rate.
+* WordPress 7.0 compatibility verified. Minimum PHP bumped to 7.4.
 * Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.

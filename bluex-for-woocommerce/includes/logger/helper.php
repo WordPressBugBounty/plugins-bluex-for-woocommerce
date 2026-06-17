@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 function bluex_log($type, $message)
 {
     if (!is_string($message)) {

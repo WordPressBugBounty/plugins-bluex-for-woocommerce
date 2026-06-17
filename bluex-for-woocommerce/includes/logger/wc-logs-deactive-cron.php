@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 function bluex_clean_logs_function()
 {
     global $wpdb;

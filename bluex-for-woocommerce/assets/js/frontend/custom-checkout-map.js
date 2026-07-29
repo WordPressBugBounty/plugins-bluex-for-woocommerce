@@ -103,7 +103,7 @@ function ensurePudoDialog() {
 
   const title = document.createElement("h3");
   title.className = "bluex-pudo-dialog__title";
-  title.textContent = "Seleccioná tu punto Blue Express";
+  title.textContent = "Selecciona tu punto Blue Express";
 
   const closeBtn = document.createElement("button");
   closeBtn.type = "button";

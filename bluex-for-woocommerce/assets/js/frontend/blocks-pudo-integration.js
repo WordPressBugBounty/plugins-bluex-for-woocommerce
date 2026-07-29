@@ -201,7 +201,7 @@
 		hint.id = HINT_ID;
 		hint.className = 'bluex-pudo-hint';
 		hint.setAttribute('role', 'status');
-		hint.textContent = 'Seleccioná un punto de retiro para continuar con tu pedido.';
+		hint.textContent = 'Selecciona un punto de retiro para continuar con tu pedido.';
 		container.insertBefore(hint, container.firstChild);
 	};
 

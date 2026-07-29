@@ -99,6 +99,11 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
                 'fee' => $request->get_param('vat'), // Mapear 'vat' del frontend a 'fee' (puede ser null, string vacío o valor)
             ];
 
+            // Respetar include_pudos=false: quitar bluex-pudo aunque venga del default de methods.
+            if (false === $options['include_pudos'] && is_array($options['methods'])) {
+                $options['methods'] = array_values(array_diff($options['methods'], ['bluex-pudo']));
+            }
+
             $result = $automation->create_zones($options);
 
             if ($result['success']) {
@@ -260,9 +265,9 @@ class WC_BlueX_Shipping_Zones_Automation_Endpoint extends WC_REST_Controller {
      */
     public function sanitize_methods_param( $value, $request, $param ) {
         $allowed = ['bluex-ex', 'bluex-py', 'bluex-md', 'bluex-pudo'];
-        $default = ['bluex-ex'];
+        $default = ['bluex-ex', 'bluex-pudo'];
 
-        // Si viene vacío o null, usar por defecto (solo Express).
+        // Si viene vacío o null, usar por defecto (Express + PUDO).
         if ($value === null || $value === '' ) {
             return $default;
         }

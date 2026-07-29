@@ -7053,10 +7053,10 @@ function requireClient() {
   return client;
 }
 var clientExports = requireClient();
-const root = "_root_1wcjp_1";
-const appLayout = "_appLayout_1wcjp_11";
-const content = "_content_1wcjp_24";
-const developerTools = "_developerTools_1wcjp_31";
+const root = "_root_a6kw8_1";
+const appLayout = "_appLayout_a6kw8_11";
+const content = "_content_a6kw8_24";
+const developerTools = "_developerTools_a6kw8_31";
 const styles$e = {
   root,
   appLayout,
@@ -8696,15 +8696,15 @@ function useForm(props = {}) {
   _formControl.current.formState = getProxyFormState(formState, control);
   return _formControl.current;
 }
-const toast = "_toast_kwt6m_1";
-const visible = "_visible_kwt6m_17";
-const hidden = "_hidden_kwt6m_22";
-const success = "_success_kwt6m_27";
-const error$1 = "_error_kwt6m_31";
-const info$1 = "_info_kwt6m_35";
-const warning = "_warning_kwt6m_39";
-const icon = "_icon_kwt6m_43";
-const message = "_message_kwt6m_64";
+const toast = "_toast_jd3ah_1";
+const visible = "_visible_jd3ah_17";
+const hidden = "_hidden_jd3ah_22";
+const success = "_success_jd3ah_27";
+const error$1 = "_error_jd3ah_31";
+const info$1 = "_info_jd3ah_35";
+const warning = "_warning_jd3ah_39";
+const icon = "_icon_jd3ah_43";
+const message = "_message_jd3ah_64";
 const styles$c = {
   toast,
   visible,
@@ -8741,17 +8741,17 @@ const Toast = ({ message: message2, type = "success", duration = 3e3, onClose })
     }
   );
 };
-const label$1 = "_label_66y8x_1";
+const label$1 = "_label_eq67p_1";
 const styles$b = {
   label: label$1
 };
 const Label = ({ children }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$b.label, children });
 };
-const checkboxContainer = "_checkboxContainer_154vz_1";
-const checkboxInput = "_checkboxInput_154vz_13";
-const checkmark = "_checkmark_154vz_21";
-const label = "_label_154vz_60";
+const checkboxContainer = "_checkboxContainer_oobdu_1";
+const checkboxInput = "_checkboxInput_oobdu_13";
+const checkmark = "_checkmark_oobdu_21";
+const label = "_label_oobdu_60";
 const styles$a = {
   checkboxContainer,
   checkboxInput,
@@ -8784,28 +8784,28 @@ const Checkbox = ({
     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.checkmark })
   ] });
 };
-const formContainer$1 = "_formContainer_ofims_1";
-const form$2 = "_form_ofims_1";
-const formTitle$1 = "_formTitle_ofims_16";
-const subTitle$1 = "_subTitle_ofims_23";
-const notificationBanner = "_notificationBanner_ofims_31";
-const notificationText = "_notificationText_ofims_42";
-const errorText$1 = "_errorText_ofims_48";
-const successText$1 = "_successText_ofims_56";
-const checkboxSection = "_checkboxSection_ofims_64";
-const checkboxSectionTitle = "_checkboxSectionTitle_ofims_72";
-const button$2 = "_button_ofims_79";
-const rowControls$1 = "_rowControls_ofims_102";
-const rowControlsItem$1 = "_rowControlsItem_ofims_111";
-const buttonSecondary = "_buttonSecondary_ofims_119";
-const rowControlsItemLabel$1 = "_rowControlsItemLabel_ofims_138";
-const inputContainer = "_inputContainer_ofims_145";
-const buttonTest = "_buttonTest_ofims_149";
-const link$1 = "_link_ofims_161";
-const inputDisabled = "_inputDisabled_ofims_166";
-const labelWithMargin = "_labelWithMargin_ofims_171";
-const helpText$1 = "_helpText_ofims_175";
-const pudoReminderText = "_pudoReminderText_ofims_184";
+const formContainer$1 = "_formContainer_15n7l_1";
+const form$2 = "_form_15n7l_1";
+const formTitle$1 = "_formTitle_15n7l_16";
+const subTitle$1 = "_subTitle_15n7l_23";
+const notificationBanner = "_notificationBanner_15n7l_31";
+const notificationText = "_notificationText_15n7l_42";
+const errorText$1 = "_errorText_15n7l_48";
+const successText$1 = "_successText_15n7l_56";
+const checkboxSection = "_checkboxSection_15n7l_64";
+const checkboxSectionTitle = "_checkboxSectionTitle_15n7l_72";
+const button$2 = "_button_15n7l_79";
+const rowControls$1 = "_rowControls_15n7l_102";
+const rowControlsItem$1 = "_rowControlsItem_15n7l_111";
+const buttonSecondary = "_buttonSecondary_15n7l_119";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_15n7l_138";
+const inputContainer = "_inputContainer_15n7l_145";
+const buttonTest = "_buttonTest_15n7l_149";
+const link$1 = "_link_15n7l_161";
+const inputDisabled = "_inputDisabled_15n7l_166";
+const labelWithMargin = "_labelWithMargin_15n7l_171";
+const helpText$1 = "_helpText_15n7l_175";
+const pudoReminderText = "_pudoReminderText_15n7l_184";
 const styles$9 = {
   formContainer: formContainer$1,
   form: form$2,
@@ -8848,7 +8848,6 @@ async function validateIntegrationStatus() {
       }
     );
     const data = await response.json();
-    console.log("Integration Status:", data);
     return data;
   } catch (error2) {
     console.error("Error validating integration status:", error2);
@@ -8875,7 +8874,6 @@ async function updateIntegrationCredentials(storeId, credentials) {
       }
     );
     const data = await response.json();
-    console.log("Update Credentials Response:", data);
     return data;
   } catch (error2) {
     console.error("Error updating integration credentials:", error2);
@@ -8903,7 +8901,6 @@ async function saveDeveloperSettingsService(settings) {
       }
     );
     const data = await response.json();
-    console.log("Save Developer Settings Response:", data);
     return data;
   } catch (error2) {
     console.error("Error saving developer settings:", error2);
@@ -8933,7 +8930,6 @@ async function saveSettings(settings) {
       }
     );
     const data = await response.json();
-    console.log("Save Settings Response:", data);
     return data;
   } catch (error2) {
     console.error("Error saving settings:", error2);
@@ -8980,7 +8976,6 @@ async function shippingZonesCreate(params) {
       }
     );
     const data = await response.json();
-    console.log("Shipping Zones Create Response:", data);
     if (!response.ok) {
       throw new Error(data.message || "Error al crear zonas de envío");
     }
@@ -9005,7 +9000,6 @@ async function shippingZonesStatus() {
       }
     );
     const data = await response.json();
-    console.log("Shipping Zones Status Response:", data);
     if (!response.ok) {
       throw new Error(data.message || "Error al obtener estado de zonas");
     }
@@ -9015,15 +9009,15 @@ async function shippingZonesStatus() {
     throw error2;
   }
 }
-const container$2 = "_container_qzsko_1";
-const inputWrapper = "_inputWrapper_qzsko_11";
-const input$1 = "_input_qzsko_11";
-const toggle = "_toggle_qzsko_38";
-const clear = "_clear_qzsko_51";
-const dropdown = "_dropdown_qzsko_75";
-const option = "_option_qzsko_89";
-const highlight$1 = "_highlight_qzsko_95";
-const empty = "_empty_qzsko_99";
+const container$2 = "_container_1k0uq_1";
+const inputWrapper = "_inputWrapper_1k0uq_11";
+const input$1 = "_input_1k0uq_11";
+const toggle = "_toggle_1k0uq_38";
+const clear = "_clear_1k0uq_51";
+const dropdown = "_dropdown_1k0uq_75";
+const option = "_option_1k0uq_89";
+const highlight$1 = "_highlight_1k0uq_95";
+const empty = "_empty_1k0uq_99";
 const styles$8 = {
   container: container$2,
   inputWrapper,
@@ -18673,25 +18667,25 @@ const FormConfig = ({
     ] })
   ] });
 };
-const formContainer = "_formContainer_ecg4b_1";
-const form$1 = "_form_ecg4b_1";
-const formTitle = "_formTitle_ecg4b_16";
-const formDescription = "_formDescription_ecg4b_23";
-const storeIdInput = "_storeIdInput_ecg4b_30";
-const subTitle = "_subTitle_ecg4b_46";
-const tooltip = "_tooltip_ecg4b_55";
-const tooltipIcon = "_tooltipIcon_ecg4b_62";
-const tooltipText = "_tooltipText_ecg4b_74";
-const errorText = "_errorText_ecg4b_110";
-const successText = "_successText_ecg4b_118";
-const input = "_input_ecg4b_126";
-const button$1 = "_button_ecg4b_144";
-const link = "_link_ecg4b_167";
-const rowControls = "_rowControls_ecg4b_179";
-const rowControlsItem = "_rowControlsItem_ecg4b_187";
-const rowControlsItemLabel = "_rowControlsItemLabel_ecg4b_194";
-const createAccountText = "_createAccountText_ecg4b_201";
-const helperText = "_helperText_ecg4b_208";
+const formContainer = "_formContainer_10qya_1";
+const form$1 = "_form_10qya_1";
+const formTitle = "_formTitle_10qya_16";
+const formDescription = "_formDescription_10qya_23";
+const storeIdInput = "_storeIdInput_10qya_30";
+const subTitle = "_subTitle_10qya_46";
+const tooltip = "_tooltip_10qya_55";
+const tooltipIcon = "_tooltipIcon_10qya_62";
+const tooltipText = "_tooltipText_10qya_74";
+const errorText = "_errorText_10qya_110";
+const successText = "_successText_10qya_118";
+const input = "_input_10qya_126";
+const button$1 = "_button_10qya_144";
+const link = "_link_10qya_167";
+const rowControls = "_rowControls_10qya_179";
+const rowControlsItem = "_rowControlsItem_10qya_187";
+const rowControlsItemLabel = "_rowControlsItemLabel_10qya_194";
+const createAccountText = "_createAccountText_10qya_201";
+const helperText = "_helperText_10qya_208";
 const styles$6 = {
   formContainer,
   form: form$1,
@@ -18881,15 +18875,15 @@ const FormNewIntegrate = ({
     ] })
   ] });
 };
-const modalOverlay = "_modalOverlay_x9myy_1";
-const modalContent$1 = "_modalContent_x9myy_14";
-const warningBox$1 = "_warningBox_x9myy_31";
-const formFields = "_formFields_x9myy_41";
-const fieldGroup = "_fieldGroup_x9myy_48";
-const buttonGroup = "_buttonGroup_x9myy_73";
-const button = "_button_x9myy_73";
-const primaryButton = "_primaryButton_x9myy_89";
-const secondaryButton = "_secondaryButton_x9myy_103";
+const modalOverlay = "_modalOverlay_1lsj2_1";
+const modalContent$1 = "_modalContent_1lsj2_14";
+const warningBox$1 = "_warningBox_1lsj2_31";
+const formFields = "_formFields_1lsj2_41";
+const fieldGroup = "_fieldGroup_1lsj2_48";
+const buttonGroup = "_buttonGroup_1lsj2_73";
+const button = "_button_1lsj2_73";
+const primaryButton = "_primaryButton_1lsj2_89";
+const secondaryButton = "_secondaryButton_1lsj2_103";
 const styles$5 = {
   modalOverlay,
   modalContent: modalContent$1,
@@ -19001,18 +18995,21 @@ const DeveloperToolsForm = ({
     ] })
   ] }) });
 };
-const logsContainer = "_logsContainer_171sx_1";
-const backButton = "_backButton_171sx_10";
-const logsTable = "_logsTable_171sx_22";
-const tableRow = "_tableRow_171sx_42";
-const selected = "_selected_171sx_51";
-const logType = "_logType_171sx_55";
-const error = "_error_171sx_62";
-const info = "_info_171sx_67";
-const logDetail = "_logDetail_171sx_72";
-const pagination = "_pagination_171sx_104";
-const logsDisabledContainer = "_logsDisabledContainer_171sx_135";
-const logsDisabledMessage = "_logsDisabledMessage_171sx_145";
+const logsContainer = "_logsContainer_cdrti_1";
+const backButton = "_backButton_cdrti_10";
+const logsTable = "_logsTable_cdrti_22";
+const tableRow = "_tableRow_cdrti_42";
+const selected = "_selected_cdrti_51";
+const logType = "_logType_cdrti_55";
+const error = "_error_cdrti_62";
+const info = "_info_cdrti_67";
+const logDetail = "_logDetail_cdrti_72";
+const pagination = "_pagination_cdrti_104";
+const logsDisabledContainer = "_logsDisabledContainer_cdrti_135";
+const logsDisabledMessage = "_logsDisabledMessage_cdrti_145";
+const deleteButton = "_deleteButton_cdrti_161";
+const loadErrorContainer = "_loadErrorContainer_cdrti_176";
+const retryButton = "_retryButton_cdrti_181";
 const styles$4 = {
   logsContainer,
   backButton,
@@ -19025,7 +19022,10 @@ const styles$4 = {
   logDetail,
   pagination,
   logsDisabledContainer,
-  logsDisabledMessage
+  logsDisabledMessage,
+  deleteButton,
+  loadErrorContainer,
+  retryButton
 };
 const BASE_URL = "/wp-json/wc-bluex/v1";
 const defaultHeaders = {
@@ -19168,6 +19168,8 @@ const Logs = ({ settings, setActiveSection }) => {
   const [selectedLog, setSelectedLog] = reactExports.useState(null);
   const [loading, setLoading] = reactExports.useState(false);
   const [deleting, setDeleting] = reactExports.useState(false);
+  const [toast2, setToast] = reactExports.useState(null);
+  const [loadError, setLoadError] = reactExports.useState(false);
   const logsEnabled = (settings == null ? void 0 : settings.active_logs) === "yes";
   reactExports.useEffect(() => {
     if (logsEnabled) {
@@ -19176,12 +19178,14 @@ const Logs = ({ settings, setActiveSection }) => {
   }, [currentPage, logsEnabled]);
   const fetchLogs = async (page) => {
     setLoading(true);
+    setLoadError(false);
     try {
       const response = await blueExpressService.getLogs({ page });
       setLogs(response.items);
       setTotalPages(response.total_pages);
     } catch (error2) {
       console.error("Error fetching logs:", error2);
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -19204,16 +19208,24 @@ const Logs = ({ settings, setActiveSection }) => {
         setTotalPages(1);
         setCurrentPage(1);
         setSelectedLog(null);
-        alert("Logs eliminados correctamente.");
+        setToast({ message: "Logs eliminados correctamente.", type: "success" });
       } catch (error2) {
         console.error("Error deleting logs:", error2);
-        alert("Error al eliminar los logs.");
+        setToast({ message: "Error al eliminar los logs.", type: "error" });
       } finally {
         setDeleting(false);
       }
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.logsContainer, children: [
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Toast,
+      {
+        message: toast2.message,
+        type: toast2.type,
+        onClose: () => setToast(null)
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.headerControls, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
@@ -19231,15 +19243,6 @@ const Logs = ({ settings, setActiveSection }) => {
           className: styles$4.deleteButton,
           onClick: handleDeleteLogs,
           disabled: deleting,
-          style: {
-            backgroundColor: "#dc3545",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            cursor: deleting ? "not-allowed" : "pointer",
-            marginLeft: "auto"
-          },
           children: deleting ? "Eliminando..." : "Borrar Logs"
         }
       )
@@ -19251,7 +19254,18 @@ const Logs = ({ settings, setActiveSection }) => {
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "#", onClick: handleGoToConfig, children: "Configuración" }),
       "."
-    ] }) }) : loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Cargando logs..." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    ] }) }) : loadError ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.loadErrorContainer, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No pudimos cargar los logs." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          className: styles$4.retryButton,
+          onClick: () => fetchLogs(currentPage),
+          children: "Reintentar"
+        }
+      )
+    ] }) : loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Cargando logs..." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$4.logsTable, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Fecha" }),
@@ -19314,12 +19328,12 @@ const Logs = ({ settings, setActiveSection }) => {
     ] })
   ] });
 };
-const sidebar = "_sidebar_h80jo_1";
-const logo = "_logo_h80jo_13";
-const logo__image = "_logo__image_h80jo_20";
-const menu = "_menu_h80jo_25";
-const menu__item = "_menu__item_h80jo_32";
-const menu__item_active = "_menu__item_active_h80jo_49";
+const sidebar = "_sidebar_m0fws_1";
+const logo = "_logo_m0fws_13";
+const logo__image = "_logo__image_m0fws_20";
+const menu = "_menu_m0fws_25";
+const menu__item = "_menu__item_m0fws_32";
+const menu__item_active = "_menu__item_active_m0fws_49";
 const styles$3 = {
   sidebar,
   logo,
@@ -19379,23 +19393,23 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
   ] });
 };
 const Sidebar$1 = reactExports.memo(Sidebar);
-const home = "_home_15mjt_1";
-const hero = "_hero_15mjt_6";
-const hero__image = "_hero__image_15mjt_20";
-const description = "_description_15mjt_25";
-const highlight = "_highlight_15mjt_32";
-const cards = "_cards_15mjt_37";
-const card = "_card_15mjt_37";
-const status = "_status_15mjt_58";
-const statusContainer = "_statusContainer_15mjt_65";
-const statusSuccess = "_statusSuccess_15mjt_72";
-const statusError = "_statusError_15mjt_73";
-const statusIcon = "_statusIcon_15mjt_88";
-const connectButton = "_connectButton_15mjt_93";
-const configSummary = "_configSummary_15mjt_108";
-const configList = "_configList_15mjt_112";
-const helpText = "_helpText_15mjt_122";
-const helpLink = "_helpLink_15mjt_129";
+const home = "_home_s4xwv_1";
+const hero = "_hero_s4xwv_6";
+const hero__image = "_hero__image_s4xwv_20";
+const description = "_description_s4xwv_25";
+const highlight = "_highlight_s4xwv_32";
+const cards = "_cards_s4xwv_37";
+const card = "_card_s4xwv_37";
+const status = "_status_s4xwv_58";
+const statusContainer = "_statusContainer_s4xwv_65";
+const statusSuccess = "_statusSuccess_s4xwv_72";
+const statusError = "_statusError_s4xwv_73";
+const statusIcon = "_statusIcon_s4xwv_88";
+const connectButton = "_connectButton_s4xwv_93";
+const configSummary = "_configSummary_s4xwv_108";
+const configList = "_configList_s4xwv_112";
+const helpText = "_helpText_s4xwv_122";
+const helpLink = "_helpLink_s4xwv_129";
 const styles$2 = {
   home,
   hero,
@@ -19497,53 +19511,53 @@ const Home = ({
     ] })
   ] });
 };
-const container = "_container_urh6r_1";
-const header = "_header_urh6r_7";
-const title = "_title_urh6r_11";
-const subtitle = "_subtitle_urh6r_18";
-const statusPanel = "_statusPanel_urh6r_24";
-const statusGrid = "_statusGrid_urh6r_32";
-const statusCard = "_statusCard_urh6r_39";
-const statusLabel = "_statusLabel_urh6r_46";
-const statusValue = "_statusValue_urh6r_53";
-const warningBadge = "_warningBadge_urh6r_60";
-const refreshButton = "_refreshButton_urh6r_71";
-const warningMessage = "_warningMessage_urh6r_92";
-const infoMessage = "_infoMessage_urh6r_103";
-const form = "_form_urh6r_114";
-const section = "_section_urh6r_121";
-const sectionTitle = "_sectionTitle_urh6r_133";
-const formRow = "_formRow_urh6r_140";
-const formGroup = "_formGroup_urh6r_147";
-const formHint = "_formHint_urh6r_153";
-const regionSelector = "_regionSelector_urh6r_159";
-const regionActions = "_regionActions_urh6r_163";
-const btnSmall = "_btnSmall_urh6r_169";
-const regionGrid = "_regionGrid_urh6r_185";
-const regionItem = "_regionItem_urh6r_197";
-const methodsGrid = "_methodsGrid_urh6r_204";
-const methodCard = "_methodCard_urh6r_210";
-const methodDesc = "_methodDesc_urh6r_218";
-const optionsGrid = "_optionsGrid_urh6r_226";
-const resultPanel = "_resultPanel_urh6r_232";
-const summaryGrid = "_summaryGrid_urh6r_240";
-const summaryItem = "_summaryItem_urh6r_247";
-const summaryLabel = "_summaryLabel_urh6r_254";
-const summaryValue = "_summaryValue_urh6r_261";
-const warningBox = "_warningBox_urh6r_268";
-const detailsBox = "_detailsBox_urh6r_281";
-const detailsList = "_detailsList_urh6r_289";
-const detailItem = "_detailItem_urh6r_295";
-const detailIcon = "_detailIcon_urh6r_307";
-const detailText = "_detailText_urh6r_312";
-const linkBox = "_linkBox_urh6r_317";
-const linkButton = "_linkButton_urh6r_322";
-const actions = "_actions_urh6r_339";
-const btnPrimary = "_btnPrimary_urh6r_348";
-const btnSecondary = "_btnSecondary_urh6r_372";
-const modal = "_modal_urh6r_395";
-const modalContent = "_modalContent_urh6r_408";
-const modalActions = "_modalActions_urh6r_427";
+const container = "_container_dni50_1";
+const header = "_header_dni50_7";
+const title = "_title_dni50_11";
+const subtitle = "_subtitle_dni50_18";
+const statusPanel = "_statusPanel_dni50_24";
+const statusGrid = "_statusGrid_dni50_32";
+const statusCard = "_statusCard_dni50_39";
+const statusLabel = "_statusLabel_dni50_46";
+const statusValue = "_statusValue_dni50_53";
+const warningBadge = "_warningBadge_dni50_60";
+const refreshButton = "_refreshButton_dni50_71";
+const warningMessage = "_warningMessage_dni50_92";
+const infoMessage = "_infoMessage_dni50_103";
+const form = "_form_dni50_114";
+const section = "_section_dni50_121";
+const sectionTitle = "_sectionTitle_dni50_133";
+const formRow = "_formRow_dni50_140";
+const formGroup = "_formGroup_dni50_147";
+const formHint = "_formHint_dni50_153";
+const regionSelector = "_regionSelector_dni50_159";
+const regionActions = "_regionActions_dni50_163";
+const btnSmall = "_btnSmall_dni50_169";
+const regionGrid = "_regionGrid_dni50_185";
+const regionItem = "_regionItem_dni50_197";
+const methodsGrid = "_methodsGrid_dni50_204";
+const methodCard = "_methodCard_dni50_210";
+const methodDesc = "_methodDesc_dni50_218";
+const optionsGrid = "_optionsGrid_dni50_226";
+const resultPanel = "_resultPanel_dni50_232";
+const summaryGrid = "_summaryGrid_dni50_240";
+const summaryItem = "_summaryItem_dni50_247";
+const summaryLabel = "_summaryLabel_dni50_254";
+const summaryValue = "_summaryValue_dni50_261";
+const warningBox = "_warningBox_dni50_268";
+const detailsBox = "_detailsBox_dni50_281";
+const detailsList = "_detailsList_dni50_289";
+const detailItem = "_detailItem_dni50_295";
+const detailIcon = "_detailIcon_dni50_307";
+const detailText = "_detailText_dni50_312";
+const linkBox = "_linkBox_dni50_317";
+const linkButton = "_linkButton_dni50_322";
+const actions = "_actions_dni50_339";
+const btnPrimary = "_btnPrimary_dni50_348";
+const btnSecondary = "_btnSecondary_dni50_372";
+const modal = "_modal_dni50_395";
+const modalContent = "_modalContent_dni50_408";
+const modalActions = "_modalActions_dni50_427";
 const styles$1 = {
   container,
   header,
@@ -19593,8 +19607,8 @@ const styles$1 = {
   modalContent,
   modalActions
 };
-const select__container = "_select__container_1opku_1";
-const select = "_select_1opku_1";
+const select__container = "_select__container_6msjn_1";
+const select = "_select_6msjn_1";
 const styles = {
   select__container,
   select
@@ -19704,10 +19718,6 @@ function ShippingZones() {
       setLoading(true);
       setShowConfirmDialog(false);
       const currentValues = getValues();
-      console.log("Form Data:", formData);
-      console.log("Current Values:", currentValues);
-      console.log("Selected Methods:", currentValues.methods);
-      console.log("Selected Regions:", currentValues.regions);
       const params = {
         strategy: "by_region",
         mode: formData.mode,
@@ -19722,7 +19732,6 @@ function ShippingZones() {
       if (Array.isArray(currentValues.regions) && currentValues.regions.length > 0) {
         params.regions = currentValues.regions;
       }
-      console.log("Final params:", params);
       const result = await shippingZonesCreate(params);
       setLastResult(result);
       const isDryRun = formData.dry_run;
@@ -19979,15 +19988,12 @@ const App = () => {
   const [activeSection, setActiveSection] = reactExports.useState("inicio");
   const [optionsEmissionOs, setOptionsEmissionOs] = reactExports.useState([]);
   const [activeIntegration, setActiveIntegration] = reactExports.useState(false);
-  const handleError = (error22) => {
-    console.log("handleError", error22);
-  };
+  const [toast2, setToast] = reactExports.useState(null);
   const validateIntegration = reactExports.useCallback(async () => {
     setError(void 0);
     setLoading(true);
     try {
       const response = await validateIntegrationStatus();
-      console.log("response validateIntegration ", response);
       if (response.storeId) {
         setStoreId(response.storeId);
         if (response.activeIntegration === false) {
@@ -20000,8 +20006,10 @@ const App = () => {
       }
       setSettings(response.settings);
       setOptionsEmissionOs(response.optionsEmissionOs || []);
-    } catch (error22) {
-      handleError(error22);
+    } catch {
+      const message2 = "No pudimos conectar con Blue Express. Recarga la página o inténtalo nuevamente en unos minutos.";
+      setError(message2);
+      setToast({ message: message2, type: "error" });
     } finally {
       setLoading(false);
     }
@@ -20012,18 +20020,32 @@ const App = () => {
   const saveSettingsDeveloperTools = reactExports.useCallback(async (settings2) => {
     try {
       await saveDeveloperSettingsService(settings2);
+      setToast({
+        message: "Configuración de desarrollo guardada",
+        type: "success"
+      });
     } catch (error22) {
-      console.error(error22);
-      alert("Error al guardar las configuraciones de desarrollo");
+      console.error("Error saving developer settings:", error22);
+      setToast({
+        message: "Error al guardar las configuraciones de desarrollo",
+        type: "error"
+      });
     }
   }, []);
   const testPricing = reactExports.useCallback(async () => {
     setLoading(true);
     try {
       await testPricingService();
+      setToast({
+        message: "Prueba de obtención de tarifas ejecutada correctamente",
+        type: "success"
+      });
     } catch (error22) {
-      console.error(error22);
-      alert("Error al probar la obtención de precios");
+      console.error("Error testing pricing:", error22);
+      setToast({
+        message: "Error al probar la obtención de precios",
+        type: "error"
+      });
     } finally {
       setLoading(false);
     }
@@ -20107,7 +20129,15 @@ const App = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$e.content, children: renderContent() })
     ] }),
     DeveloperToolsMemo,
-    loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })
+    loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 }),
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Toast,
+      {
+        message: toast2.message,
+        type: toast2.type,
+        onClose: () => setToast(null)
+      }
+    )
   ] });
 };
 clientExports.createRoot(document.getElementById("integration-react-form")).render(

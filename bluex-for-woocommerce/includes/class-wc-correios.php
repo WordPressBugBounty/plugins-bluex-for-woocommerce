@@ -79,6 +79,11 @@ class WC_Correios
 			// in the same package (see class-wc-bluex-pudo.php docstring for why).
 			// Priority 99 runs after other plugins that may add/remove rates.
 			add_filter('woocommerce_package_rates', array(__CLASS__, 'normalize_bluex_pudo_rate'), 99, 2);
+
+			// Persist the default 19% fee (IVA) ONLY on newly created bluex-pudo
+			// instances. Using the creation hook (not the form-field default)
+			// keeps pre-existing PUDO instances untouched — no retroactive charge.
+			add_action('woocommerce_shipping_zone_method_added', array('WC_BlueX_Pudo', 'maybe_set_default_fee'), 10, 3);
 		} else {
 			add_action('admin_notices', array(__CLASS__, 'woocommerce_missing_notice'));
 		}
@@ -137,6 +142,13 @@ class WC_Correios
 
 		include_once dirname(__FILE__) . '/wc-correios-functions.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-install.php';
+		// Bootstrap default settings for fresh installs. Must run right
+		// after the install class loads and before the includes below
+		// (pudos-map, districts) that read the settings option at
+		// include time; it also runs before upgrade_zones_migration()
+		// so the migrator sees pudoEnable=yes.
+		WC_Correios_Install::maybe_bootstrap_default_settings();
+
 		include_once dirname(__FILE__) . '/class-wc-correios-settings.php';
 		include_once dirname(__FILE__) . '/logger/helper.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-package.php';

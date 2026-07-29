@@ -1165,6 +1165,12 @@ class WC_BlueX_Shipping_Zone_Automation {
      * @param string $fee Valor del fee a establecer
      */
     private function update_method_fee($instance_id, $method_id, $fee) {
+        // Semántica uniforme para todos los métodos: null = no tocar (filtrado por
+        // los callers con $fee !== null), '' = borrar, valor = setear. El 19% por
+        // defecto de bluex-pudo lo garantiza el hook de creación
+        // (WC_BlueX_Pudo::maybe_set_default_fee), no un guard aquí — así el admin
+        // puede borrar/ajustar el fee de pudo vía automation sin bloqueos.
+
         // Construir el option_key correcto para instance settings
         // Formato: woocommerce_{method_id}_{instance_id}_settings
         $option_key = 'woocommerce_' . $method_id . '_' . $instance_id . '_settings';

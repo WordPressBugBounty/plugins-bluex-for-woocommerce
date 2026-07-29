@@ -58,6 +58,32 @@ class WC_Correios_Install {
 	}
 
 	/**
+	 * Bootstrap default settings for fresh installs.
+	 *
+	 * New installs (sites where the integration settings option was never
+	 * created) start with PUDO enabled by default (INTEGR-5480). Existing
+	 * sites keep their stored settings untouched; sites that stored
+	 * settings without the pudoEnable key keep the runtime default 'no'.
+	 *
+	 * Cheap to call on every load: a marker option short-circuits after
+	 * the first evaluation.
+	 */
+	public static function maybe_bootstrap_default_settings() {
+		if ( get_option( 'bluex_pudo_default_bootstrapped' ) ) {
+			return;
+		}
+
+		$raw_settings = get_option( 'woocommerce_correios-integration_settings', false );
+
+		if ( false === $raw_settings ) {
+			// Never configured: treat as fresh install, PUDO on by default.
+			update_option( 'woocommerce_correios-integration_settings', array( 'pudoEnable' => 'yes' ) );
+		}
+
+		update_option( 'bluex_pudo_default_bootstrapped', 'yes' );
+	}
+
+	/**
 	 * Upgrade to 3.0.0 while using WooCommerce 2.6.0.
 	 */
 	public static function upgrade_300_fromWc260() {

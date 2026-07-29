@@ -319,7 +319,7 @@ class WC_Correios_Blocks_Integration
 			if (class_exists('\Automattic\WooCommerce\StoreApi\Exceptions\RouteException')) {
 				throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
 					'bluex_pudo_missing_agency',
-					__('Seleccioná un punto de retiro Blue Express para continuar.', 'woocommerce-correios'),
+					__('Selecciona un punto de retiro Blue Express para continuar.', 'woocommerce-correios'),
 					400
 				);
 			}
@@ -327,7 +327,7 @@ class WC_Correios_Blocks_Integration
 			// with a generic WP_Error via throwing a standard Exception so the
 			// order is not created with invalid state.
 			throw new Exception(
-				__('Seleccioná un punto de retiro Blue Express para continuar.', 'woocommerce-correios')
+				__('Selecciona un punto de retiro Blue Express para continuar.', 'woocommerce-correios')
 			);
 		}
 

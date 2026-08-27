@@ -8,13 +8,11 @@
  *   1. Subscribe to wc/store/cart. When the selected rate's method_id is
  *      `bluex-pudo`, mount an iframe with the pickup-point picker right below
  *      the rate row. When the selection moves to another method, unmount it.
- *   2. When the user picks a point (postMessage `pudo:select` from the iframe),
- *      update the cart's shipping address, persist agency_id/name/address to
- *      the server via extensionCartUpdate (Store API write-side callback lives
- *      in class-wc-correios-blocks-integration.php::register_store_api_update_callback).
- *   3. Snapshot the customer's shipping address the first time PUDO becomes
- *      active in a session; restore it on deactivation so switching away from
- *      PUDO doesn't leave the customer with the pickup address.
+ *   2. Open without an agency ID before confirmation; when the shopper reopens
+ *      a confirmed selection, rehydrate only that explicitly chosen agency.
+ *   3. When the user explicitly picks a point (postMessage `pudo:select`),
+ *      persist agency metadata through extensionCartUpdate without changing
+ *      the customer's shipping address.
  *   4. Render a "Retiro en <agency>" hint under the shipping total in the
  *      order summary sidebar.
  *
@@ -33,13 +31,16 @@
 
 	const { select, subscribe } = wp.data;
 	const config = window.bluex_checkout_params || {};
+	const usesServerSideShippingCleanup = config.server_side_shipping_cleanup === true ||
+		config.server_side_shipping_cleanup === '1' ||
+		config.server_side_shipping_cleanup === 'true';
 
 	const WIDGET_CONTAINER_ID   = 'bluex-pudo-widget-container-blocks';
 	const HINT_ID               = 'bluex-pudo-pick-hint';
-	const ADDRESS_SNAPSHOT_KEY  = 'bluex_pudo_address_snapshot';
 
 	// Tracked state. `lastSelectedMethod` lets us detect transitions in/out of PUDO.
 	let lastSelectedMethod = null;
+	let pendingLegacyCleanup = null;
 
 	// ---- state -> code helpers -------------------------------------------------
 
@@ -64,9 +65,28 @@
 
 	const resolveStateCode = (name) => {
 		if (!name) return '';
-		for (const s of STATE_CODES) if (s.names.indexOf(name) !== -1) return s.code;
+		const raw = String(name).trim().toUpperCase();
+		if (/^CL-[A-Z]{2}$/.test(raw)) return raw;
+		if (/^[A-Z]{2}$/.test(raw)) return 'CL-' + raw;
+		const wanted = normalizeRegionName(name);
+		for (const s of STATE_CODES) {
+			for (const candidate of s.names) {
+				const normalized = normalizeRegionName(candidate);
+				if (
+					normalized === wanted ||
+					(wanted.length > 4 && normalized.indexOf(wanted) !== -1) ||
+					(normalized.length > 4 && wanted.indexOf(normalized) !== -1)
+				) return s.code;
+			}
+		}
 		return '';
 	};
+
+	const normalizeRegionName = (value) => String(value || '')
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '');
 
 	// ---- cart store helpers ----------------------------------------------------
 
@@ -85,9 +105,27 @@
 		return null;
 	};
 
-	const getShippingAddress = () => {
+	const getShippingRateSelectionById = (rateId) => {
 		const cart = getCartData();
-		return (cart && cart.shippingAddress) ? { ...cart.shippingAddress } : null;
+		if (!cart || !Array.isArray(cart.shippingRates)) return null;
+		for (let packageIndex = 0; packageIndex < cart.shippingRates.length; packageIndex++) {
+			const packageRates = cart.shippingRates[packageIndex];
+			const rates = packageRates && Array.isArray(packageRates.shipping_rates)
+				? packageRates.shipping_rates
+				: [];
+			for (const rate of rates) {
+				const candidateId = rate.rate_id || rate.rateId || rate.id || '';
+				if (String(candidateId) === String(rateId)) {
+					return {
+						rate,
+						packageId: packageRates && packageRates.package_id !== undefined && packageRates.package_id !== null
+							? packageRates.package_id
+							: packageIndex,
+					};
+				}
+			}
+		}
+		return null;
 	};
 
 	const readPudoExtension = () => {
@@ -95,44 +133,29 @@
 		return (cart && cart.extensions && cart.extensions.bluex_pudo) || {};
 	};
 
-	// ---- address snapshot ------------------------------------------------------
-
-	const saveAddressSnapshot = () => {
-		try {
-			const addr = getShippingAddress();
-			if (addr) window.sessionStorage.setItem(ADDRESS_SNAPSHOT_KEY, JSON.stringify(addr));
-		} catch (e) { /* storage disabled */ }
-	};
-
-	const readAddressSnapshot = () => {
-		try {
-			const raw = window.sessionStorage.getItem(ADDRESS_SNAPSHOT_KEY);
-			return raw ? JSON.parse(raw) : null;
-		} catch (e) { return null; }
-	};
-
-	const clearAddressSnapshot = () => {
-		try { window.sessionStorage.removeItem(ADDRESS_SNAPSHOT_KEY); } catch (e) {}
-	};
-
 	// ---- server sync -----------------------------------------------------------
 
 	const pushAgencyToServer = (payload) => {
 		try {
 			if (wc.blocksCheckout && typeof wc.blocksCheckout.extensionCartUpdate === 'function') {
-				wc.blocksCheckout.extensionCartUpdate({ namespace: 'bluex_pudo', data: payload });
+				return Promise.resolve(wc.blocksCheckout.extensionCartUpdate({ namespace: 'bluex_pudo', data: payload }));
 			}
-		} catch (e) { WARN('extensionCartUpdate failed', e); }
+		} catch (e) {
+			return Promise.reject(e);
+		}
+		return Promise.reject(new Error('extensionCartUpdate unavailable'));
 	};
 
 	// ---- widget iframe ---------------------------------------------------------
 
-	const buildWidgetUrl = (agencyId) => {
+	const buildWidgetUrl = (confirmedAgencyId) => {
 		const baseUrl = config.base_path_url || '';
 		let url = (config.widget_base_urls && config.widget_base_urls.prod) || '';
 		if (baseUrl.indexOf('qa') !== -1)  url = config.widget_base_urls.qa;
 		if (baseUrl.indexOf('dev') !== -1) url = config.widget_base_urls.dev;
-		if (agencyId) url += (url.indexOf('?') >= 0 ? '&' : '?') + 'id=' + encodeURIComponent(agencyId);
+		if (confirmedAgencyId) {
+			url += (url.indexOf('?') >= 0 ? '&' : '?') + 'id=' + encodeURIComponent(confirmedAgencyId);
+		}
 		return url;
 	};
 
@@ -154,7 +177,7 @@
 		return input ? (input.closest('.wc-block-components-radio-control__option') || input.parentElement) : null;
 	};
 
-	const mountWidget = (agencyId) => {
+	const mountWidget = (confirmedAgencyId, hasConfirmedAgency) => {
 		const anchor = findPudoRateElement();
 		if (!anchor || !anchor.parentNode) return;
 
@@ -169,19 +192,24 @@
 			anchor.parentNode.insertBefore(container, anchor.nextSibling);
 		}
 
-		if (!container.querySelector('iframe')) {
-			const url = buildWidgetUrl(agencyId);
+		const url = buildWidgetUrl(confirmedAgencyId);
+		let iframe = container.querySelector('iframe');
+		if (!iframe) {
 			if (url) {
-				const iframe = document.createElement('iframe');
+				iframe = document.createElement('iframe');
 				iframe.id = 'bluex-pudo-iframe';
 				iframe.src = url;
+				iframe.setAttribute('data-bluex-url', url);
 				iframe.title = 'Selector de Punto Blue Express';
 				container.innerHTML = '';
 				container.appendChild(iframe);
 			}
+		} else if (url && iframe.getAttribute('data-bluex-url') !== url) {
+			iframe.src = url;
+			iframe.setAttribute('data-bluex-url', url);
 		}
 
-		renderHint(!agencyId);
+		renderHint(!hasConfirmedAgency);
 	};
 
 	// "Pick a point" hint. Shown while PUDO is active but no agency has been
@@ -215,44 +243,100 @@
 	const onPudoBecomesActive = () => {
 		LOG('PUDO active — mounting widget.');
 		const ext = readPudoExtension();
-		// Snapshot ONLY the first time we enter PUDO in this browser session.
-		// After a page reload with PUDO already active, the current shipping
-		// address is the pickup point (server persisted it on the customer);
-		// snapshotting now would overwrite the customer's original home address
-		// with the pickup address, and switching back to Express would "restore"
-		// to the pickup address — a bug.
-		if (!readAddressSnapshot() && !ext.agency_id) {
-			saveAddressSnapshot();
-		}
-		mountWidget(ext.agency_id);
+		mountWidget(ext.agency_id || '', !!ext.agency_id);
 	};
 
-	// One request restores the previous address AND clears agency meta on the
-	// server in a single atomic cart recalc. Without this, the rate label for
-	// bluex-pudo would stay as "Retiro en Punto Blue Express - <agency>" even
-	// when the customer moved to Express, and re-selecting PUDO would surface
-	// the stale agency.
+	// WooCommerce 9+ clears agency metadata from the server-side action fired by
+	// /cart/select-shipping-rate after Woo has stored the chosen rate. Launching
+	// extensionCartUpdate here would create a second concurrent cart writer whose
+	// slower response can restore stale PUDO state in the Blocks data store.
 	//
-	// We intentionally do NOT call setShippingAddress locally here. Per the
-	// WC Blocks docs, setShippingAddress marks the cart's shipping address as
-	// "dirty" in the client store, which triggers a debounced automatic POST
-	// to /cart/update-customer ~1.5s later. That second request recalculates
-	// shipping rates outside our extension callback and racily overwrites the
-	// rate label we just set. The response from extensionCartUpdate itself
-	// already carries the updated shipping address from the server (we write
-	// it in the callback), so the UI refreshes without needing local optimism.
-	const onPudoBecomesInactive = () => {
-		LOG('PUDO inactive — clearing agency + restoring address in one request.');
+	// For the declared WooCommerce 6-8 compatibility range we do not assume that
+	// action is available. We remember the target and wait until the cart store
+	// observes the official request start and finish with that exact rate selected.
+	const onPudoBecomesInactive = (selection) => {
+		LOG('PUDO inactive — unmounting widget.');
 		unmountWidget();
-		const snap = readAddressSnapshot();
-		clearAddressSnapshot();
 
+		if (usesServerSideShippingCleanup) {
+			LOG('PUDO metadata cleanup delegated to the official shipping-selection action.');
+			return;
+		}
+
+		pendingLegacyCleanup = {
+			rateId: selection.rateId,
+			packageId: selection.packageId,
+			sawSelectionInProgress: false,
+		};
+	};
+
+	const syncLegacyPudoCleanup = () => {
+		if (usesServerSideShippingCleanup || !pendingLegacyCleanup) return;
+
+		let cartStore = null;
+		try { cartStore = select('wc/store/cart'); } catch (e) { return; }
+		if (!cartStore || typeof cartStore.isShippingRateBeingSelected !== 'function') return;
+
+		if (cartStore.isShippingRateBeingSelected()) {
+			pendingLegacyCleanup.sawSelectionInProgress = true;
+			return;
+		}
+
+		// A false selector value before observing the request in progress is just
+		// the capture phase of the click; it is not proof that Woo finished.
+		if (!pendingLegacyCleanup.sawSelectionInProgress) return;
+
+		const target = getShippingRateSelectionById(pendingLegacyCleanup.rateId);
+		if (
+			!target ||
+			!target.rate.selected ||
+			String(target.packageId) !== String(pendingLegacyCleanup.packageId)
+		) {
+			// The official request settled on something else. A stale cleanup must
+			// never clear the agency or overwrite that newer customer choice.
+			pendingLegacyCleanup = null;
+			return;
+		}
+
+		const pending = pendingLegacyCleanup;
+		pendingLegacyCleanup = null;
+		LOG('Legacy Blocks selection confirmed — clearing PUDO metadata.');
 		pushAgencyToServer({
 			agency_id: '',
 			agency_name: '',
 			agency_address: '',
-			shipping_address: snap || null,
-		});
+			agency_city: '',
+			agency_state: '',
+			selected_rate_id: pending.rateId,
+			package_id: pending.packageId,
+		}).catch((error) => WARN('Failed to clear PUDO selection', error));
+	};
+
+	// Clear confirmed PUDO state only from an explicit customer interaction.
+	// Store API refreshes can temporarily expose no selected rate (or let WC
+	// choose another rate when a quote is unavailable); neither is proof that
+	// the shopper intentionally abandoned the pickup point.
+	const onShippingMethodChange = (event) => {
+		const input = event && event.target;
+		if (!input || input.type !== 'radio' || !input.checked) return;
+		const rateId = typeof input.value === 'string' ? input.value : '';
+		const changedSelection = getShippingRateSelectionById(rateId);
+		const changedRate = changedSelection ? changedSelection.rate : null;
+		// Blocks names shipping radios as radio-control-*, so the input name is
+		// not a reliable discriminator. Matching the value against Store API
+		// shipping rates avoids both missing the event and clearing on payment radios.
+		if (!changedRate) return;
+		if (changedRate.method_id === 'bluex-pudo') {
+			pendingLegacyCleanup = null;
+			return;
+		}
+		const ext = readPudoExtension();
+		if (lastSelectedMethod === 'bluex-pudo' || ext.agency_id) {
+			onPudoBecomesInactive({
+				rateId,
+				packageId: changedSelection.packageId,
+			});
+		}
 	};
 
 	// Track cart changes — only act on actual transitions to minimize work.
@@ -264,22 +348,30 @@
 	// flashes on; once extensions hydrate with the persisted agency_id, this
 	// reconciliation clears it. Idempotent on both sides of renderHint.
 	const syncFromCart = () => {
+		syncLegacyPudoCleanup();
 		const selected = getSelectedRate();
-		const nowMethod = selected ? selected.method_id : null;
+		// During extensionCartUpdate Woo briefly publishes an empty rates snapshot.
+		// Preserve both the widget and lastSelectedMethod until a real selected rate
+		// exists; otherwise this subscription races the selection request and clears
+		// the agency that the server just validated.
+		if (!selected) return;
+		const nowMethod = selected.method_id || null;
 
 		if (nowMethod === 'bluex-pudo' && lastSelectedMethod !== 'bluex-pudo') {
 			onPudoBecomesActive();
 		} else if (nowMethod !== 'bluex-pudo' && lastSelectedMethod === 'bluex-pudo') {
-			onPudoBecomesInactive();
+			// Visual transition only. Server state is cleared exclusively by the
+			// explicit radio change listener above.
+			unmountWidget();
 		} else if (nowMethod === 'bluex-pudo' && !document.getElementById(WIDGET_CONTAINER_ID)) {
 			// Recover if a re-render detached the widget.
 			const ext = readPudoExtension();
-			mountWidget(ext.agency_id);
+			mountWidget(ext.agency_id || '', !!ext.agency_id);
 		}
 
 		if (nowMethod === 'bluex-pudo') {
 			const ext = readPudoExtension();
-			renderHint(!ext.agency_id);
+			mountWidget(ext.agency_id || '', !!ext.agency_id);
 		}
 
 		lastSelectedMethod = nowMethod;
@@ -289,6 +381,11 @@
 
 	const onWindowMessage = (event) => {
 		if (!event.data || event.data.type !== 'pudo:select') return;
+		const iframe = document.getElementById('bluex-pudo-iframe');
+		if (
+			!window.BluexPudoWidgetSecurity ||
+			!window.BluexPudoWidgetSecurity.isTrustedMessage(event, iframe, config)
+		) return;
 		const payload = event.data.payload;
 		if (!payload || !payload.location) return;
 
@@ -296,43 +393,26 @@
 		const streetName   = loc.street_name   || '';
 		const streetNumber = loc.street_number || '';
 		const cityName     = loc.city_name     || '';
-		const stateName    = loc.state_name    || '';
+		const stateName    = loc.state_code || loc.region_code || loc.state || loc.state_name || loc.region_name || '';
 		const agencyId     = payload.agency_id   || '';
 		const agencyName   = payload.agency_name || '';
 		const fullAddress  = [(streetName + ' ' + streetNumber).trim(), cityName]
 			.filter((s) => s && s !== '').join(', ');
 
-		const addressForCart = {
-			address_1: (streetName + ' ' + streetNumber).trim(),
-			address_2: agencyName,
-			city:      cityName,
-			state:     resolveStateCode(stateName),
-			country:   'CL',
-		};
-
-		// Single server request is the ONLY source of truth. extensionCartUpdate
-		// POSTs to /cart/extensions, our callback writes session + customer
-		// address + invalidates rate cache, then the endpoint recalculates
-		// totals and returns the fresh cart (rates, customer, extensions) in
-		// one shot. The Blocks store applies that response, so the UI updates.
-		//
-		// We intentionally do NOT dispatch setShippingAddress locally first.
-		// That action marks the cart's shipping address as "dirty" in the
-		// client store, which triggers a debounced automatic push to
-		// /cart/update-customer ~1.5s later. That second request recalculates
-		// rates outside our callback and raced against the fresh label we
-		// just wrote, flipping "Retiro en Punto Blue Express - <agency>" back
-		// to the base title. Removing the local dispatch eliminates the dirty
-		// state and therefore the race.
+		// The Store API callback validates this agency/geography pair against
+		// BlueX and persists canonical metadata. It never writes customer fields.
 		pushAgencyToServer({
-			agency_id:        agencyId,
-			agency_name:      agencyName,
-			agency_address:   fullAddress,
-			shipping_address: addressForCart,
+			agency_id:      agencyId,
+			agency_name:    agencyName,
+			agency_address: fullAddress,
+			agency_city:    cityName,
+			agency_state:   resolveStateCode(stateName),
+		}).then(() => {
+			renderHint(false);
+		}).catch((error) => {
+			WARN('PUDO selection rejected', error);
+			renderHint(true);
 		});
-
-		// User just picked a point — drop the "pick a point" hint immediately.
-		renderHint(false);
 	};
 
 	// ---- bootstrap -------------------------------------------------------------
@@ -340,6 +420,7 @@
 	const init = () => {
 		LOG('init()');
 		window.addEventListener('message', onWindowMessage);
+		document.addEventListener('change', onShippingMethodChange, true);
 
 		try {
 			subscribe(() => { syncFromCart(); }, 'wc/store/cart');

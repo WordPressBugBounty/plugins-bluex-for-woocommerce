@@ -23,7 +23,7 @@ class WC_Correios_Blocks_Integration
 	 *
 	 * @var string
 	 */
-	private $script_version = '1.3.3';
+	private $script_version = '1.3.11';
 
 	/**
 	 * Constructor
@@ -44,6 +44,11 @@ class WC_Correios_Blocks_Integration
 		// Register Store API extension for PUDO agency data (read + write).
 		add_action('woocommerce_blocks_loaded', array($this, 'register_store_api_extension'));
 		add_action('woocommerce_blocks_loaded', array($this, 'register_store_api_update_callback'));
+
+		// WooCommerce 9+ fires this after persisting the shopper's shipping choice
+		// and before recalculating totals. Keeping cleanup inside that authoritative
+		// request avoids a second cart response racing the selected shipping rate.
+		add_action('woocommerce_store_api_cart_select_shipping_rate', array($this, 'handle_store_api_shipping_rate_selection'), 10, 3);
 
 		// Persist agency data from the request / session into order meta.
 		add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'update_order_from_store_api_request'), 10, 2);
@@ -84,6 +89,11 @@ class WC_Correios_Blocks_Integration
 		// Add delivery forecast if available
 		if (!empty($meta_data['_delivery_forecast'])) {
 			$rate_data['delivery_forecast'] = sanitize_text_field($meta_data['_delivery_forecast']);
+		}
+		if ($rate->get_method_id() === 'bluex-pudo' && !empty($meta_data['_bluex_pudo_preview_agency_id'])) {
+			$rate_data['pudo_preview_agency_id'] = sanitize_text_field($meta_data['_bluex_pudo_preview_agency_id']);
+			$rate_data['pudo_preview_agency_name'] = sanitize_text_field($meta_data['_bluex_pudo_preview_agency_name'] ?? '');
+			$rate_data['pudo_preview_agency_address'] = sanitize_text_field($meta_data['_bluex_pudo_preview_agency_address'] ?? '');
 		}
 
 		return $rate_data;
@@ -137,19 +147,74 @@ class WC_Correios_Blocks_Integration
 					'context'     => array('view', 'edit'),
 					'readonly'    => true,
 				),
+				'agency_city' => array(
+					'description' => __('Comuna interna de la agencia PUDO seleccionada.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
+				'agency_state' => array(
+					'description' => __('Región interna de la agencia PUDO seleccionada.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
+				'preview_rate_id' => array(
+					'description' => __('ID de la tarifa PUDO que contiene el preview.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
+				'preview_agency_id' => array(
+					'description' => __('ID de la agencia PUDO usada como preview.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
+				'preview_agency_name' => array(
+					'description' => __('Nombre de la agencia PUDO usada como preview.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
+				'preview_agency_address' => array(
+					'description' => __('Dirección de la agencia PUDO usada como preview.', 'woocommerce-correios'),
+					'type'        => array('string', 'null'),
+					'context'     => array('view', 'edit'),
+					'readonly'    => true,
+				),
 			);
 		};
 		$data_callback = function () {
+			$preview = $this->get_selected_pudo_preview();
 			if (!WC()->session) {
-				return array('agency_id' => null, 'agency_name' => null, 'agency_address' => null);
+				return array(
+					'agency_id'             => null,
+					'agency_name'           => null,
+					'agency_address'        => null,
+					'agency_city'           => null,
+					'agency_state'          => null,
+					'preview_rate_id'       => null,
+					'preview_agency_id'     => null,
+					'preview_agency_name'   => null,
+					'preview_agency_address' => null,
+				);
 			}
 			$agency_id      = WC()->session->get('bluex_agency_id');
 			$agency_name    = WC()->session->get('bluex_agency_name');
 			$agency_address = WC()->session->get('bluex_agency_address');
+			$agency_city    = WC()->session->get('bluex_agency_city');
+			$agency_state   = WC()->session->get('bluex_agency_state');
 			return array(
 				'agency_id'      => $agency_id ? sanitize_text_field((string) $agency_id) : null,
 				'agency_name'    => $agency_name ? sanitize_text_field((string) $agency_name) : null,
 				'agency_address' => $agency_address ? sanitize_text_field((string) $agency_address) : null,
+				'agency_city'    => $agency_city ? sanitize_text_field((string) $agency_city) : null,
+				'agency_state'   => $agency_state ? sanitize_text_field((string) $agency_state) : null,
+				'preview_rate_id'        => $preview['rate_id'] ?: null,
+				'preview_agency_id'      => $preview['agency_id'] ?: null,
+				'preview_agency_name'    => $preview['agency_name'] ?: null,
+				'preview_agency_address' => $preview['agency_address'] ?: null,
 			);
 		};
 
@@ -180,6 +245,62 @@ class WC_Correios_Blocks_Integration
 	}
 
 	/**
+	 * Read preview metadata from the currently selected PUDO rate.
+	 *
+	 * Store API omits underscore-prefixed shipping-rate metadata, so the preview
+	 * is exposed through the supported cart extension without making internal
+	 * rate metadata public or persisting it as a confirmed selection.
+	 *
+	 * @return array
+	 */
+	private function get_selected_pudo_preview()
+	{
+		$empty = array(
+			'rate_id'        => '',
+			'agency_id'      => '',
+			'agency_name'    => '',
+			'agency_address' => '',
+		);
+
+		if (!WC()->session || !WC()->shipping()) {
+			return $empty;
+		}
+
+		$packages = WC()->shipping()->get_packages();
+		$chosen = (array) WC()->session->get('chosen_shipping_methods', array());
+		if (!is_array($packages) || empty($packages)) {
+			return $empty;
+		}
+
+		foreach ($packages as $package_id => $package) {
+			$chosen_rate_id = isset($chosen[$package_id]) ? (string) $chosen[$package_id] : '';
+			$rates = isset($package['rates']) && is_array($package['rates']) ? $package['rates'] : array();
+			if ($chosen_rate_id === '' || empty($rates)) {
+				continue;
+			}
+
+			$rate = isset($rates[$chosen_rate_id]) ? $rates[$chosen_rate_id] : null;
+			if (!$rate || !is_callable(array($rate, 'get_method_id')) || $rate->get_method_id() !== 'bluex-pudo') {
+				continue;
+			}
+
+			$meta = $rate->get_meta_data();
+			if (empty($meta['_bluex_pudo_preview_agency_id'])) {
+				continue;
+			}
+
+			return array(
+				'rate_id'        => sanitize_text_field($chosen_rate_id),
+				'agency_id'      => sanitize_text_field((string) $meta['_bluex_pudo_preview_agency_id']),
+				'agency_name'    => sanitize_text_field((string) ($meta['_bluex_pudo_preview_agency_name'] ?? '')),
+				'agency_address' => sanitize_text_field((string) ($meta['_bluex_pudo_preview_agency_address'] ?? '')),
+			);
+		}
+
+		return $empty;
+	}
+
+	/**
 	 * Register the Store API write-side callback for bluex_pudo.
 	 *
 	 * The React client calls `wc.blocksCheckout.extensionCartUpdate({ namespace:
@@ -201,50 +322,61 @@ class WC_Correios_Blocks_Integration
 		woocommerce_store_api_register_update_callback(array(
 			'namespace' => 'bluex_pudo',
 			'callback'  => function ($data) {
+				$data = is_array($data) ? $data : array();
 				if (!WC()->session) {
 					return;
 				}
 
-				$agency_id = isset($data['agency_id']) ? sanitize_text_field((string) $data['agency_id']) : '';
+				$agency_id = isset($data['agency_id']) && is_scalar($data['agency_id'])
+					? sanitize_text_field((string) $data['agency_id'])
+					: '';
 
 				if ($agency_id !== '') {
-					WC()->session->set('bluex_agency_id', $agency_id);
+					$destination = array(
+						'city'  => isset($data['agency_city']) && is_scalar($data['agency_city'])
+							? sanitize_text_field((string) $data['agency_city'])
+							: '',
+						'state' => isset($data['agency_state']) && is_scalar($data['agency_state'])
+							? sanitize_text_field((string) $data['agency_state'])
+							: '',
+					);
+					$validated = WC_Bluex_Pudo_Agency_Validator::validate($agency_id, $destination);
+					if (is_wp_error($validated)) {
+						$this->clear_pudo_agency_session();
+						if (class_exists('\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {
+							throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+								$validated->get_error_code(),
+								$validated->get_error_message(),
+								400
+							);
+						}
+						throw new Exception($validated->get_error_message());
+					}
+
+					WC()->session->set('bluex_agency_id', $validated['agency_id']);
+					WC()->session->set('bluex_agency_validated_id', $validated['agency_id']);
 					WC()->session->set('bluex_pudo_selected', true);
-
-					if (isset($data['agency_name'])) {
-						WC()->session->set('bluex_agency_name', sanitize_text_field((string) $data['agency_name']));
-					}
-					if (isset($data['agency_address'])) {
-						WC()->session->set('bluex_agency_address', sanitize_text_field((string) $data['agency_address']));
-					}
+					WC()->session->set('bluex_agency_name', $validated['agency_name']);
+					WC()->session->set('bluex_agency_address', $validated['agency_address']);
+					WC()->session->set('bluex_agency_city', $validated['agency_city']);
+					WC()->session->set('bluex_agency_state', $validated['agency_state']);
+					WC()->session->set('bluex_pudo_selected_quote_valid', false);
 				} else {
-					WC()->session->__unset('bluex_agency_id');
-					WC()->session->__unset('bluex_pudo_selected');
-					WC()->session->__unset('bluex_agency_name');
-					WC()->session->__unset('bluex_agency_address');
-				}
+					$selected_rate_id = isset($data['selected_rate_id']) && is_scalar($data['selected_rate_id'])
+						? sanitize_text_field((string) $data['selected_rate_id'])
+						: '';
+					$package_id = array_key_exists('package_id', $data) && is_scalar($data['package_id'])
+						? sanitize_text_field((string) $data['package_id'])
+						: null;
 
-				// Apply a shipping address update in the same request so the
-				// frontend doesn't need a separate setShippingAddress() call.
-				// This is critical for two reasons:
-				//   1) Halves the backend traffic per PUDO action (one cart
-				//      recalc instead of two back-to-back calls).
-				//   2) Eliminates the label-flicker race condition: the rate
-				//      is recalculated AFTER both the agency session values and
-				//      the address are in place, so the dynamic label renders
-				//      with the agency name in a single pass.
-				if (isset($data['shipping_address']) && is_array($data['shipping_address']) && WC()->customer) {
-					$fields = array('address_1', 'address_2', 'city', 'state', 'country', 'postcode');
-					foreach ($fields as $field) {
-						if (!array_key_exists($field, $data['shipping_address'])) {
-							continue;
-						}
-						$setter = 'set_shipping_' . $field;
-						if (method_exists(WC()->customer, $setter)) {
-							WC()->customer->{$setter}(sanitize_text_field((string) $data['shipping_address'][$field]));
-						}
+					// Compatibility path for WooCommerce 6-8. The frontend waits for
+					// the official selection request to finish; the server independently
+					// confirms that the requested target is already the chosen method.
+					// A stale or forged cleanup becomes a no-op.
+					if (!$this->is_confirmed_non_pudo_choice($selected_rate_id, $package_id)) {
+						return;
 					}
-					WC()->customer->save();
+					$this->clear_pudo_agency_session();
 				}
 
 				// Invalidate WC's shipping rate cache so the automatic recalc
@@ -252,19 +384,125 @@ class WC_Correios_Blocks_Integration
 				// picks up fresh session values. The dynamic LABEL is applied
 				// at Store API response-time (apply_pudo_dynamic_label filter),
 				// so that doesn't require invalidation — but the rate COST
-				// (copied from bluex-ex via normalize_bluex_pudo_rate) and the
-				// recalculation caused by the shipping address change still
-				// need a fresh calculation. Per WooCommerce Blocks docs, the
+				// (quoted for the selected or preview agency) still needs a fresh
+				// calculation. Per WooCommerce Blocks docs, the
 				// endpoint itself calls calculate_totals() after our callback,
 				// so we do NOT call calculate_shipping() explicitly — that was
 				// redundant and not idiomatic.
-				if (WC()->cart) {
-					foreach (array_keys(WC()->cart->get_shipping_packages()) as $package_key) {
-						WC()->session->__unset('shipping_for_package_' . $package_key);
-					}
-				}
+				$this->invalidate_shipping_rate_cache();
 			},
 		));
+	}
+
+	/**
+	 * Clear PUDO state after WooCommerce has authoritatively selected shipping.
+	 *
+	 * WooCommerce 9.0+ invokes this action from the select-shipping-rate route
+	 * after updating `chosen_shipping_methods` and before `calculate_totals()`.
+	 * The handler never writes the chosen method itself. In multi-package carts,
+	 * the global agency is retained while any package still uses PUDO.
+	 *
+	 * @param string|null $package_id Selected package, or null when all packages changed.
+	 * @param string      $rate_id    Selected Store API rate ID.
+	 * @param mixed       $request    Store API request (unused).
+	 */
+	public function handle_store_api_shipping_rate_selection($package_id, $rate_id, $request = null)
+	{
+		unset($request);
+
+		if (!$this->is_confirmed_non_pudo_choice($rate_id, $package_id)) {
+			return;
+		}
+
+		$chosen_methods = (array) WC()->session->get('chosen_shipping_methods', array());
+		foreach ($chosen_methods as $chosen_rate_id) {
+			if ($this->is_pudo_rate_id($chosen_rate_id)) {
+				return;
+			}
+		}
+
+		$this->clear_pudo_agency_session();
+		$this->invalidate_shipping_rate_cache();
+	}
+
+	/**
+	 * Clear every PUDO-only session value without touching the customer.
+	 */
+	private function clear_pudo_agency_session()
+	{
+		WC()->session->__unset('bluex_agency_id');
+		WC()->session->__unset('bluex_agency_validated_id');
+		WC()->session->__unset('bluex_pudo_selected');
+		WC()->session->__unset('bluex_agency_name');
+		WC()->session->__unset('bluex_agency_address');
+		WC()->session->__unset('bluex_agency_city');
+		WC()->session->__unset('bluex_agency_state');
+		WC()->session->__unset('bluex_pudo_selected_quote_valid');
+		WC()->session->__unset('bluex_pudo_last_successful_quote');
+	}
+
+	/**
+	 * Determine whether WooCommerce already stores the intended non-PUDO choice.
+	 *
+	 * This reads only `chosen_shipping_methods`, which is available before shipping
+	 * packages are recalculated. It deliberately never trusts the client enough to
+	 * write a method into the session.
+	 *
+	 * @param mixed $rate_id    Store API rate ID selected by the shopper.
+	 * @param mixed $package_id Store API package ID, or null for all packages.
+	 * @return bool Whether the target is the current authoritative choice.
+	 */
+	private function is_confirmed_non_pudo_choice($rate_id, $package_id = null)
+	{
+		if (!is_scalar($rate_id) || !WC()->session) {
+			return false;
+		}
+
+		$rate_id = sanitize_text_field((string) $rate_id);
+		if ($rate_id === '' || $this->is_pudo_rate_id($rate_id)) {
+			return false;
+		}
+
+		$chosen_methods = (array) WC()->session->get('chosen_shipping_methods', array());
+		if ($package_id !== null) {
+			if (!is_scalar($package_id)) {
+				return false;
+			}
+			$package_id = sanitize_text_field((string) $package_id);
+			return array_key_exists($package_id, $chosen_methods) && (string) $chosen_methods[$package_id] === $rate_id;
+		}
+
+		return in_array($rate_id, array_map('strval', $chosen_methods), true);
+	}
+
+	/**
+	 * Check a Store API rate ID without accepting similarly prefixed methods.
+	 *
+	 * @param mixed $rate_id Store API rate ID.
+	 * @return bool
+	 */
+	private function is_pudo_rate_id($rate_id)
+	{
+		if (!is_scalar($rate_id)) {
+			return false;
+		}
+
+		$rate_id = sanitize_text_field((string) $rate_id);
+		return $rate_id === 'bluex-pudo' || strpos($rate_id, 'bluex-pudo:') === 0;
+	}
+
+	/**
+	 * Drop cached package rates before WooCommerce's automatic recalculation.
+	 */
+	private function invalidate_shipping_rate_cache()
+	{
+		if (!WC()->session || !WC()->cart || !is_callable(array(WC()->cart, 'get_shipping_packages'))) {
+			return;
+		}
+
+		foreach (array_keys((array) WC()->cart->get_shipping_packages()) as $package_key) {
+			WC()->session->__unset('shipping_for_package_' . $package_key);
+		}
 	}
 
 	/**
@@ -300,22 +538,29 @@ class WC_Correios_Blocks_Integration
 		}
 
 		$extensions     = $request->get_param('extensions');
-		$agency_id      = isset($extensions['bluex_pudo']['agency_id']) ? (string) $extensions['bluex_pudo']['agency_id'] : '';
-		$agency_name    = isset($extensions['bluex_pudo']['agency_name']) ? (string) $extensions['bluex_pudo']['agency_name'] : '';
-		$agency_address = isset($extensions['bluex_pudo']['agency_address']) ? (string) $extensions['bluex_pudo']['agency_address'] : '';
+		$extensions     = is_array($extensions) ? $extensions : array();
+		$pudo_extension = isset($extensions['bluex_pudo']) && is_array($extensions['bluex_pudo'])
+			? $extensions['bluex_pudo']
+			: array();
+		$agency_id      = isset($pudo_extension['agency_id']) && is_scalar($pudo_extension['agency_id'])
+			? (string) $pudo_extension['agency_id']
+			: '';
+		$agency_name    = '';
+		$agency_address = '';
 
 		if (WC()->session) {
-			if ($agency_id === '')      { $agency_id      = (string) WC()->session->get('bluex_agency_id', ''); }
-			if ($agency_name === '')    { $agency_name    = (string) WC()->session->get('bluex_agency_name', ''); }
-			if ($agency_address === '') { $agency_address = (string) WC()->session->get('bluex_agency_address', ''); }
+			if ($agency_id === '') { $agency_id = (string) WC()->session->get('bluex_agency_id', ''); }
+			$agency_name = (string) WC()->session->get('bluex_agency_name', '');
+			$agency_address = (string) WC()->session->get('bluex_agency_address', '');
 		}
+		$validated_id = WC()->session ? (string) WC()->session->get('bluex_agency_validated_id', '') : '';
 
 		// HARD STOP: the customer selected PUDO but didn't pick a point. Throw a
 		// RouteException so the Store API returns a 400 with the error message,
 		// which WooCommerce Blocks surfaces inline and re-enables the cart for
 		// the customer to fix. Never allow a PUDO order to be created without
 		// an agency_id — the Blue Express backend has no way to route it.
-		if ($agency_id === '') {
+		if ($agency_id === '' || $validated_id === '' || !hash_equals($validated_id, $agency_id)) {
 			if (class_exists('\Automattic\WooCommerce\StoreApi\Exceptions\RouteException')) {
 				throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
 					'bluex_pudo_missing_agency',
@@ -328,6 +573,18 @@ class WC_Correios_Blocks_Integration
 			// order is not created with invalid state.
 			throw new Exception(
 				__('Selecciona un punto de retiro Blue Express para continuar.', 'woocommerce-correios')
+			);
+		}
+		if (!WC()->session || !WC()->session->get('bluex_pudo_selected_quote_valid', false)) {
+			if (class_exists('\Automattic\WooCommerce\StoreApi\Exceptions\RouteException')) {
+				throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+					'bluex_pudo_quote_unavailable',
+					__('No pudimos actualizar la tarifa del punto Blue Express. Intenta nuevamente.', 'woocommerce-correios'),
+					400
+				);
+			}
+			throw new Exception(
+				__('No pudimos actualizar la tarifa del punto Blue Express. Intenta nuevamente.', 'woocommerce-correios')
 			);
 		}
 
@@ -385,7 +642,8 @@ class WC_Correios_Blocks_Integration
 		}
 
 		$agency_id = (string) WC()->session->get('bluex_agency_id', '');
-		if ($agency_id === '') {
+		$validated_id = (string) WC()->session->get('bluex_agency_validated_id', '');
+		if ($agency_id === '' || $validated_id === '' || !hash_equals($validated_id, $agency_id)) {
 			return;
 		}
 
@@ -465,9 +723,17 @@ class WC_Correios_Blocks_Integration
 		$script_url = plugins_url($script_path, WC_Correios::get_main_file());
 
 		wp_enqueue_script(
+			'bluex-pudo-widget-security',
+			plugins_url('assets/js/frontend/pudo-widget-security' . $suffix . '.js', WC_Correios::get_main_file()),
+			array(),
+			$this->script_version,
+			true
+		);
+
+		wp_enqueue_script(
 			'bluex-blocks-pudo-integration',
 			$script_url,
-			array('wp-data', 'wp-element', 'wp-hooks', 'wc-blocks-checkout'),
+			array('wp-data', 'wp-element', 'wp-hooks', 'wc-blocks-checkout', 'bluex-pudo-widget-security'),
 			$this->script_version,
 			true
 		);
@@ -492,7 +758,10 @@ class WC_Correios_Blocks_Integration
 				'qa' => 'https://widget-pudo.qa.blue.cl',
 				'dev' => 'https://widget-pudo.dev.blue.cl'
 			),
-			'base_path_url' => $basePathUrl
+			'base_path_url' => $basePathUrl,
+			// WooCommerce 9.0 documents the post-selection Store API action.
+			// Older versions use the serialized client fallback instead.
+			'server_side_shipping_cleanup' => defined('WC_VERSION') && version_compare(WC_VERSION, '9.0.0', '>=')
 		);
 
 		wp_localize_script('bluex-blocks-pudo-integration', 'bluex_checkout_params', $params);

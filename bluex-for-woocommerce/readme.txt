@@ -2,8 +2,8 @@
 Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
-Tested up to: 7.0
-Stable tag: 3.2.3
+Tested up to: 7.1
+Stable tag: 3.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -106,6 +106,8 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Scoped agencyId reads in the webservice to prevent label contamination across non-PUDO Blue Express rates.
 * HPOS compatibility declared; legacy `update_post_meta` fallback removed in favor of `WC_Data` API.
 = 3.2.1 - 2026-05-28 =
+* Fix: the pickup-point (PUDO) modal no longer auto-opens when the customer completes their address. "Envío a domicilio" (bluex-ex) is now WooCommerce's default-selected rate; the pickup modal only opens when the customer explicitly selects the "Retiro en Punto Blue Express" rate.
+* WordPress 7.0 compatibility verified. Minimum PHP bumped to 7.4.
 * Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.
 = 3.2.2 - 2026-06-17 =
 * Fix: the pickup-point (PUDO) modal no longer auto-opens when the customer completes their address. «Envío a domicilio» (bluex-ex) is now WooCommerce’s default-selected rate; the pickup modal only opens when the customer explicitly selects the «Retiro en Punto Blue Express» rate.
@@ -114,3 +116,10 @@ create a rest api user, this must be in the advanced options and deliver it to B
 = 3.2.3 - 2026-07-29 =
 * Add: the "Retiro en Punto Blue Express" (PUDO) shipping method now applies a default 19% IVA fee, added automatically to newly created shipping-zone instances (existing instances are left unchanged).
 * Fix: the IVA/fee field is now integer-only with an automatic "%", so a value like "19" is always applied as a percentage instead of a fixed amount.
+= 3.3.0 - 2026-08-26 =
+* Retiro en Punto Blue Express (bluex-pudo) is now enabled by default on fresh installs: the shipping method is pre-selected in the integration settings and included in the zones created by the setup wizard. Existing installations are left untouched, and an explicit opt-out is respected when creating zones.
+* Nearby pickup points: the checkout resolves and displays the closest Punto Blue Express to the customer's address, with its price visible by default, instead of requiring the customer to open the map first.
+* A 19% IVA fee is applied to the Punto Blue Express rate, matching the other Blue Express methods. The backend quotes a net amount, so no double charge occurs. The fee field is an integer-only percentage, and the default is written only for newly created method instances, so existing ones keep their configured value.
+* Pricing and checkout selection stability: the selected pickup point survives address changes and reloads, agency identifiers are validated before being applied to an order, and rate labels no longer flip back after a selection in both the Legacy and Blocks checkouts.
+* Compatibility verified with WordPress 7.1 and WooCommerce 11.0.1.
+

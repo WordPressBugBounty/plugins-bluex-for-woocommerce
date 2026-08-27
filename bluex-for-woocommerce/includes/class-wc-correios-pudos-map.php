@@ -58,18 +58,18 @@ class WC_Correios_PudosMap
 		// (see class-wc-bluex-pudo.php). The custom shippingBlue radio group
 		// was removed — the widget and hint are driven from JS based on which
 		// native rate is selected. Only `agencyId` is still persisted via a
-		// hidden input so it travels with the checkout POST.
+		// hidden inputs so the canonical ID, name and address travel with the POST.
 		add_action('woocommerce_checkout_after_order_review', array($this, 'render_custom_input'), 10);
+		add_action('woocommerce_after_shipping_rate', array($this, 'render_preview_data'), 10, 2);
 		
 		// Handle form processing
 		add_action('woocommerce_checkout_update_order_meta', array($this, 'save_custom_input_to_order_meta'), 10);
 
 		// Safety net: if a user picks the native bluex-pudo rate in legacy checkout
-		// (possible since bluex-pudo is now a registered shipping method), rewrite
+		// (bluex-pudo is a registered shipping method), rewrite
 		// the item to bluex-ex before it's attached to the order so the saved
-		// shipping_method matches what the BlueX backend expects. The dominant
-		// legacy flow (native bluex-ex + custom pudoShipping radio) is unaffected
-		// because this hook is a no-op for non-pudo items.
+		// shipping_method matches what the BlueX backend expects. The hook is a
+		// no-op for non-PUDO items.
 		//
 		// Hook choice verified against WC source (includes/class-wc-checkout.php
 		// create_order_shipping_lines): `woocommerce_checkout_create_order_shipping_item`
@@ -102,13 +102,22 @@ class WC_Correios_PudosMap
 
 		if (is_checkout()) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			$asset_version = (WC_CORREIOS_VERSION ?? '1.0.0') . '.integr5684.2';
 
 			// Enqueue the main script with proper dependencies
 			wp_enqueue_script(
+				'bluex-pudo-widget-security',
+				plugins_url('assets/js/frontend/pudo-widget-security' . $suffix . '.js', WC_Correios::get_main_file()),
+				array(),
+				$asset_version,
+				true
+			);
+
+			wp_enqueue_script(
 				'bluex-checkout-pudo',
 				plugins_url('assets/js/frontend/custom-checkout-map' . $suffix . '.js', WC_Correios::get_main_file()),
-				array('jquery', 'wc-checkout'),
-				WC_CORREIOS_VERSION ?? '1.0.0',
+				array('jquery', 'wc-checkout', 'bluex-pudo-widget-security'),
+				$asset_version,
 				true
 			);
 
@@ -139,31 +148,60 @@ class WC_Correios_PudosMap
 	 * Render the hidden PUDO inputs so the selection travels with the classic
 	 * checkout POST and the `woocommerce_checkout_update_order_review` AJAX.
 	 *
-	 * `agencyId` is the BlueX pickup-point identifier; `agency_name` and
-	 * `agency_address` hydrate the WC session so `WC_BlueX_Pudo::calculate_shipping`
-	 * can render the dynamic "Retiro en Punto Blue Express - <agency>" label.
-	 * Without those two, the label stays as the base title because the session
-	 * read returns empty strings.
+	 * `agencyId` is the BlueX pickup-point identifier. Name/address hydrate the
+	 * dynamic rate label and order metadata; city/state are internal pickup
+	 * geography for PUDO pricing. None of these fields replaces the customer's
+	 * billing or shipping address.
 	 *
 	 * The legacy `isPudoSelected` hidden input is gone: the active WC shipping
 	 * method radio already conveys that state (bluex-pudo selected ⇔ PUDO).
 	 *
 	 * On initial render we hydrate the `value` attribute from the WC session
 	 * so that (a) page reloads keep the selection visible, and (b) the JS
-	 * side can tell "an agency is already persisted" on first paint and
-	 * avoid snapshotting the pickup address as if it were the customer's
-	 * original address (see syncFromNativeRate).
+	 * side can tell "an agency is already persisted" on first paint.
 	 */
 	function render_custom_input()
 	{
 		$agency_id      = WC()->session ? (string) WC()->session->get('bluex_agency_id', '') : '';
 		$agency_name    = WC()->session ? (string) WC()->session->get('bluex_agency_name', '') : '';
 		$agency_address = WC()->session ? (string) WC()->session->get('bluex_agency_address', '') : '';
+		$agency_city    = WC()->session ? (string) WC()->session->get('bluex_agency_city', '') : '';
+		$agency_state   = WC()->session ? (string) WC()->session->get('bluex_agency_state', '') : '';
 ?>
 		<input type="hidden" name="agencyId" id="agencyId" value="<?php echo esc_attr($agency_id); ?>" />
 		<input type="hidden" name="agency_name" id="agency_name" value="<?php echo esc_attr($agency_name); ?>" />
 		<input type="hidden" name="agency_address" id="agency_address" value="<?php echo esc_attr($agency_address); ?>" />
+		<input type="hidden" name="agency_city" id="agency_city" value="<?php echo esc_attr($agency_city); ?>" />
+		<input type="hidden" name="agency_state" id="agency_state" value="<?php echo esc_attr($agency_state); ?>" />
 	<?php
+	}
+
+	/**
+	 * Expose rate-scoped preview data without persisting it as a selection.
+	 *
+	 * @param WC_Shipping_Rate $method Shipping rate.
+	 * @param int              $index Package index.
+	 */
+	public function render_preview_data($method, $index)
+	{
+		if (
+			!is_object($method) ||
+			!method_exists($method, 'get_method_id') ||
+			!method_exists($method, 'get_meta_data') ||
+			$method->get_method_id() !== 'bluex-pudo'
+		) {
+			return;
+		}
+		$meta = $method->get_meta_data();
+		if (empty($meta['_bluex_pudo_preview_agency_id'])) {
+			return;
+		}
+		?>
+		<span class="bluex-pudo-preview-data" hidden
+			data-agency-id="<?php echo esc_attr($meta['_bluex_pudo_preview_agency_id']); ?>"
+			data-agency-name="<?php echo esc_attr($meta['_bluex_pudo_preview_agency_name'] ?? ''); ?>"
+			data-agency-address="<?php echo esc_attr($meta['_bluex_pudo_preview_agency_address'] ?? ''); ?>"></span>
+		<?php
 	}
 
 	/**
@@ -206,9 +244,12 @@ class WC_Correios_PudosMap
 		}
 
 		$agency_id = isset($_POST['agencyId']) ? sanitize_text_field($_POST['agencyId']) : '';
+		$validated_id = WC()->session ? sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', '')) : '';
 
-		if ($agency_id !== '') {
+		if ($this->is_bluex_pudo_selected_in_post() && $agency_id !== '' && hash_equals($validated_id, $agency_id)) {
 			$order->update_meta_data('agencyId', $agency_id);
+			$order->update_meta_data('agencyName', sanitize_text_field((string) WC()->session->get('bluex_agency_name', '')));
+			$order->update_meta_data('agencyAddress', sanitize_text_field((string) WC()->session->get('bluex_agency_address', '')));
 			$order->update_meta_data('isPudoSelected', 'pudoShipping');
 		} else {
 			$order->update_meta_data('isPudoSelected', 'normalShipping');
@@ -225,9 +266,18 @@ class WC_Correios_PudosMap
 		if (!$this->is_bluex_pudo_selected_in_post()) {
 			return;
 		}
-		if (empty($_POST['agencyId'])) {
+		$agency_id = isset($_POST['agencyId']) ? sanitize_text_field($_POST['agencyId']) : '';
+		$validated_id = WC()->session ? sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', '')) : '';
+		if ($agency_id === '' || $validated_id === '' || !hash_equals($validated_id, $agency_id)) {
 			wc_add_notice(
 				__('Por favor selecciona un punto Blue Express.', 'woocommerce-correios'),
+				'error'
+			);
+			return;
+		}
+		if (!WC()->session->get('bluex_pudo_selected_quote_valid', false)) {
+			wc_add_notice(
+				__('No pudimos actualizar la tarifa del punto Blue Express. Intenta nuevamente.', 'woocommerce-correios'),
 				'error'
 			);
 		}
@@ -262,27 +312,32 @@ class WC_Correios_PudosMap
 		WC()->session->set('bluex_pudo_selected', $is_pudo_selected);
 
 		if ($is_pudo_selected && !empty($data['agencyId'])) {
-			// Persist all three agency fields: `agency_id` is what the order
-			// key by, `agency_name` drives the dynamic rate label in
-			// WC_BlueX_Pudo::calculate_shipping ("Retiro en Punto Blue Express
-			// - <agency>"), and `agency_address` is surfaced to downstream
-			// consumers that need the display address.
-			WC()->session->set('bluex_agency_id', sanitize_text_field($data['agencyId']));
-			WC()->session->set(
-				'bluex_agency_name',
-				isset($data['agency_name']) ? sanitize_text_field($data['agency_name']) : ''
+			$validated = WC_Bluex_Pudo_Agency_Validator::validate(
+				$data['agencyId'],
+				array(
+					'city'  => $data['agency_city'] ?? '',
+					'state' => $data['agency_state'] ?? '',
+				)
 			);
-			WC()->session->set(
-				'bluex_agency_address',
-				isset($data['agency_address']) ? sanitize_text_field($data['agency_address']) : ''
-			);
+			if (is_wp_error($validated)) {
+				// Reject the new candidate without destroying a previously-confirmed
+				// selection. Woo includes notices in the update_checkout response.
+				wc_add_notice($validated->get_error_message(), 'error');
+			} else {
+				// Persist canonical data returned by BlueX, never client-provided labels.
+				WC()->session->set('bluex_agency_id', $validated['agency_id']);
+				WC()->session->set('bluex_agency_validated_id', $validated['agency_id']);
+				WC()->session->set('bluex_agency_name', $validated['agency_name']);
+				WC()->session->set('bluex_agency_address', $validated['agency_address']);
+				WC()->session->set('bluex_agency_city', $validated['agency_city']);
+				WC()->session->set('bluex_agency_state', $validated['agency_state']);
+				WC()->session->set('bluex_pudo_selected_quote_valid', false);
+			}
 		} else {
 			// Switching out of PUDO: clear ALL three keys so a stale agency
 			// name from a previous selection does not leak into a new PUDO
 			// render, and so `calculate_shipping` falls back to the base title.
-			WC()->session->__unset('bluex_agency_id');
-			WC()->session->__unset('bluex_agency_name');
-			WC()->session->__unset('bluex_agency_address');
+			$this->clear_agency_session();
 		}
 
 		// Invalidate the shipping-rate cache so `calculate_shipping()` — which
@@ -298,6 +353,18 @@ class WC_Correios_PudosMap
 				WC()->session->__unset('shipping_for_package_' . $package_key);
 			}
 		}
+	}
+
+	private function clear_agency_session()
+	{
+		WC()->session->__unset('bluex_agency_id');
+		WC()->session->__unset('bluex_agency_validated_id');
+		WC()->session->__unset('bluex_agency_name');
+		WC()->session->__unset('bluex_agency_address');
+		WC()->session->__unset('bluex_agency_city');
+		WC()->session->__unset('bluex_agency_state');
+		WC()->session->__unset('bluex_pudo_selected_quote_valid');
+		WC()->session->__unset('bluex_pudo_last_successful_quote');
 	}
 
 	/**
@@ -350,16 +417,13 @@ class WC_Correios_PudosMap
 
 
 	/**
-	 * Retrieves the widget URL based on the provided domain, appending additional parameters if present.
+	 * Retrieves the neutral widget URL based on the provided domain.
 	 * 
 	 * The function analyzes the domain to determine if it belongs to the 'qa' or 'dev' environments.
-	 * It also appends the Google key and/or agency ID as query parameters if they are not empty.
-	 *
 	 * @param string $domain The domain to analyze.
-	 * @param string|null $agencyId The agency ID to append to the URL as a parameter.
-	 * @return string The URL of the widget corresponding to the environment with additional parameters if applicable.
+	 * @return string The URL of the widget corresponding to the environment.
 	 */
-	function getWidgetURL($domain, $agencyId = null)
+	function getWidgetURL($domain)
 	{
 		// Define a regular expression to detect 'qa' or 'dev' in the domain
 		// Pattern matches: https://eplin.api.blue.cl (prod), https://eplin.api.qa.blue.cl (qa), https://eplin.api.dev.blue.cl (dev)
@@ -380,20 +444,6 @@ class WC_Correios_PudosMap
 
 		// Start with the base URL
 		$url = $urls[$environment];
-
-		// Initialize query parameters array
-		$queryParams = [];
-
-
-		// Append the agency ID if it is not null or empty
-		if (!empty($agencyId)) {
-			$queryParams['id'] = $agencyId;
-		}
-
-		// Append query parameters to the URL if any exist
-		if (!empty($queryParams)) {
-			$url .= '?' . http_build_query($queryParams);
-		}
 
 		return $url;
 	}

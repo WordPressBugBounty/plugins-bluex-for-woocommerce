@@ -75,8 +75,7 @@ class WC_Correios
 			add_filter('woocommerce_shipping_methods', array(__CLASS__, 'include_methods'));
 			add_filter('woocommerce_email_classes', array(__CLASS__, 'include_emails'));
 
-			// Normalize the bluex-pudo rate so its cost mirrors the bluex-ex rate
-			// in the same package (see class-wc-bluex-pudo.php docstring for why).
+			// Keep only independently quoted PUDO rates and prioritize BlueX methods.
 			// Priority 99 runs after other plugins that may add/remove rates.
 			add_filter('woocommerce_package_rates', array(__CLASS__, 'normalize_bluex_pudo_rate'), 99, 2);
 
@@ -151,8 +150,10 @@ class WC_Correios
 
 		include_once dirname(__FILE__) . '/class-wc-correios-settings.php';
 		include_once dirname(__FILE__) . '/logger/helper.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-agency-validator.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-package.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-nearby-service.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice-international.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-autofill-addresses.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-tracking-history.php';
@@ -277,17 +278,13 @@ class WC_Correios
 	}
 
 	/**
-	 * Normalize Blue Express shipping rates: mirror pudo's cost/taxes to the
-	 * bluex-ex rate, and order the package so all Blue rates come first
-	 * (pudo ahead of the rest) with non-Blue carriers after.
+	 * Keep only independently quoted PUDO rates and order Blue Express methods
+	 * before other carriers.
 	 *
 	 * Why:
-	 * - bluex-pudo is a UX wrapper around bluex-ex. The customer picks a
-	 *   pickup point, but the order itself is processed by the BlueX Express
-	 *   service. Showing PUDO with a different price than Express would
-	 *   confuse users at place-order (total changes). The order's
-	 *   shipping_method is rewritten to `bluex-ex` at creation time (see
-	 *   WC_BlueX_Pudo), so the cost MUST already match Express.
+	 * - bluex-pudo has its own agency-specific quote. Its order method is still
+	 *   rewritten to `bluex-ex` because fulfillment keys pickup orders by
+	 *   `shipping_method=bluex-ex` plus `agencyId`.
 	 * - Ordering Blue carriers first is a UX decision: the store owner's
 	 *   primary courier should lead the list regardless of whether pudo is
 	 *   enabled. When pudo is off (WC_BlueX_Pudo::calculate_shipping early-
@@ -336,23 +333,10 @@ class WC_Correios
 			$quoted_pudo = isset($pudo_meta['_bluex_pudo_quoted']) && $pudo_meta['_bluex_pudo_quoted'] === 'yes';
 		}
 
-		// If pudo arrived but no ex is available in this package, pudo can't
-		// mirror a parent price — unless it already has a successful PUDO quote.
-		if ($pudo_key !== null && $ex_key === null && !$quoted_pudo) {
+		// Never publish a PUDO rate that does not have its own successful quote.
+		if ($pudo_key !== null && !$quoted_pudo) {
 			unset($rates[$pudo_key]);
 			$pudo_key = null;
-		}
-
-		// Mirror cost + taxes from ex onto unquoted pudo when both exist.
-		if ($pudo_key !== null && $ex_key !== null && !$quoted_pudo) {
-			$ex_rate   = $rates[$ex_key];
-			$pudo_rate = $rates[$pudo_key];
-			if (method_exists($ex_rate, 'get_cost') && method_exists($pudo_rate, 'set_cost')) {
-				$pudo_rate->set_cost($ex_rate->get_cost());
-			}
-			if (method_exists($ex_rate, 'get_taxes') && method_exists($pudo_rate, 'set_taxes')) {
-				$pudo_rate->set_taxes($ex_rate->get_taxes());
-			}
 		}
 
 		// If there is no Blue rate at all, leave the caller-provided order

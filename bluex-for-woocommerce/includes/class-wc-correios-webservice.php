@@ -188,6 +188,7 @@ class WC_Correios_Webservice
 	protected $_blueApikey;
 	protected $_pudoEnabled;
 	protected $_devMode;
+	protected $agency_id_override = null;
 
 	/**
 	 * Settings handler.
@@ -254,6 +255,16 @@ class WC_Correios_Webservice
 		} else {
 			$this->service = $service;
 		}
+	}
+
+	/**
+	 * Quote one agency without writing preview state into the WC session.
+	 *
+	 * @param string $agency_id BlueX agency identifier.
+	 */
+	public function set_agency_id($agency_id)
+	{
+		$this->agency_id_override = sanitize_text_field((string) $agency_id);
 	}
 
 	/**
@@ -498,29 +509,12 @@ class WC_Correios_Webservice
 	 */
 	public function get_shipping()
 	{
-		global $wp;
-		$output = array();
-		// Convert POST data string into an associative array.
-		if (isset($_POST['post_data'])) {
-			parse_str($_POST['post_data'], $output);
-		}
-
-		// Only the bluex-pudo shipping method cares about `agencyId`. Reading
-		// it from POST for every consumer caused cross-contamination: in the
-		// classic checkout flow the browser submits `agencyId` via the
-		// update_checkout AJAX post_data, and because this webservice is
-		// shared by all bluex-* methods, the response's `nameService`
-		// (agency name for PUDO) overwrote the label of bluex-ex / bluex-py
-		// / bluex-md too (see class-wc-correios-shipping.php:577). The Blocks
-		// flow never submitted `post_data` so it was invisible there — this
-		// scopes the read to the one method that actually needs it.
-		$agencyId = null;
-		if ($this->id === 'bluex-pudo'
-			&& isset($output['agencyId'])
-			&& $output['agencyId'] !== ''
-		) {
-			$agencyId = sanitize_text_field($output['agencyId']);
-		}
+		// Only an explicit quote override or a server-validated session agency
+		// may influence PUDO pricing. Raw checkout POST data is intentionally
+		// ignored: during Legacy update_checkout it can contain a just-clicked
+		// agency that validation rejected, which previously caused the PUDO rate
+		// to disappear until the next full page load.
+		$agencyId = $this->agency_id_override;
 		if ($this->id === 'bluex-pudo'
 			&& !$agencyId
 			&& function_exists('WC')
@@ -548,30 +542,16 @@ class WC_Correios_Webservice
 			return $default_shipping;
 		}
 
-		$bultos = [];
+		$bultos = (new WC_Correios_Package($this->package))->get_bultos();
 		$price = 0.0;
 		foreach ($this->package['contents'] as $indice => $items) {
 			$data = $items['data'];
 			if (!$data instanceof WC_Product) continue; // Skip if not a product
-
-			$ancho = (float) $data->get_width();
-			$largo = (float) $data->get_length();
-			$alto = (float) $data->get_height();
-			$peso = (float) $data->get_weight();
 			$price += (float) $data->get_price('edit') * (int) $items['quantity']; // Use get_price for accuracy
-
-			$ancho = $this->isEmptyOrZero($ancho) ? 10.0 : $ancho;
-			$largo = $this->isEmptyOrZero($largo) ? 10.0 : $largo;
-			$alto = $this->isEmptyOrZero($alto) ? 10.0 : $alto;
-			$pesoFisico = $this->isEmptyOrZero($peso) ? 0.010 : $peso;
-
-			$bultos[] = [
-				"ancho"      => (int) $ancho, // API expects integer?
-				"largo"      => (int) $largo,
-				"alto"       => (int) $alto,
-				"pesoFisico" => (float) $pesoFisico,
-				"cantidad"   => (int) $items['quantity']
-			];
+		}
+		if (empty($bultos)) {
+			bluex_log('error', 'No shippable parcel data available for pricing.');
+			return $default_shipping;
 		}
 
 		// Get user data (origin info mainly)
@@ -583,6 +563,28 @@ class WC_Correios_Webservice
 
 		// Destination details
 		$destination = $this->package['destination'] ?? [];
+
+		// A confirmed PUDO has its own pricing geography. Keep it separate from
+		// the package/customer destination so selecting a pickup point never
+		// rewrites billing or shipping fields and home-delivery methods continue
+		// quoting the customer's address. Only use session geography when it
+		// belongs to the same server-validated agency; explicit preview quotes
+		// must continue using the current customer destination.
+		if ($this->id === 'bluex-pudo' && $agencyId && function_exists('WC') && WC()->session) {
+			$session_agency_id = sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', ''));
+			$agency_city = sanitize_text_field((string) WC()->session->get('bluex_agency_city', ''));
+			$agency_state = sanitize_text_field((string) WC()->session->get('bluex_agency_state', ''));
+			if (
+				$session_agency_id !== '' &&
+				hash_equals($session_agency_id, (string) $agencyId) &&
+				$agency_city !== '' &&
+				$agency_state !== ''
+			) {
+				$destination['city'] = $agency_city;
+				$destination['state'] = $agency_state;
+				$destination['country'] = 'CL';
+			}
+		}
 		$regionCodeToFormat = $destination['state'] ?? '';
 		$city_normalized = $this->normalizeString($destination['city'] ?? '');
 
@@ -677,7 +679,8 @@ class WC_Correios_Webservice
 
 		$pricingResponse = $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
 
-		bluex_log('info', 'Pricing API response: ' . print_r($pricingResponse, true));
+		$pricing_code = is_array($pricingResponse) ? ($pricingResponse['code'] ?? 'unknown') : 'error';
+		bluex_log('info', 'Pricing API response code: ' . sanitize_text_field((string) $pricing_code));
 
 		if (is_wp_error($pricingResponse) || empty($pricingResponse['data'])) {
 			bluex_log('error', 'Failed to fetch pricing. Error: ' . (is_wp_error($pricingResponse) ? $pricingResponse->get_error_message() : 'Empty data in response'));

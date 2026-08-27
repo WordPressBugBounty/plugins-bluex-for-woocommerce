@@ -227,4 +227,34 @@ class WC_Correios_Package {
 			'weight' => apply_filters( 'woocommerce_correios_package_weight', $data['weight'] ),
 		);
 	}
+
+	/**
+	 * Build the BlueX parcel list from the real WooCommerce package.
+	 *
+	 * @return array
+	 */
+	public function get_bultos() {
+		$bultos = array();
+		foreach ( $this->package['contents'] ?? array() as $item ) {
+			$product = $item['data'] ?? null;
+			$quantity = max( 1, (int) ( $item['quantity'] ?? 1 ) );
+			if ( ! is_object( $product ) || ! method_exists( $product, 'needs_shipping' ) || ! $product->needs_shipping() ) {
+				continue;
+			}
+
+			$width  = wc_get_dimension( (float) $product->get_width(), 'cm' );
+			$length = wc_get_dimension( (float) $product->get_length(), 'cm' );
+			$height = wc_get_dimension( (float) $product->get_height(), 'cm' );
+			$weight = wc_get_weight( (float) $product->get_weight(), 'kg' );
+			$bultos[] = array(
+				'ancho'      => $width > 0 ? max( 1, (int) ceil( $width ) ) : 10,
+				'largo'      => $length > 0 ? max( 1, (int) ceil( $length ) ) : 10,
+				'alto'       => $height > 0 ? max( 1, (int) ceil( $height ) ) : 10,
+				'pesoFisico' => (float) ( $weight > 0 ? $weight : 0.010 ),
+				'cantidad'   => $quantity,
+			);
+		}
+
+		return $bultos;
+	}
 }

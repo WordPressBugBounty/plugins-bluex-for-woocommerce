@@ -2,10 +2,9 @@
 /**
  * BlueX PUDO Shipping Method.
  *
- * Registers `bluex-pudo` as a native WooCommerce shipping method. Before a
- * pickup point is selected it emits a lightweight wrapper rate so the widget
- * can be shown. Once the session has an agency id, it quotes the selected
- * pickup point through the BlueX webservice using familiaProducto=PUDO.
+ * Registers `bluex-pudo` as a native WooCommerce shipping method. It quotes
+ * either the server-validated shopper selection or the nearest preview agency
+ * through the same BlueX PUDO webservice using the real cart package.
  *
  * Dynamic label: if the session has `bluex_agency_name` set (persisted by the
  * blocks integration's Store API update_callback when the customer picks a
@@ -23,10 +22,8 @@ if (!defined('ABSPATH')) {
 
 class WC_BlueX_Pudo extends WC_Shipping_Method
 {
-	// Explicit declarations for PHP 8.2+ — $enabled / $title / $tax_status are
-	// declared on WC_Shipping_Method core but $cost is not.
-	/** @var string */
-	protected $cost = '0';
+	/** @var bool Prevent a later package success from hiding an earlier package failure in the same request. */
+	private static $selected_quote_failed_this_request = false;
 
 	// Fee/IVA por defecto aplicado al costo cotizado de PUDO.
 	const DEFAULT_FEE = '19%';
@@ -55,7 +52,6 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 		// no delegamos el impuesto a WooCommerce. Además evita que una instancia
 		// vieja con 'taxable' guardado lo siga heredando.
 		$this->tax_status = 'none';
-		$this->cost       = $this->get_option('cost');
 		$this->fee        = $this->get_option('fee');
 
 		add_action(
@@ -80,133 +76,30 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 				'default'     => __('Retiro en Punto Blue Express', 'woocommerce-correios'),
 				'desc_tip'    => true,
 			],
-			'cost' => [
-				'title'       => __('Costo base (fallback antes de cotizar PUDO)', 'woocommerce-correios'),
-				'type'        => 'price',
-				'description' => __('Se usa antes de seleccionar un punto o si la cotización PUDO no responde. Cuando hay punto seleccionado, el costo final viene de la tarifa PUDO del backend.', 'woocommerce-correios'),
-				'default'     => '0',
-				'desc_tip'    => true,
-			],
 			'fee' => [
-				// type 'fee' (custom): render con generate_fee_html (input numérico
-				// solo enteros + '%' visible) y saneo con validate_fee_field, que
-				// SIEMPRE normaliza a "<int>%". Así, aunque el usuario escriba "19"
-				// sin '%', se guarda "19%" y get_fee lo aplica como porcentaje (IVA),
-				// nunca como monto fijo. (No usar 'price': wc_format_decimal borra el
-				// '%'; no usar 'text': permite entradas ambiguas como "19").
-				'title'       => __('IVA / Recargo (%)', 'woocommerce-correios'),
-				'type'        => 'fee',
-				'description' => __('Ingresa solo el número entero del IVA (ej. 19). El % se aplica automáticamente sobre el costo cotizado.', 'woocommerce-correios'),
+				// type 'text' (no 'price'): WooCommerce valida los campos 'price'
+				// con wc_format_decimal(), que ELIMINA el '%' al guardar y dejaría
+				// '19' (monto fijo) en vez de '19%'. 'text' preserva el porcentaje.
+				'title'       => __('IVA / Recargo (Handling Fee)', 'woocommerce-correios'),
+				'type'        => 'text',
+				'description' => __('Porcentaje (ej. 19%) o monto fijo aplicado al costo cotizado. Por defecto 19% (IVA).', 'woocommerce-correios'),
 				'desc_tip'    => true,
 				// default vacío a propósito: el 19% se persiste solo en instancias
 				// NUEVAS vía maybe_set_default_fee(). Un default '19%' aquí haría que
 				// WooCommerce lo aplique por fallback a instancias viejas sin fee
 				// guardado (backfill no deseado).
 				'default'     => '',
-				'placeholder' => '19',
+				'placeholder' => self::DEFAULT_FEE,
 			],
 		];
 	}
 
 	/**
-	 * Render the `fee` field: integer-only number input with a visible '%' suffix.
-	 *
-	 * Called by WooCommerce for fields of `type => 'fee'`. The canonical stored
-	 * value is "<int>%"; here we strip the '%' so the numeric input shows only the
-	 * integer, and render a '%' next to it. On save, validate_fee_field re-appends
-	 * the '%', so the user can only enter the number and the percentage is implicit.
-	 *
-	 * @param string $key  Field key.
-	 * @param array  $data Field definition.
-	 * @return string
-	 */
-	public function generate_fee_html($key, $data)
-	{
-		$field_key = $this->get_field_key($key);
-		$defaults  = [
-			'title'             => '',
-			'class'             => '',
-			'css'               => '',
-			'placeholder'       => '',
-			'desc_tip'          => false,
-			'description'       => '',
-			'custom_attributes' => [],
-		];
-		$data = wp_parse_args($data, $defaults);
-
-		// Mostrar solo la parte entera del valor guardado ("19%" -> "19"). Valor
-		// vacío queda vacío para que se vea el placeholder.
-		$stored = (string) $this->get_option($key);
-		$value  = $stored === '' ? '' : (string) intval($stored);
-
-		ob_start();
-		?>
-		<tr valign="top">
-			<th scope="row" class="titledesc">
-				<label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?> <?php echo $this->get_tooltip_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
-			</th>
-			<td class="forminp">
-				<fieldset>
-					<legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
-					<input
-						class="input-text <?php echo esc_attr($data['class']); ?>"
-						type="number"
-						min="0"
-						max="100"
-						step="1"
-						inputmode="numeric"
-						name="<?php echo esc_attr($field_key); ?>"
-						id="<?php echo esc_attr($field_key); ?>"
-						style="width:5em;<?php echo esc_attr($data['css']); ?>"
-						value="<?php echo esc_attr($value); ?>"
-						placeholder="<?php echo esc_attr($data['placeholder']); ?>"
-						<?php echo $this->get_custom_attribute_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					/> <span class="description">%</span>
-					<?php echo $this->get_description_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-				</fieldset>
-			</td>
-		</tr>
-		<?php
-		return ob_get_clean();
-	}
-
-	/**
-	 * Sanitize the `fee` field on save: always store "<int>%".
-	 *
-	 * Guarantees the fee is treated as a percentage (IVA). Any non-digit input is
-	 * dropped, so "19", "19%" or "19 %" all persist as "19%". Empty stays empty
-	 * (no fee). This removes the ambiguity where a bare "19" would be applied by
-	 * get_fee() as a fixed amount instead of a percentage.
-	 *
-	 * @param string $key   Field key.
-	 * @param string $value Posted value.
-	 * @return string
-	 */
-	public function validate_fee_field($key, $value)
-	{
-		$value = is_null($value) ? '' : trim(wp_unslash($value));
-		if ($value === '') {
-			return '';
-		}
-
-		// intval toma el entero inicial: "19" -> 19, "19%" -> 19, "19.5" -> 19,
-		// "19,5" -> 19, "abc" -> 0. NO usar preg_replace de no-dígitos: concatenaría
-		// "19.5" en "195" (sobrecobro). <= 0 (o no numérico) => sin fee.
-		$int = intval($value);
-		if ($int <= 0) {
-			return '';
-		}
-
-		return $int . '%';
-	}
-
-	/**
 	 * Calculate the rate for this package.
 	 *
-	 * When an agency is selected, this method quotes the backend as PUDO and emits
-	 * the returned tariff and delivery promise. Without an agency, or if the quote
-	 * fails, it keeps the historical wrapper-rate fallback; the package-rates
-	 * filter may then mirror the bluex-ex cost to preserve the previous UX.
+	 * A confirmed, server-validated agency wins. Otherwise the nearest agency is
+	 * quoted as preview-only rate metadata. Preview failures omit PUDO; a transient
+	 * selected-quote failure keeps a stale display rate but blocks order creation.
 	 *
 	 * Respects the plugin-wide `pudoEnable` master switch.
 	 *
@@ -223,55 +116,198 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			return;
 		}
 
-		$agency_name    = WC()->session ? (string) WC()->session->get('bluex_agency_name', '') : '';
-		$agency_address = WC()->session ? (string) WC()->session->get('bluex_agency_address', '') : '';
-		$agency_id      = WC()->session ? (string) WC()->session->get('bluex_agency_id', '') : '';
+		$selected = $this->get_selected_agency();
+		$is_selected = $selected['agency_id'] !== '';
+		$agency_id = $selected['agency_id'];
+		$agency_name = $selected['agency_name'];
+		$agency_address = $selected['agency_address'];
 
-		$meta_data = [
-			'_is_pudo'              => 'yes',
-			'_bluex_agency_id'      => $agency_id,
-			'_bluex_agency_name'    => $agency_name,
-			'_bluex_agency_address' => $agency_address,
-		];
-
-		$cost = $this->cost;
-		if ($agency_id !== '') {
-			$quoted_shipping = $this->get_quoted_pudo_shipping($package);
-			if ($quoted_shipping) {
-				$cost = $this->normalize_quoted_cost($quoted_shipping->Valor);
-				$meta_data['_bluex_pudo_quoted'] = 'yes';
-				$meta_data['_delivery_forecast'] = (string) $quoted_shipping->PrazoEntrega;
+		if (!$is_selected) {
+			$from_district = 'SCL';
+			$settings = WC_Correios_Settings::get_instance();
+			$settings_data = $settings->get_settings();
+			if (!empty($settings_data['districtCode'])) {
+				$from_district = $settings_data['districtCode'];
 			}
+
+			$destination = $package['destination'] ?? [];
+			$city = sanitize_text_field((string) ($destination['city'] ?? ''));
+			$state = sanitize_text_field((string) ($destination['state'] ?? ''));
+			$region = strpos($state, 'CL-') === 0 ? substr($state, 3) : $state;
+			if ($city === '' || $region === '') {
+				return;
+			}
+
+			$geo = (new BlueX_API_Client())->get_geolocation($city, $region, null, true);
+			if (is_wp_error($geo) || !is_array($geo)) {
+				return;
+			}
+
+			$nearby = WC_Bluex_Pudo_Nearby_Service::fetch_nearby_pudos(
+				$from_district,
+				$package,
+				$settings->get_account_name(),
+				5,
+				true,
+				array(
+					'regionCode'   => $geo['regionCode'] ?? null,
+					'districtCode' => $geo['districtCode'] ?? null,
+				)
+			);
+			$closest = WC_Bluex_Pudo_Nearby_Service::get_closest_agency_price($nearby);
+			if (empty($closest['agency']['agencyId'])) {
+				return;
+			}
+
+			$agency = $closest['agency'];
+			$agency_id = sanitize_text_field((string) $agency['agencyId']);
+			$agency_name = sanitize_text_field((string) ($agency['service_name'] ?? $agency['agencyName'] ?? ''));
+			$agency_address = $this->get_nearby_agency_address($agency);
 		}
 
-		// Label: include the agency name as a suffix when available so the
-		// rate's own label carries the selected pickup point everywhere it's
-		// rendered (list, order summary sidebar, emails, admin). A Store API
-		// response filter would only cover blocks render; setting it here on
-		// the rate object makes every consumer see the same label.
-		//
-		// Cost is the quoted PUDO tariff when available. Otherwise it remains the
-		// admin-configured fallback and can still be normalized from bluex-ex by the
-		// package-rates filter for backward compatibility.
-		$label = $agency_name !== ''
-			? $this->title . ' - ' . $agency_name
-			: $this->title;
+		$quoted_shipping = $this->get_quoted_pudo_shipping($package, $agency_id);
+		$quote_is_current = true;
+		if (!$quoted_shipping) {
+			// Keep the chosen method stable during a transient pricing failure. The
+			// last successful amount is display-only: order validation blocks stale
+			// selected quotes until a retry succeeds for the confirmed agency.
+			if (!$is_selected) {
+				return;
+			}
+			$quoted_shipping = $this->get_last_successful_quote();
+			if (!$quoted_shipping) {
+				return;
+			}
+			$quote_is_current = false;
+			self::$selected_quote_failed_this_request = true;
+		}
 
-		// Aplicar fee/IVA sobre el costo. Cast a float ANTES de get_fee: un costo
-		// vacío ('') rompería el cálculo de porcentaje de get_fee (''/100 es fatal
-		// en PHP 8). En PUDO cotizado usa su propio costo+fee; en fallback no-cotizado
-		// el filtro package-rates espeja EX (que ya trae su fee), así que este fee
-		// queda pisado y no hay doble cobro.
-		$cost = (float) $cost;
-		$fee  = (float) $this->get_fee($this->fee, $cost);
-		$cost = $cost + $fee;
+		if ($quote_is_current) {
+			$this->remember_successful_quote($quoted_shipping);
+		}
+		if (WC()->session) {
+			WC()->session->set(
+				'bluex_pudo_selected_quote_valid',
+				$is_selected && $quote_is_current && !self::$selected_quote_failed_this_request
+			);
+		}
 
-		$this->add_rate([
+		if ($agency_name === '' && !empty($quoted_shipping->nameService)) {
+			$agency_name = sanitize_text_field((string) $quoted_shipping->nameService);
+		}
+
+		$meta_data = array(
+			'_is_pudo'             => 'yes',
+			'_bluex_pudo_quoted'   => 'yes',
+			'_delivery_forecast'   => (string) $quoted_shipping->PrazoEntrega,
+			'_bluex_agency_id'     => $is_selected ? $agency_id : '',
+			'_bluex_agency_name'   => $is_selected ? $agency_name : '',
+			'_bluex_agency_address'=> $is_selected ? $agency_address : '',
+			'_bluex_pudo_quote_current' => $quote_is_current ? 'yes' : 'no',
+		);
+
+		if ($is_selected) {
+			$meta_data['_bluex_pudo_selected_agency_id'] = $agency_id;
+		} else {
+			$meta_data['_bluex_pudo_preview_agency_id'] = $agency_id;
+			$meta_data['_bluex_pudo_preview_agency_name'] = $agency_name;
+			$meta_data['_bluex_pudo_preview_agency_address'] = $agency_address;
+		}
+
+		$cost = $this->normalize_quoted_cost($quoted_shipping->Valor);
+		$cost += (float) $this->get_fee($this->fee, $cost);
+		$label = $agency_name !== '' ? $this->title . ' - ' . $agency_name : $this->title;
+
+		$this->add_rate(array(
 			'id'        => $this->get_rate_id(),
 			'label'     => $label,
 			'cost'      => $cost,
 			'meta_data' => $meta_data,
-		]);
+		));
+	}
+
+	/** Persist the small successful quote needed for a safe display fallback. */
+	private function remember_successful_quote($shipping)
+	{
+		if (!WC()->session || !is_object($shipping)) {
+			return;
+		}
+		WC()->session->set('bluex_pudo_last_successful_quote', array(
+			'Valor'          => (string) $shipping->Valor,
+			'PrazoEntrega'   => (string) $shipping->PrazoEntrega,
+			'nameService'    => (string) ($shipping->nameService ?? ''),
+			'isShipmentFree' => !empty($shipping->isShipmentFree),
+		));
+	}
+
+	/**
+	 * Rehydrate a display-only fallback. Order creation remains blocked while
+	 * bluex_pudo_selected_quote_valid is false.
+	 *
+	 * @return object|null
+	 */
+	private function get_last_successful_quote()
+	{
+		if (!WC()->session) {
+			return null;
+		}
+		$quote = WC()->session->get('bluex_pudo_last_successful_quote', array());
+		if (!is_array($quote) || !isset($quote['Valor'], $quote['PrazoEntrega'])) {
+			return null;
+		}
+		return (object) array(
+			'Codigo'          => 'EX',
+			'Valor'           => (string) $quote['Valor'],
+			'PrazoEntrega'    => (string) $quote['PrazoEntrega'],
+			'Erro'            => '0',
+			'MsgErro'         => '',
+			'nameService'     => (string) ($quote['nameService'] ?? ''),
+			'isShipmentFree'  => !empty($quote['isShipmentFree']),
+		);
+	}
+
+	/**
+	 * Return only a server-validated shopper selection.
+	 *
+	 * @return array
+	 */
+	private function get_selected_agency()
+	{
+		$empty = array('agency_id' => '', 'agency_name' => '', 'agency_address' => '');
+		if (!WC()->session) {
+			return $empty;
+		}
+
+		$agency_id = sanitize_text_field((string) WC()->session->get('bluex_agency_id', ''));
+		$validated_id = sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', ''));
+		if ($agency_id === '' || $validated_id === '' || !hash_equals($validated_id, $agency_id)) {
+			return $empty;
+		}
+
+		return array(
+			'agency_id'      => $agency_id,
+			'agency_name'    => sanitize_text_field((string) WC()->session->get('bluex_agency_name', '')),
+			'agency_address' => sanitize_text_field((string) WC()->session->get('bluex_agency_address', '')),
+		);
+	}
+
+	/**
+	 * Normalize the address variants returned by Nearby.
+	 *
+	 * @param array $agency Nearby agency.
+	 * @return string
+	 */
+	private function get_nearby_agency_address(array $agency)
+	{
+		if (!empty($agency['agencyAddress']) && is_array($agency['agencyAddress'])) {
+			$address = $agency['agencyAddress'];
+			return sanitize_text_field(implode(' ', array_filter(array(
+				$address['streetName'] ?? $address['street_name'] ?? '',
+				$address['streetNumber'] ?? $address['street_number'] ?? '',
+			))));
+		}
+
+		return sanitize_text_field((string) ($agency['address'] ?? ''));
 	}
 
 	/**
@@ -280,7 +316,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	 * @param array $package Shipping package.
 	 * @return object|null
 	 */
-	private function get_quoted_pudo_shipping($package)
+	private function get_quoted_pudo_shipping($package, $agency_id)
 	{
 		if (!class_exists('WC_Correios_Webservice')) {
 			return null;
@@ -288,6 +324,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 
 		$api = new WC_Correios_Webservice($this->id, $this->instance_id);
 		$api->set_service('EX');
+		$api->set_agency_id($agency_id);
 		$api->set_package($package);
 
 		if (isset($package['destination']['postcode'])) {

@@ -92,7 +92,7 @@ class BlueX_API_Client
             $args['body'] = wp_json_encode($data);
         }
 
-        bluex_log('info', "BlueX API Request: Method={$method}, URL={$url}, Headers=" . json_encode($headers) . ", Body=" . ($args['body'] ?? 'N/A'));
+        bluex_log('info', "BlueX API Request: Method={$method}, Endpoint={$endpoint}");
 
         $response = wp_remote_request($url, $args);
 
@@ -104,21 +104,18 @@ class BlueX_API_Client
         $response_code = wp_remote_retrieve_response_code($response);
         $response_body = wp_remote_retrieve_body($response);
 
-        bluex_log('info', "BlueX API Response ({$endpoint}): Code={$response_code}, Body=" . $response_body);
+        bluex_log('info', "BlueX API Response ({$endpoint}): Code={$response_code}");
 
-        if ($response_code >= 300) {
-            bluex_log('error', "BlueX API HTTP Error ({$endpoint}): Code={$response_code}, Body=" . $response_body);
-            // Attempt to decode body anyway, might contain error details
-            $decoded_body = json_decode($response_body, true);
-            $error_message = isset($decoded_body['message']) ? $decoded_body['message'] : $response_body;
-            return new WP_Error('api_http_error', "Error ({$response_code}): {$error_message}", ['status' => $response_code, 'body' => $decoded_body ?? $response_body]);
+        if ($response_code < 200 || $response_code >= 300) {
+            bluex_log('error', "BlueX API HTTP Error ({$endpoint}): Code={$response_code}");
+            return new WP_Error('api_http_error', "BlueX API request failed with status {$response_code}.", ['status' => $response_code]);
         }
 
         $decoded_body = json_decode($response_body, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            bluex_log('error', "BlueX API JSON Decode Error ({$endpoint}): " . json_last_error_msg() . ", Body=" . $response_body);
-            return new WP_Error('json_decode_error', 'Failed to decode API response.', ['body' => $response_body]);
+            bluex_log('error', "BlueX API JSON Decode Error ({$endpoint}): " . json_last_error_msg());
+            return new WP_Error('json_decode_error', 'Failed to decode API response.');
         }
 
         return $decoded_body;
@@ -257,5 +254,85 @@ class BlueX_API_Client
             'order' => $payload,
         ];
         return $this->make_request('POST', $endpoint, $data);
+    }
+
+    /**
+     * Get nearby PUDOS agencies using the nearby-pudos endpoint.
+     * The endpoint path is constructed internally; callers only pass payload,
+     * optional extra headers, cookie and optional userData for key selection.
+     *
+     * @param array $payload Request body or simplified params.
+     * @param array $extra_headers Optional extra headers.
+     * @param string|null $cookie Optional Cookie header value.
+     * @param array|null $userData Optional user data to use a user-specific API key.
+     * @return array|WP_Error Decoded response or WP_Error on failure.
+     */
+    public function get_nearby_pudos(array $payload, array $extra_headers = [], ?string $cookie = null, ?array $userData = null)
+    {
+        // Internally construct the nearby PUDOS endpoint path so callers
+        // do not need to provide or manipulate the endpoint URL.
+        $endpoint = '/api/ecommerce/comunas/v1/new-nearby-pudos';
+        // If caller passed a full payload (contains 'from' and 'to'), use it as-is.
+        if (!(is_array($payload) && isset($payload['from']) && isset($payload['to']))) {
+            // Attempt to build the standardized payload from a simpler shape.
+            // Expecting either:
+            // - ['from_district' => 'SCL', 'package' => [...]] OR
+            // - a package-like array with destination/contents_cost keys.
+
+            $from_district = 'SCL';
+            if (isset($payload['from_district']) && is_string($payload['from_district'])) {
+                $from_district = $payload['from_district'];
+            } elseif ($this->settings_handler && method_exists($this->settings_handler, 'get_settings')) {
+                $settings = $this->settings_handler->get_settings();
+                if (!empty($settings['districtCode'])) {
+                    $from_district = $settings['districtCode'];
+                }
+            }
+
+            // If $payload has a 'package' key, use it; otherwise treat $payload as package.
+            $package = [];
+            if (isset($payload['package']) && is_array($payload['package'])) {
+                $package = $payload['package'];
+            } elseif (isset($payload['destination']) || isset($payload['contents_cost'])) {
+                $package = $payload;
+            }
+
+            $to_state = isset($package['destination']['state']) ? $package['destination']['state'] : null;
+            $to_district = isset($package['destination']['city']) ? $package['destination']['city'] : $from_district;
+            $bulto_peso = isset($package['contents_cost']) ? (float) $package['contents_cost'] : 1;
+
+            $payload = [
+                'from' => ['country' => 'CL', 'district' => $from_district],
+                'to'   => [
+                    'country'  => 'CL',
+                    'state'    => $to_state,
+                    'district' => $to_district,
+                ],
+                'domain' => $this->settings_handler->get_account_name(),
+                'datosProducto' => [
+                    'producto' => 'P',
+                    'familiaProducto' => 'PAQU',
+                    'bultos' => [[
+                        'largo' => 10,
+                        'ancho' => 10,
+                        'alto' => 10,
+                        'pesoFisico' => $bulto_peso,
+                        'cantidad' => 1,
+                    ]],
+                ],
+                'destination' => isset($package['destination']['city']) ? $package['destination']['city'] : '',
+                'maxAgenciesShow' => 5,
+                'includeGeolocation' => true,
+            ];
+        }
+
+        // Allow callers to pass a cookie via params
+        if (!empty($cookie)) {
+            $extra_headers['Cookie'] = $cookie;
+        }
+
+        // Delegate to the centralized make_request for consistent headers, logging and error handling
+        $use_user_specific_key = !empty($userData);
+        return $this->make_request('POST', $endpoint, $payload, $extra_headers, $use_user_specific_key, $userData);
     }
 }

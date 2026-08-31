@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 7.1
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -122,4 +122,7 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * A 19% IVA fee is applied to the Punto Blue Express rate, matching the other Blue Express methods. The backend quotes a net amount, so no double charge occurs. The fee field is an integer-only percentage, and the default is written only for newly created method instances, so existing ones keep their configured value.
 * Pricing and checkout selection stability: the selected pickup point survives address changes and reloads, agency identifiers are validated before being applied to an order, and rate labels no longer flip back after a selection in both the Legacy and Blocks checkouts.
 * Compatibility verified with WordPress 7.1 and WooCommerce 11.0.1.
+= 3.3.1 - 2026-08-31 =
+* Fix: restore the PUDO helper classes and scripts that were missing from the 3.3.0 package (WC_Bluex_Pudo_Nearby_Service, WC_Bluex_Pudo_Agency_Validator and the pudo-widget-security scripts). Their absence raised a fatal error on every shipping calculation, leaving the checkout unusable.
+* The plugin now degrades instead of failing when those helpers are unavailable: the Punto Blue Express rate is simply not offered, and a pickup point is never accepted without server-side validation.
 

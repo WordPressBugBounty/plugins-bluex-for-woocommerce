@@ -631,8 +631,13 @@ class WC_Correios_Webservice
 			return $cached_shipping;
 		}
 
-		// Get Geolocation data
-		$bxGeoResult = $this->getComunasGeo($city_normalized, $regionCode, $agencyId);
+		// A confirmed pickup point already carries the region/district codes that
+		// BlueX returned when the agency was validated. Re-geolocating it from a
+		// city name can score 0% and drop the quote, blocking checkout.
+		$bxGeoResult = $this->get_confirmed_pudo_geo($agencyId);
+		if (!$bxGeoResult) {
+			$bxGeoResult = $this->getComunasGeo($city_normalized, $regionCode, $agencyId);
+		}
 
 		if (is_wp_error($bxGeoResult) || empty($bxGeoResult)) {
 			bluex_log('error', 'Failed to get geolocation data or bxGeo data is empty. Error: ' . (is_wp_error($bxGeoResult) ? $bxGeoResult->get_error_message() : 'Empty response'));
@@ -642,8 +647,30 @@ class WC_Correios_Webservice
 		if (isset($bxGeoResult["porcentageDeExito"])) {
 			$percentage = (int) rtrim($bxGeoResult["porcentageDeExito"], "%");
 			if ($percentage < 80) {
-				bluex_log('warning', 'Geolocation match percentage too low ({$percentage}%). Aborting calculation.');
-				return $default_shipping;
+				// A confirmed pickup point is identified by agency, not address-match score.
+				$session = function_exists('WC') && WC()->session ? WC()->session : null;
+				$selected_id = $session ? sanitize_text_field((string) $session->get('bluex_agency_id', '')) : '';
+				$validated_id = $session ? sanitize_text_field((string) $session->get('bluex_agency_validated_id', '')) : '';
+				$pickup = $bxGeoResult['pickupInfo'] ?? null;
+				$pickup_matches = is_array($pickup) && !empty($pickup);
+				if ($pickup_matches) {
+					foreach (array('agency_id', 'agencyId', 'id') as $key) {
+						if (isset($pickup[$key]) && (!is_scalar($pickup[$key])
+							|| (string) $pickup[$key] !== '' && !hash_equals($validated_id, sanitize_text_field((string) $pickup[$key])))) {
+							$pickup_matches = false;
+							break;
+						}
+					}
+				}
+				$confirmed_pudo = $this->id === 'bluex-pudo'
+					&& $agencyId && $selected_id !== '' && $validated_id !== ''
+					&& hash_equals($validated_id, $selected_id) && hash_equals($validated_id, (string) $agencyId)
+					&& $pickup_matches
+					&& !empty($bxGeoResult['regionCode']) && !empty($bxGeoResult['districtCode']);
+				if (!$confirmed_pudo) {
+					bluex_log('warning', "Geolocation match percentage too low ({$percentage}%). Aborting calculation.");
+					return $default_shipping;
+				}
 			}
 		}
 
@@ -784,6 +811,39 @@ class WC_Correios_Webservice
 
 		// Pass $userData to get_pricing for potential user-specific API key logic
 		return $this->api_client->get_pricing($from, $to, $this->service, $bultos, $price, $familiaProducto, $userData);
+	}
+
+	/**
+	 * Geolocation stored by WC_Bluex_Pudo_Agency_Validator for the confirmed agency.
+	 *
+	 * @param string|null $agencyId Agency being quoted.
+	 * @return array|null bxGeo-shaped result, or null to fall back to bxGeo.
+	 */
+	private function get_confirmed_pudo_geo($agencyId)
+	{
+		if ($this->id !== 'bluex-pudo' || !$agencyId || !function_exists('WC') || !WC()->session) {
+			return null;
+		}
+		$session = WC()->session;
+		$selected_id = sanitize_text_field((string) $session->get('bluex_agency_id', ''));
+		$validated_id = sanitize_text_field((string) $session->get('bluex_agency_validated_id', ''));
+		$region_code = sanitize_text_field((string) $session->get('bluex_agency_region_code', ''));
+		$district_code = sanitize_text_field((string) $session->get('bluex_agency_district_code', ''));
+		if (
+			$validated_id === '' || $region_code === '' || $district_code === ''
+			|| !hash_equals($validated_id, $selected_id)
+			|| !hash_equals($validated_id, (string) $agencyId)
+		) {
+			return null;
+		}
+		return array(
+			'regionCode'   => $region_code,
+			'districtCode' => $district_code,
+			'pickupInfo'   => array(
+				'agency_id'   => $validated_id,
+				'agency_name' => sanitize_text_field((string) $session->get('bluex_agency_name', '')),
+			),
+		);
 	}
 
 	/**

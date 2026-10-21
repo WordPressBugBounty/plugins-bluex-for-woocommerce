@@ -331,6 +331,8 @@ class WC_Correios_PudosMap
 				WC()->session->set('bluex_agency_address', $validated['agency_address']);
 				WC()->session->set('bluex_agency_city', $validated['agency_city']);
 				WC()->session->set('bluex_agency_state', $validated['agency_state']);
+				WC()->session->set('bluex_agency_region_code', $validated['agency_region_code']);
+				WC()->session->set('bluex_agency_district_code', $validated['agency_district_code']);
 				WC()->session->set('bluex_pudo_selected_quote_valid', false);
 			}
 		} else {
@@ -363,6 +365,8 @@ class WC_Correios_PudosMap
 		WC()->session->__unset('bluex_agency_address');
 		WC()->session->__unset('bluex_agency_city');
 		WC()->session->__unset('bluex_agency_state');
+		WC()->session->__unset('bluex_agency_region_code');
+		WC()->session->__unset('bluex_agency_district_code');
 		WC()->session->__unset('bluex_pudo_selected_quote_valid');
 		WC()->session->__unset('bluex_pudo_last_successful_quote');
 	}

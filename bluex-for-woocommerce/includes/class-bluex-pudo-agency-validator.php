@@ -84,6 +84,10 @@ class WC_Bluex_Pudo_Agency_Validator
 			'agency_address' => sanitize_text_field((string) $address),
 			'agency_city'    => $resolved_city,
 			'agency_state'   => $resolved_state,
+			// Pricing codes for the agency; empty when BlueX omits them so
+			// quoting falls back to a fresh geolocation lookup.
+			'agency_region_code'   => self::first_non_empty_scalar(array($response['regionCode'] ?? null)),
+			'agency_district_code' => self::first_non_empty_scalar(array($response['districtCode'] ?? null)),
 		);
 	}
 

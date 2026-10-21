@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 7.1
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,6 @@ create a rest api user, this must be in the advanced options and deliver it to B
 3. Blue Express shipping methods in the cart
 
 == Changelog ==
-
 = 1.0.0 - 2022-11-03 =
 * First release!
 = 1.0.1 - 2022-12-15 =
@@ -109,13 +108,6 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Fix: the pickup-point (PUDO) modal no longer auto-opens when the customer completes their address. "Envío a domicilio" (bluex-ex) is now WooCommerce's default-selected rate; the pickup modal only opens when the customer explicitly selects the "Retiro en Punto Blue Express" rate.
 * WordPress 7.0 compatibility verified. Minimum PHP bumped to 7.4.
 * Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.
-= 3.2.2 - 2026-06-17 =
-* Fix: the pickup-point (PUDO) modal no longer auto-opens when the customer completes their address. «Envío a domicilio» (bluex-ex) is now WooCommerce’s default-selected rate; the pickup modal only opens when the customer explicitly selects the «Retiro en Punto Blue Express» rate.
-* WordPress 7.0 compatibility verified. Minimum PHP bumped to 7.4.
-* Improvements and fixes for Retiro en Punto Blue Express rates and delivery information.
-= 3.2.3 - 2026-07-29 =
-* Add: the "Retiro en Punto Blue Express" (PUDO) shipping method now applies a default 19% IVA fee, added automatically to newly created shipping-zone instances (existing instances are left unchanged).
-* Fix: the IVA/fee field is now integer-only with an automatic "%", so a value like "19" is always applied as a percentage instead of a fixed amount.
 = 3.3.0 - 2026-08-26 =
 * Retiro en Punto Blue Express (bluex-pudo) is now enabled by default on fresh installs: the shipping method is pre-selected in the integration settings and included in the zones created by the setup wizard. Existing installations are left untouched, and an explicit opt-out is respected when creating zones.
 * Nearby pickup points: the checkout resolves and displays the closest Punto Blue Express to the customer's address, with its price visible by default, instead of requiring the customer to open the map first.
@@ -125,4 +117,7 @@ create a rest api user, this must be in the advanced options and deliver it to B
 = 3.3.1 - 2026-08-31 =
 * Fix: restore the PUDO helper classes and scripts that were missing from the 3.3.0 package (WC_Bluex_Pudo_Nearby_Service, WC_Bluex_Pudo_Agency_Validator and the pudo-widget-security scripts). Their absence raised a fatal error on every shipping calculation, leaving the checkout unusable.
 * The plugin now degrades instead of failing when those helpers are unavailable: the Punto Blue Express rate is simply not offered, and a pickup point is never accepted without server-side validation.
-
+= 3.3.2 - 2026-09-22 =
+* Fix: allow a validated, selected PUDO pickup point to be priced even when the address geolocation confidence is below 80%, without relaxing home-delivery or unvalidated pickup checks.
+* Fix: include the actual geolocation confidence percentage in the rejection warning.
+* Fix: price a confirmed PUDO pickup point with the region and district codes returned when the agency was validated, instead of geolocating it again. The second lookup could score 0% and block checkout with "No pudimos actualizar la tarifa del punto Blue Express".

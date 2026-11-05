@@ -233,7 +233,7 @@ class WC_Correios_Package {
 	 *
 	 * @return array
 	 */
-	public function get_bultos() {
+	public function get_bultos( $with_sku = false ) {
 		$bultos = array();
 		foreach ( $this->package['contents'] ?? array() as $item ) {
 			$product = $item['data'] ?? null;
@@ -242,19 +242,42 @@ class WC_Correios_Package {
 				continue;
 			}
 
-			$width  = wc_get_dimension( (float) $product->get_width(), 'cm' );
-			$length = wc_get_dimension( (float) $product->get_length(), 'cm' );
-			$height = wc_get_dimension( (float) $product->get_height(), 'cm' );
-			$weight = wc_get_weight( (float) $product->get_weight(), 'kg' );
-			$bultos[] = array(
-				'ancho'      => $width > 0 ? max( 1, (int) ceil( $width ) ) : 10,
-				'largo'      => $length > 0 ? max( 1, (int) ceil( $length ) ) : 10,
-				'alto'       => $height > 0 ? max( 1, (int) ceil( $height ) ) : 10,
-				'pesoFisico' => (float) ( $weight > 0 ? $weight : 0.010 ),
-				'cantidad'   => $quantity,
-			);
+			$bultos[] = self::get_product_bulto( $product, $quantity, $with_sku );
 		}
 
 		return $bultos;
+	}
+
+	/**
+	 * Build the BlueX parcel for one product line: dimensions in cm, weight in kg.
+	 *
+	 * wc_get_dimension()/wc_get_weight() convert from whatever units the store has
+	 * configured, so the output is always cm and kg. Missing values use the
+	 * defaults BlueX expects (10 cm and 10 g).
+	 *
+	 * @param  object $product  WC_Product (or compatible).
+	 * @param  int    $quantity Units of the product.
+	 * @return array
+	 */
+	public static function get_product_bulto( $product, $quantity = 1, $with_sku = false ) {
+		$width  = wc_get_dimension( (float) $product->get_width(), 'cm' );
+		$length = wc_get_dimension( (float) $product->get_length(), 'cm' );
+		$height = wc_get_dimension( (float) $product->get_height(), 'cm' );
+		$weight = wc_get_weight( (float) $product->get_weight(), 'kg' );
+
+		$bulto = array(
+			'ancho'      => $width > 0 ? max( 1, (int) ceil( $width ) ) : 10,
+			'largo'      => $length > 0 ? max( 1, (int) ceil( $length ) ) : 10,
+			'alto'       => $height > 0 ? max( 1, (int) ceil( $height ) ) : 10,
+			'pesoFisico' => (float) ( $weight > 0 ? $weight : 0.010 ),
+			'cantidad'   => max( 1, (int) $quantity ),
+		);
+
+		if ( $with_sku ) {
+			$sku           = (string) $product->get_sku();
+			$bulto['sku'] = '' !== $sku ? $sku : (string) $product->get_id();
+		}
+
+		return $bulto;
 	}
 }

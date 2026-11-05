@@ -77,6 +77,16 @@ class BlueX_API_Client
         $url = $this->get_base_url() . $endpoint;
         $api_key = $use_user_specific_key ? $this->get_tracking_bxkey_from_user($userData) : $this->get_api_key();
 
+        return $this->send_request($url, $api_key, $method, $endpoint, $data, $extra_headers);
+    }
+
+    /**
+     * Sends the request to an absolute URL. `$endpoint` is only the log label.
+     *
+     * @return array|WP_Error
+     */
+    private function send_request(string $url, string $api_key, string $method, string $endpoint, array $data = [], array $extra_headers = [])
+    {
         $headers = array_merge([
             'Content-Type' => 'application/json',
             'x-api-key'       => $api_key,
@@ -153,6 +163,19 @@ class BlueX_API_Client
         return $this->make_request('POST', $endpoint, $data, $extra_headers, true, $userData);
     }
 
+    /**
+     * Get pricing v2: pickup points and home delivery in a single quote.
+     *
+     * @param array $payload Body built by WC_BlueX_Pudo_Pricing_V2::build_payload().
+     * @return array|WP_Error Decoded response ({"rates": [...]}) or WP_Error.
+     */
+    public function get_pudo_pricing_v2(array $payload)
+    {
+        $url = WC_BlueX_Pudo_Pricing_V2::endpoint_for_base_path($this->get_base_url());
+
+        return $this->send_request($url, $this->get_api_key(), 'POST', WC_BlueX_Pudo_Pricing_V2::PATH, $payload);
+    }
+
 
     /**
      * Get geolocation details for a comuna.
@@ -223,7 +246,13 @@ class BlueX_API_Client
                 'accountName' => $this->settings_handler->get_account_name(),
             ],
         ];
-        return $this->make_request('POST', $endpoint, $data);
+        $response = $this->make_request('POST', $endpoint, $data);
+
+        if (class_exists('WC_BlueX_Status_Facts')) {
+            WC_BlueX_Status_Facts::forget_blue();
+        }
+
+        return $response;
     }
 
     /**

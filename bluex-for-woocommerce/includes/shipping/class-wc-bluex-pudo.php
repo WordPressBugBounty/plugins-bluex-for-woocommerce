@@ -20,6 +20,8 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+require_once dirname(__DIR__) . '/class-bluex-pudo-selection-state.php';
+
 class WC_BlueX_Pudo extends WC_Shipping_Method
 {
 	/** @var bool Prevent a later package success from hiding an earlier package failure in the same request. */
@@ -116,13 +118,17 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			return;
 		}
 
-		$selected = $this->get_selected_agency();
+		$selected = $this->get_selected_agency($package);
 		$is_selected = $selected['agency_id'] !== '';
 		$agency_id = $selected['agency_id'];
 		$agency_name = $selected['agency_name'];
 		$agency_address = $selected['agency_address'];
 
-		if (!$is_selected) {
+		// Pricing v2 already quotes every pickup point, so the nearest one comes from the same quote.
+		$nearest = false;
+		if (!$is_selected && WC_BlueX_Pudo_Widget_V2::is_active()) {
+			$nearest = true;
+		} elseif (!$is_selected) {
 			$from_district = 'SCL';
 			$settings = WC_Correios_Settings::get_instance();
 			$settings_data = $settings->get_settings();
@@ -165,7 +171,15 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			$agency_address = $this->get_nearby_agency_address($agency);
 		}
 
-		$quoted_shipping = $this->get_quoted_pudo_shipping($package, $agency_id);
+		$quoted_shipping = $this->get_quoted_pudo_shipping($package, $agency_id, $nearest);
+		if ($nearest && $quoted_shipping && !empty($quoted_shipping->agencyId)) {
+			$agency_id = sanitize_text_field((string) $quoted_shipping->agencyId);
+			$agency_name = sanitize_text_field((string) $quoted_shipping->agencyName);
+			$agency_address = sanitize_text_field((string) $quoted_shipping->agencyAddress);
+		} elseif ($nearest) {
+			$quoted_shipping = null;
+		}
+		$quote_signature = WC_Bluex_Pudo_Selection_State::quote_signature($package, $agency_id);
 		$quote_is_current = true;
 		if (!$quoted_shipping) {
 			// Keep the chosen method stable during a transient pricing failure. The
@@ -174,7 +188,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			if (!$is_selected) {
 				return;
 			}
-			$quoted_shipping = $this->get_last_successful_quote();
+			$quoted_shipping = $this->get_last_successful_quote($quote_signature);
 			if (!$quoted_shipping) {
 				return;
 			}
@@ -183,12 +197,13 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 		}
 
 		if ($quote_is_current) {
-			$this->remember_successful_quote($quoted_shipping);
+			$this->remember_successful_quote($quoted_shipping, $quote_signature);
 		}
 		if (WC()->session) {
 			WC()->session->set(
 				'bluex_pudo_selected_quote_valid',
-				$is_selected && $quote_is_current && !self::$selected_quote_failed_this_request
+				$is_selected && $quote_is_current && !self::$selected_quote_failed_this_request &&
+				WC_Bluex_Pudo_Selection_State::is_complete_destination($package['destination'] ?? array())
 			);
 		}
 
@@ -215,7 +230,8 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 		}
 
 		$cost = $this->normalize_quoted_cost($quoted_shipping->Valor);
-		$cost += (float) $this->get_fee($this->fee, $cost);
+		// Whole pesos, as the widget shows them (2403 net + 19% = 2859.57 -> 2860).
+		$cost = round($cost + (float) $this->get_fee($this->fee, $cost));
 		$label = $agency_name !== '' ? $this->title . ' - ' . $agency_name : $this->title;
 
 		$this->add_rate(array(
@@ -227,7 +243,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	}
 
 	/** Persist the small successful quote needed for a safe display fallback. */
-	private function remember_successful_quote($shipping)
+	private function remember_successful_quote($shipping, $signature)
 	{
 		if (!WC()->session || !is_object($shipping)) {
 			return;
@@ -237,22 +253,27 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			'PrazoEntrega'   => (string) $shipping->PrazoEntrega,
 			'nameService'    => (string) ($shipping->nameService ?? ''),
 			'isShipmentFree' => !empty($shipping->isShipmentFree),
+			'signature'      => $signature,
 		));
 	}
 
 	/**
 	 * Rehydrate a display-only fallback. Order creation remains blocked while
-	 * bluex_pudo_selected_quote_valid is false.
+	 * bluex_pudo_selected_quote_valid is false. A quote saved for a different cart
+	 * or point is not reused; one saved before signatures existed still is.
 	 *
 	 * @return object|null
 	 */
-	private function get_last_successful_quote()
+	private function get_last_successful_quote($signature)
 	{
 		if (!WC()->session) {
 			return null;
 		}
 		$quote = WC()->session->get('bluex_pudo_last_successful_quote', array());
 		if (!is_array($quote) || !isset($quote['Valor'], $quote['PrazoEntrega'])) {
+			return null;
+		}
+		if (isset($quote['signature']) && !hash_equals((string) $quote['signature'], (string) $signature)) {
 			return null;
 		}
 		return (object) array(
@@ -267,16 +288,22 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	}
 
 	/**
-	 * Return only a server-validated shopper selection.
+	 * Return only a server-validated shopper selection made for this package's destination.
 	 *
+	 * @param array $package Shipping package.
 	 * @return array
 	 */
-	private function get_selected_agency()
+	private function get_selected_agency(array $package = array())
 	{
 		$empty = array('agency_id' => '', 'agency_name' => '', 'agency_address' => '');
 		if (!WC()->session) {
 			return $empty;
 		}
+
+		WC_Bluex_Pudo_Selection_State::invalidate_if_destination_changed(
+			WC()->session,
+			$package['destination'] ?? array()
+		);
 
 		$agency_id = sanitize_text_field((string) WC()->session->get('bluex_agency_id', ''));
 		$validated_id = sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', ''));
@@ -316,15 +343,72 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	 * @param array $package Shipping package.
 	 * @return object|null
 	 */
-	private function get_quoted_pudo_shipping($package, $agency_id)
+	private function get_quoted_pudo_shipping($package, $agency_id, $nearest = false)
+	{
+		return self::quote_point($package, $agency_id, $nearest, $this->id, $this->instance_id);
+	}
+
+	/**
+	 * Whether the point can be quoted for the cart as it stands (widget v2 only).
+	 * A point Blue does not quote would drop the PUDO rate once committed, so it is checked first.
+	 *
+	 * @param string $agency_id   Candidate point, already validated.
+	 * @param array  $destination Destination the shopper just submitted, when WooCommerce has not stored it yet.
+	 * @return bool
+	 */
+	public static function selected_point_is_quotable($agency_id, array $destination = array())
+	{
+		if (!class_exists('WC_BlueX_Pudo_Widget_V2') || !WC_BlueX_Pudo_Widget_V2::is_active()) {
+			return true;
+		}
+		if (!function_exists('WC') || !WC() || !WC()->cart) {
+			return true;
+		}
+		$packages = WC()->cart->get_shipping_packages();
+		$package  = is_array($packages) ? reset($packages) : false;
+		if (!is_array($package) || empty($package['contents'])) {
+			return true;
+		}
+		$package['destination'] = array_merge(
+			(array) ($package['destination'] ?? array()),
+			array_filter($destination, function ($value) {
+				return is_scalar($value) && trim((string) $value) !== '';
+			})
+		);
+		if (null !== self::quote_point($package, $agency_id)) {
+			return true;
+		}
+
+		if (function_exists('bluex_log')) {
+			bluex_log('warning', 'PUDO point has no quote: ' . wp_json_encode(array(
+				'agency_id' => (string) $agency_id,
+				'state'     => (string) ($package['destination']['state'] ?? ''),
+				'city'      => (string) ($package['destination']['city'] ?? ''),
+			)));
+		}
+		return false;
+	}
+
+	/**
+	 * @param array  $package     Shipping package.
+	 * @param string $agency_id   Point to quote.
+	 * @param bool   $nearest     Quote the closest point instead.
+	 * @param string $method_id   Shipping method id.
+	 * @param int    $instance_id Shipping zone instance.
+	 * @return object|null
+	 */
+	public static function quote_point($package, $agency_id, $nearest = false, $method_id = 'bluex-pudo', $instance_id = 0)
 	{
 		if (!class_exists('WC_Correios_Webservice')) {
 			return null;
 		}
 
-		$api = new WC_Correios_Webservice($this->id, $this->instance_id);
+		$api = new WC_Correios_Webservice($method_id, $instance_id);
 		$api->set_service('EX');
 		$api->set_agency_id($agency_id);
+		if ($nearest) {
+			$api->set_nearest_pudo(true);
+		}
 		$api->set_package($package);
 
 		if (isset($package['destination']['postcode'])) {
@@ -345,7 +429,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 			return null;
 		}
 
-		$cost = $this->normalize_quoted_cost($shipping->Valor);
+		$cost = self::normalize_quoted_cost($shipping->Valor);
 		if (empty($shipping->isShipmentFree) && 0 === intval($cost)) {
 			return null;
 		}
@@ -359,7 +443,7 @@ class WC_BlueX_Pudo extends WC_Shipping_Method
 	 * @param mixed $value Raw pricing response value.
 	 * @return float
 	 */
-	private function normalize_quoted_cost($value)
+	private static function normalize_quoted_cost($value)
 	{
 		if (function_exists('wc_correios_normalizePrice')) {
 			return (float) wc_correios_normalizePrice(esc_attr((string) $value));

@@ -32,6 +32,9 @@ class WC_Correios_Save_Settings_Endpoint
             $settings_data['noBlueStatus'] = $request->get_param('noBlueStatus');
             $settings_data['districtCode'] = $request->get_param('districtCode');
             $settings_data['pudoEnable'] = $request->get_param('pudoEnable');
+            if (null !== $request->get_param('pudoWidgetVersion')) {
+                $settings_data['pudoWidgetVersion'] = WC_Correios_Settings::sanitize_pudo_widget_version($request->get_param('pudoWidgetVersion'));
+            }
             $settings_data['districtsEnable'] = $request->get_param('districtsEnable');
             $settings_data['active_logs'] = $request->get_param('active_logs');
 

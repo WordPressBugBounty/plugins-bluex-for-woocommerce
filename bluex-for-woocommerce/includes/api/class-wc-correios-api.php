@@ -20,7 +20,7 @@ class WC_Correios_API {
     public function __construct() {
         // Include endpoint files
         $this->include_endpoints();
-        
+
         $this->register_routes();
     }
 
@@ -42,6 +42,17 @@ class WC_Correios_API {
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-get-logs.php';
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-correios-delete-logs.php';
         require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-bluex-shipping-zones-automation.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-bluex-integration-setup.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-bluex-integration-auth-endpoint.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-order-check.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-checkout.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-checks.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-progress.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-facts.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-orders.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-test-order.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/status/class-wc-bluex-status-report.php';
+        require_once WC_Correios::get_plugin_path() . 'includes/api/endpoints/class-wc-bluex-integration-status-endpoint.php';
     }
 
     /**
@@ -136,6 +147,18 @@ class WC_Correios_API {
         // Shipping zones automation endpoints
         $automation_endpoint = new WC_BlueX_Shipping_Zones_Automation_Endpoint();
         $automation_endpoint->register_routes();
+
+        // Post-integration setup steps (defaults + zones)
+        $integration_setup_endpoint = new WC_BlueX_Integration_Setup_Endpoint();
+        $integration_setup_endpoint->register_routes();
+
+        // wc-auth handshake (start, status, callback)
+        $integration_auth_endpoint = new WC_BlueX_Integration_Auth_Endpoint();
+        $integration_auth_endpoint->register_routes();
+
+        // "Estado de tienda" panel
+        $integration_status_endpoint = new WC_BlueX_Integration_Status_Endpoint();
+        $integration_status_endpoint->register_routes();
     }
 
     /**
@@ -147,4 +170,4 @@ class WC_Correios_API {
         // return current_user_can('manage_woocommerce');
         return true;
     }
-} 
+}

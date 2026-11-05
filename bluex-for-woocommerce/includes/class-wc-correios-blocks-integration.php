@@ -23,7 +23,7 @@ class WC_Correios_Blocks_Integration
 	 *
 	 * @var string
 	 */
-	private $script_version = '1.3.11';
+	private $script_version = '1.4.5';
 
 	/**
 	 * Constructor
@@ -44,11 +44,6 @@ class WC_Correios_Blocks_Integration
 		// Register Store API extension for PUDO agency data (read + write).
 		add_action('woocommerce_blocks_loaded', array($this, 'register_store_api_extension'));
 		add_action('woocommerce_blocks_loaded', array($this, 'register_store_api_update_callback'));
-
-		// WooCommerce 9+ fires this after persisting the shopper's shipping choice
-		// and before recalculating totals. Keeping cleanup inside that authoritative
-		// request avoids a second cart response racing the selected shipping rate.
-		add_action('woocommerce_store_api_cart_select_shipping_rate', array($this, 'handle_store_api_shipping_rate_selection'), 10, 3);
 
 		// Persist agency data from the request / session into order meta.
 		add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'update_order_from_store_api_request'), 10, 2);
@@ -331,56 +326,54 @@ class WC_Correios_Blocks_Integration
 					? sanitize_text_field((string) $data['agency_id'])
 					: '';
 
-				if ($agency_id !== '') {
-					$destination = array(
-						'city'  => isset($data['agency_city']) && is_scalar($data['agency_city'])
-							? sanitize_text_field((string) $data['agency_city'])
-							: '',
-						'state' => isset($data['agency_state']) && is_scalar($data['agency_state'])
-							? sanitize_text_field((string) $data['agency_state'])
-							: '',
-					);
-					$validated = WC_Bluex_Pudo_Agency_Validator::validate($agency_id, $destination);
-					if (is_wp_error($validated)) {
-						$this->clear_pudo_agency_session();
-						if (class_exists('\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {
-							throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
-								$validated->get_error_code(),
-								$validated->get_error_message(),
-								400
-							);
-						}
-						throw new Exception($validated->get_error_message());
-					}
-
-					WC()->session->set('bluex_agency_id', $validated['agency_id']);
-					WC()->session->set('bluex_agency_validated_id', $validated['agency_id']);
-					WC()->session->set('bluex_pudo_selected', true);
-					WC()->session->set('bluex_agency_name', $validated['agency_name']);
-					WC()->session->set('bluex_agency_address', $validated['agency_address']);
-					WC()->session->set('bluex_agency_city', $validated['agency_city']);
-					WC()->session->set('bluex_agency_state', $validated['agency_state']);
-					WC()->session->set('bluex_agency_region_code', $validated['agency_region_code']);
-					WC()->session->set('bluex_agency_district_code', $validated['agency_district_code']);
-					WC()->session->set('bluex_pudo_selected_quote_valid', false);
-				} else {
-					$selected_rate_id = isset($data['selected_rate_id']) && is_scalar($data['selected_rate_id'])
-						? sanitize_text_field((string) $data['selected_rate_id'])
-						: '';
-					$package_id = array_key_exists('package_id', $data) && is_scalar($data['package_id'])
-						? sanitize_text_field((string) $data['package_id'])
-						: null;
-
-					// Compatibility path for WooCommerce 6-8. The frontend waits for
-					// the official selection request to finish; the server independently
-					// confirms that the requested target is already the chosen method.
-					// A stale or forged cleanup becomes a no-op.
-					if (!$this->is_confirmed_non_pudo_choice($selected_rate_id, $package_id)) {
-						return;
-					}
-					$this->clear_pudo_agency_session();
+				// A request without an agency (e.g. an old client cleaning up after a
+				// method switch) changes nothing: the confirmed point stays so it is
+				// still selected when the shopper comes back to PUDO.
+				if ($agency_id === '') {
+					return;
 				}
 
+				$customer_destination = WC_Bluex_Pudo_Selection_State::customer_destination();
+				WC_Bluex_Pudo_Selection_State::invalidate_if_destination_changed(WC()->session, $customer_destination);
+				$destination = array(
+					'city'  => isset($data['agency_city']) && is_scalar($data['agency_city'])
+						? sanitize_text_field((string) $data['agency_city'])
+						: '',
+					'state' => isset($data['agency_state']) && is_scalar($data['agency_state'])
+						? sanitize_text_field((string) $data['agency_state'])
+						: '',
+				);
+				$validated = WC_Bluex_Pudo_Agency_Validator::validate($agency_id, $destination);
+				if (is_wp_error($validated)) {
+					if (class_exists('\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {
+						throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+							$validated->get_error_code(),
+							$validated->get_error_message(),
+							400
+						);
+					}
+					throw new Exception($validated->get_error_message());
+				}
+				if (class_exists('WC_BlueX_Pudo') && !WC_BlueX_Pudo::selected_point_is_quotable($validated['agency_id'])) {
+					$message = __('No pudimos obtener la tarifa de este punto Blue Express. Elige otro punto o intenta nuevamente.', 'woocommerce-correios');
+					if (class_exists('\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {
+						throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException('bluex_pudo_quote_unavailable', $message, 400);
+					}
+					throw new Exception($message);
+				}
+
+				WC()->session->set('bluex_agency_id', $validated['agency_id']);
+				WC()->session->set('bluex_agency_validated_id', $validated['agency_id']);
+				WC()->session->set('bluex_pudo_selected', true);
+				WC()->session->set('bluex_agency_name', $validated['agency_name']);
+				WC()->session->set('bluex_agency_address', $validated['agency_address']);
+				WC()->session->set('bluex_agency_city', $validated['agency_city']);
+				WC()->session->set('bluex_agency_state', $validated['agency_state']);
+				WC()->session->set('bluex_pudo_selected_quote_valid', false);
+				WC_Bluex_Pudo_Selection_State::remember_destination(
+					WC()->session,
+					$customer_destination
+				);
 				// Invalidate WC's shipping rate cache so the automatic recalc
 				// that the /cart/extensions endpoint runs after this callback
 				// picks up fresh session values. The dynamic LABEL is applied
@@ -394,105 +387,6 @@ class WC_Correios_Blocks_Integration
 				$this->invalidate_shipping_rate_cache();
 			},
 		));
-	}
-
-	/**
-	 * Clear PUDO state after WooCommerce has authoritatively selected shipping.
-	 *
-	 * WooCommerce 9.0+ invokes this action from the select-shipping-rate route
-	 * after updating `chosen_shipping_methods` and before `calculate_totals()`.
-	 * The handler never writes the chosen method itself. In multi-package carts,
-	 * the global agency is retained while any package still uses PUDO.
-	 *
-	 * @param string|null $package_id Selected package, or null when all packages changed.
-	 * @param string      $rate_id    Selected Store API rate ID.
-	 * @param mixed       $request    Store API request (unused).
-	 */
-	public function handle_store_api_shipping_rate_selection($package_id, $rate_id, $request = null)
-	{
-		unset($request);
-
-		if (!$this->is_confirmed_non_pudo_choice($rate_id, $package_id)) {
-			return;
-		}
-
-		$chosen_methods = (array) WC()->session->get('chosen_shipping_methods', array());
-		foreach ($chosen_methods as $chosen_rate_id) {
-			if ($this->is_pudo_rate_id($chosen_rate_id)) {
-				return;
-			}
-		}
-
-		$this->clear_pudo_agency_session();
-		$this->invalidate_shipping_rate_cache();
-	}
-
-	/**
-	 * Clear every PUDO-only session value without touching the customer.
-	 */
-	private function clear_pudo_agency_session()
-	{
-		WC()->session->__unset('bluex_agency_id');
-		WC()->session->__unset('bluex_agency_validated_id');
-		WC()->session->__unset('bluex_pudo_selected');
-		WC()->session->__unset('bluex_agency_name');
-		WC()->session->__unset('bluex_agency_address');
-		WC()->session->__unset('bluex_agency_city');
-		WC()->session->__unset('bluex_agency_state');
-		WC()->session->__unset('bluex_agency_region_code');
-		WC()->session->__unset('bluex_agency_district_code');
-		WC()->session->__unset('bluex_pudo_selected_quote_valid');
-		WC()->session->__unset('bluex_pudo_last_successful_quote');
-	}
-
-	/**
-	 * Determine whether WooCommerce already stores the intended non-PUDO choice.
-	 *
-	 * This reads only `chosen_shipping_methods`, which is available before shipping
-	 * packages are recalculated. It deliberately never trusts the client enough to
-	 * write a method into the session.
-	 *
-	 * @param mixed $rate_id    Store API rate ID selected by the shopper.
-	 * @param mixed $package_id Store API package ID, or null for all packages.
-	 * @return bool Whether the target is the current authoritative choice.
-	 */
-	private function is_confirmed_non_pudo_choice($rate_id, $package_id = null)
-	{
-		if (!is_scalar($rate_id) || !WC()->session) {
-			return false;
-		}
-
-		$rate_id = sanitize_text_field((string) $rate_id);
-		if ($rate_id === '' || $this->is_pudo_rate_id($rate_id)) {
-			return false;
-		}
-
-		$chosen_methods = (array) WC()->session->get('chosen_shipping_methods', array());
-		if ($package_id !== null) {
-			if (!is_scalar($package_id)) {
-				return false;
-			}
-			$package_id = sanitize_text_field((string) $package_id);
-			return array_key_exists($package_id, $chosen_methods) && (string) $chosen_methods[$package_id] === $rate_id;
-		}
-
-		return in_array($rate_id, array_map('strval', $chosen_methods), true);
-	}
-
-	/**
-	 * Check a Store API rate ID without accepting similarly prefixed methods.
-	 *
-	 * @param mixed $rate_id Store API rate ID.
-	 * @return bool
-	 */
-	private function is_pudo_rate_id($rate_id)
-	{
-		if (!is_scalar($rate_id)) {
-			return false;
-		}
-
-		$rate_id = sanitize_text_field((string) $rate_id);
-		return $rate_id === 'bluex-pudo' || strpos($rate_id, 'bluex-pudo:') === 0;
 	}
 
 	/**
@@ -712,7 +606,7 @@ class WC_Correios_Blocks_Integration
 	private function enqueue_pudo_script()
 	{
 		$configData = get_option('woocommerce_correios-integration_settings');
-		
+
 		// Only if PUDO is enabled
 		if (!isset($configData['pudoEnable']) || $configData['pudoEnable'] !== "yes") {
 			return;
@@ -734,10 +628,13 @@ class WC_Correios_Blocks_Integration
 			true
 		);
 
+		// Shared core of the widget v2 (no-op while v1 is selected).
+		WC_BlueX_Pudo_Widget_V2::enqueue_core($this->script_version);
+
 		wp_enqueue_script(
 			'bluex-blocks-pudo-integration',
 			$script_url,
-			array('wp-data', 'wp-element', 'wp-hooks', 'wc-blocks-checkout', 'bluex-pudo-widget-security'),
+			array_merge(array('wp-data', 'wp-element', 'wp-hooks', 'wc-blocks-checkout', 'bluex-pudo-widget-security'), WC_BlueX_Pudo_Widget_V2::script_dependencies()),
 			$this->script_version,
 			true
 		);
@@ -763,12 +660,9 @@ class WC_Correios_Blocks_Integration
 				'dev' => 'https://widget-pudo.dev.blue.cl'
 			),
 			'base_path_url' => $basePathUrl,
-			// WooCommerce 9.0 documents the post-selection Store API action.
-			// Older versions use the serialized client fallback instead.
-			'server_side_shipping_cleanup' => defined('WC_VERSION') && version_compare(WC_VERSION, '9.0.0', '>=')
 		);
 
-		wp_localize_script('bluex-blocks-pudo-integration', 'bluex_checkout_params', $params);
+		wp_localize_script('bluex-blocks-pudo-integration', 'bluex_checkout_params', WC_BlueX_Pudo_Widget_V2::filter_params($params));
 	}
 
 	/**
@@ -777,7 +671,7 @@ class WC_Correios_Blocks_Integration
 	private function enqueue_city_select_script()
 	{
 		$configData = get_option('woocommerce_correios-integration_settings');
-		
+
 		// Only if Districts are enabled
 		if (!isset($configData['districtsEnable']) || $configData['districtsEnable'] !== "yes") {
 			return;
@@ -798,9 +692,9 @@ class WC_Correios_Blocks_Integration
 		// We need to instantiate WC_States_Places_Bx to get places easily, or replicate logic.
 		// Since the class is available, let's try to use it if possible, or just replicate the loading logic.
 		// Replicating is safer to avoid side effects of __construct.
-		
+
 		$places = array();
-		
+
 		// Use the clean list of communes for Chile
 		if (!function_exists('bluex_get_communes_by_region')) {
 			$communes_file = WC_Correios::get_plugin_path() . '/includes/data/chile-communes.php';
@@ -812,7 +706,7 @@ class WC_Correios_Blocks_Integration
 		if (function_exists('bluex_get_communes_by_region')) {
 			$communes_by_region = bluex_get_communes_by_region();
 			$cl_places = array();
-			
+
 			foreach ($communes_by_region as $region_code => $communes) {
 				$cl_places[$region_code] = array_map(function($commune) {
 					return $commune['name'];
@@ -821,7 +715,7 @@ class WC_Correios_Blocks_Integration
 		} else {
 			// Fallback to old method if new file not found
 			$places_file = WC_Correios::get_plugin_path() . '/includes/districts/places/CL.php';
-			
+
 			if (file_exists($places_file)) {
 				global $places; // Ensure we capture it
 				include $places_file;

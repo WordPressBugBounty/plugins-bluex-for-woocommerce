@@ -7053,11 +7053,11 @@ function requireClient() {
   return client;
 }
 var clientExports = requireClient();
-const root = "_root_1wcjp_1";
-const appLayout = "_appLayout_1wcjp_11";
-const content = "_content_1wcjp_24";
-const developerTools = "_developerTools_1wcjp_31";
-const styles$e = {
+const root = "_root_6xaj1_1";
+const appLayout = "_appLayout_6xaj1_21";
+const content = "_content_6xaj1_47";
+const developerTools = "_developerTools_6xaj1_61";
+const styles$i = {
   root,
   appLayout,
   content,
@@ -7139,7 +7139,7 @@ function requirePropTypes() {
 var propTypesExports = /* @__PURE__ */ requirePropTypes();
 const PropTypes = /* @__PURE__ */ getDefaultExportFromCjs(propTypesExports);
 const Loading = () => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$d.container, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: styles$h.container, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
         div.lds-ripple {
           scale: 4;
@@ -7204,7 +7204,7 @@ const Loading = () => {
 Loading.propTypes = {
   size: PropTypes.number
 };
-const styles$d = {
+const styles$h = {
   container: {
     display: "flex",
     flexDirection: "column",
@@ -7221,10 +7221,10 @@ const styles$d = {
   }
 };
 var isCheckBoxInput = (element) => element.type === "checkbox";
-var isDateObject = (value) => value instanceof Date;
-var isNullOrUndefined = (value) => value == null;
-const isObjectType = (value) => typeof value === "object";
-var isObject = (value) => !isNullOrUndefined(value) && !Array.isArray(value) && isObjectType(value) && !isDateObject(value);
+var isDateObject = (value2) => value2 instanceof Date;
+var isNullOrUndefined = (value2) => value2 == null;
+const isObjectType = (value2) => typeof value2 === "object";
+var isObject = (value2) => !isNullOrUndefined(value2) && !Array.isArray(value2) && isObjectType(value2) && !isDateObject(value2);
 var getEventValue = (event) => isObject(event) && event.target ? isCheckBoxInput(event.target) ? event.target.checked : event.target.value : event;
 var getNodeParentName = (name) => name.substring(0, name.search(/\.\d+(\.|$)/)) || name;
 var isNameInFieldArray = (names, name) => names.has(getNodeParentName(name));
@@ -7257,7 +7257,7 @@ function cloneObject(data) {
   }
   return copy;
 }
-var compact = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
+var compact = (value2) => Array.isArray(value2) ? value2.filter(Boolean) : [];
 var isUndefined = (val) => val === void 0;
 var get = (object, path, defaultValue) => {
   if (!path || !isObject(object)) {
@@ -7266,17 +7266,17 @@ var get = (object, path, defaultValue) => {
   const result = compact(path.split(/[,[\].]+?/)).reduce((result2, key) => isNullOrUndefined(result2) ? result2 : result2[key], object);
   return isUndefined(result) || result === object ? isUndefined(object[path]) ? defaultValue : object[path] : result;
 };
-var isBoolean = (value) => typeof value === "boolean";
-var isKey = (value) => /^\w*$/.test(value);
+var isBoolean = (value2) => typeof value2 === "boolean";
+var isKey = (value2) => /^\w*$/.test(value2);
 var stringToPath = (input2) => compact(input2.replace(/["|']|\]/g, "").split(/\.|\[/));
-var set = (object, path, value) => {
+var set = (object, path, value2) => {
   let index = -1;
   const tempPath = isKey(path) ? [path] : stringToPath(path);
   const length = tempPath.length;
   const lastIndex = length - 1;
   while (++index < length) {
     const key = tempPath[index];
-    let newValue = value;
+    let newValue = value2;
     if (index !== lastIndex) {
       const objValue = object[key];
       newValue = isObject(objValue) || Array.isArray(objValue) ? objValue : !isNaN(+tempPath[index + 1]) ? [] : {};
@@ -7328,13 +7328,13 @@ var getProxyFormState = (formState, control, localProxyFormState, isRoot = true)
   }
   return result;
 };
-var isEmptyObject = (value) => isObject(value) && !Object.keys(value).length;
+var isEmptyObject = (value2) => isObject(value2) && !Object.keys(value2).length;
 var shouldRenderFormState = (formStateData, _proxyFormState, updateFormState, isRoot) => {
   updateFormState(formStateData);
   const { name, ...formState } = formStateData;
   return isEmptyObject(formState) || Object.keys(formState).length >= Object.keys(_proxyFormState).length || Object.keys(formState).find((key) => _proxyFormState[key] === VALIDATION_MODE.all);
 };
-var convertToArrayPayload = (value) => Array.isArray(value) ? value : [value];
+var convertToArrayPayload = (value2) => Array.isArray(value2) ? value2 : [value2];
 function useSubscribe(props) {
   const _props = React.useRef(props);
   _props.current = props;
@@ -7347,7 +7347,7 @@ function useSubscribe(props) {
     };
   }, [props.disabled]);
 }
-var isString = (value) => typeof value === "string";
+var isString = (value2) => typeof value2 === "string";
 var generateWatchOutput = (names, _names, formValues, isGlobal, defaultValue) => {
   if (isString(names)) {
     isGlobal && _names.watch.add(names);
@@ -7376,9 +7376,9 @@ var getValidationModes = (mode) => ({
 var isWatched = (name, _names, isBlurEvent) => !isBlurEvent && (_names.watchAll || _names.watch.has(name) || [..._names.watch].some((watchName) => name.startsWith(watchName) && /^\.\w+/.test(name.slice(watchName.length))));
 const iterateFieldsByAction = (fields, action, fieldsNames, abortEarly) => {
   for (const key of fieldsNames || Object.keys(fields)) {
-    const field = get(fields, key);
-    if (field) {
-      const { _f, ...currentField } = field;
+    const field2 = get(fields, key);
+    if (field2) {
+      const { _f, ...currentField } = field2;
       if (_f) {
         if (_f.refs && _f.refs[0] && action(_f.refs[0], key) && !abortEarly) {
           return true;
@@ -7405,17 +7405,17 @@ var updateFieldArrayRootError = (errors, error2, name) => {
   return errors;
 };
 var isFileInput = (element) => element.type === "file";
-var isFunction = (value) => typeof value === "function";
-var isHTMLElement = (value) => {
+var isFunction = (value2) => typeof value2 === "function";
+var isHTMLElement = (value2) => {
   if (!isWeb) {
     return false;
   }
-  const owner = value ? value.ownerDocument : 0;
-  return value instanceof (owner && owner.defaultView ? owner.defaultView.HTMLElement : HTMLElement);
+  const owner = value2 ? value2.ownerDocument : 0;
+  return value2 instanceof (owner && owner.defaultView ? owner.defaultView.HTMLElement : HTMLElement);
 };
-var isMessage = (value) => isString(value);
+var isMessage = (value2) => isString(value2);
 var isRadioInput = (element) => element.type === "radio";
-var isRegex = (value) => value instanceof RegExp;
+var isRegex = (value2) => value2 instanceof RegExp;
 const defaultResult = {
   value: false,
   isValid: false
@@ -7455,8 +7455,8 @@ var getValueAndMessage = (validationData) => isObject(validationData) && !isRege
   value: validationData,
   message: ""
 };
-var validateField = async (field, disabledFieldNames, formValues, validateAllFieldCriteria, shouldUseNativeValidation, isFieldArray) => {
-  const { ref, refs, required, maxLength, minLength, min, max, pattern, validate, name, valueAsNumber, mount } = field._f;
+var validateField = async (field2, disabledFieldNames, formValues, validateAllFieldCriteria, shouldUseNativeValidation, isFieldArray) => {
+  const { ref, refs, required, maxLength, minLength, min, max, pattern, validate, name, valueAsNumber, mount } = field2._f;
   const inputValue = get(formValues, name);
   if (!mount || disabledFieldNames.has(name)) {
     return {};
@@ -7484,8 +7484,8 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
     };
   };
   if (isFieldArray ? !Array.isArray(inputValue) || !inputValue.length : required && (!isRadioOrCheckbox2 && (isEmpty || isNullOrUndefined(inputValue)) || isBoolean(inputValue) && !inputValue || isCheckBox && !getCheckboxValue(refs).isValid || isRadio && !getRadioValue(refs).isValid)) {
-    const { value, message: message2 } = isMessage(required) ? { value: !!required, message: required } : getValueAndMessage(required);
-    if (value) {
+    const { value: value2, message: message2 } = isMessage(required) ? { value: !!required, message: required } : getValueAndMessage(required);
+    if (value2) {
       error2[name] = {
         type: INPUT_VALIDATION_RULES.required,
         message: message2,
@@ -7636,9 +7636,9 @@ function unset(object, path) {
 }
 var createSubject = () => {
   let _observers = [];
-  const next = (value) => {
+  const next = (value2) => {
     for (const observer of _observers) {
-      observer.next && observer.next(value);
+      observer.next && observer.next(value2);
     }
   };
   const subscribe = (observer) => {
@@ -7661,7 +7661,7 @@ var createSubject = () => {
     unsubscribe
   };
 };
-var isPrimitive = (value) => isNullOrUndefined(value) || !isObjectType(value);
+var isPrimitive = (value2) => isNullOrUndefined(value2) || !isObjectType(value2);
 function deepEqual(object1, object2) {
   if (isPrimitive(object1) || isPrimitive(object2)) {
     return object1 === object2;
@@ -7731,7 +7731,7 @@ function getDirtyFieldsFromDefaultValues(data, formValues, dirtyFieldsFromValues
   return dirtyFieldsFromValues;
 }
 var getDirtyFields = (defaultValues, formValues) => getDirtyFieldsFromDefaultValues(defaultValues, formValues, markFieldsDirty(formValues));
-var getFieldValueAs = (value, { valueAsNumber, valueAsDate, setValueAs }) => isUndefined(value) ? value : valueAsNumber ? value === "" ? NaN : value ? +value : value : valueAsDate && isString(value) ? new Date(value) : setValueAs ? setValueAs(value) : value;
+var getFieldValueAs = (value2, { valueAsNumber, valueAsDate, setValueAs }) => isUndefined(value2) ? value2 : valueAsNumber ? value2 === "" ? NaN : value2 ? +value2 : value2 : valueAsDate && isString(value2) ? new Date(value2) : setValueAs ? setValueAs(value2) : value2;
 function getFieldValue(_f) {
   const ref = _f.ref;
   if (isFileInput(ref)) {
@@ -7741,7 +7741,7 @@ function getFieldValue(_f) {
     return getRadioValue(_f.refs).value;
   }
   if (isMultipleSelect(ref)) {
-    return [...ref.selectedOptions].map(({ value }) => value);
+    return [...ref.selectedOptions].map(({ value: value2 }) => value2);
   }
   if (isCheckBoxInput(ref)) {
     return getCheckboxValue(_f.refs).value;
@@ -7751,8 +7751,8 @@ function getFieldValue(_f) {
 var getResolverOptions = (fieldsNames, _fields, criteriaMode, shouldUseNativeValidation) => {
   const fields = {};
   for (const name of fieldsNames) {
-    const field = get(_fields, name);
-    field && set(fields, name, field._f);
+    const field2 = get(_fields, name);
+    field2 && set(fields, name, field2._f);
   }
   return {
     criteriaMode,
@@ -7776,9 +7776,9 @@ function schemaErrorLookup(errors, _fields, name) {
   const names = name.split(".");
   while (names.length) {
     const fieldName = names.join(".");
-    const field = get(_fields, fieldName);
+    const field2 = get(_fields, fieldName);
     const foundError = get(errors, fieldName);
-    if (field && !Array.isArray(field) && name !== fieldName) {
+    if (field2 && !Array.isArray(field2) && name !== fieldName) {
       return { name };
     }
     if (foundError && foundError.type) {
@@ -7935,11 +7935,11 @@ function createFormControl(props = {}) {
       isValid: false
     });
   };
-  const updateValidAndValue = (name, shouldSkipSetValueAs, value, ref) => {
-    const field = get(_fields, name);
-    if (field) {
-      const defaultValue = get(_formValues, name, isUndefined(value) ? get(_defaultValues, name) : value);
-      isUndefined(defaultValue) || ref && ref.defaultChecked || shouldSkipSetValueAs ? set(_formValues, name, shouldSkipSetValueAs ? defaultValue : getFieldValue(field._f)) : setFieldValue(name, defaultValue);
+  const updateValidAndValue = (name, shouldSkipSetValueAs, value2, ref) => {
+    const field2 = get(_fields, name);
+    if (field2) {
+      const defaultValue = get(_formValues, name, isUndefined(value2) ? get(_defaultValues, name) : value2);
+      isUndefined(defaultValue) || ref && ref.defaultChecked || shouldSkipSetValueAs ? set(_formValues, name, shouldSkipSetValueAs ? defaultValue : getFieldValue(field2._f)) : setFieldValue(name, defaultValue);
       _state.mount && _updateValid();
     }
   };
@@ -8022,16 +8022,16 @@ function createFormControl(props = {}) {
     valid: true
   }) => {
     for (const name in fields) {
-      const field = fields[name];
-      if (field) {
-        const { _f, ...fieldValue } = field;
+      const field2 = fields[name];
+      if (field2) {
+        const { _f, ...fieldValue } = field2;
         if (_f) {
           const isFieldArrayRoot = _names.array.has(_f.name);
-          const isPromiseFunction = field._f && hasPromiseValidation(field._f);
+          const isPromiseFunction = field2._f && hasPromiseValidation(field2._f);
           if (isPromiseFunction && _proxyFormState.validatingFields) {
             _updateIsValidating([name], true);
           }
-          const fieldError = await validateField(field, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation && !shouldOnlyCheckValid, isFieldArrayRoot);
+          const fieldError = await validateField(field2, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation && !shouldOnlyCheckValid, isFieldArrayRoot);
           if (isPromiseFunction && _proxyFormState.validatingFields) {
             _updateIsValidating([name]);
           }
@@ -8050,8 +8050,8 @@ function createFormControl(props = {}) {
   };
   const _removeUnmounted = () => {
     for (const name of _names.unMount) {
-      const field = get(_fields, name);
-      field && (field._f.refs ? field._f.refs.every((ref) => !live(ref)) : !live(field._f.ref)) && unregister(name);
+      const field2 = get(_fields, name);
+      field2 && (field2._f.refs ? field2._f.refs.every((ref) => !live(ref)) : !live(field2._f.ref)) && unregister(name);
     }
     _names.unMount = /* @__PURE__ */ new Set();
   };
@@ -8060,14 +8060,14 @@ function createFormControl(props = {}) {
     ..._state.mount ? _formValues : isUndefined(defaultValue) ? _defaultValues : isString(names) ? { [names]: defaultValue } : defaultValue
   }, isGlobal, defaultValue);
   const _getFieldArray = (name) => compact(get(_state.mount ? _formValues : _defaultValues, name, _options.shouldUnregister ? get(_defaultValues, name, []) : []));
-  const setFieldValue = (name, value, options = {}) => {
-    const field = get(_fields, name);
-    let fieldValue = value;
-    if (field) {
-      const fieldReference = field._f;
+  const setFieldValue = (name, value2, options = {}) => {
+    const field2 = get(_fields, name);
+    let fieldValue = value2;
+    if (field2) {
+      const fieldReference = field2._f;
       if (fieldReference) {
-        !fieldReference.disabled && set(_formValues, name, getFieldValueAs(value, fieldReference));
-        fieldValue = isHTMLElement(fieldReference.ref) && isNullOrUndefined(value) ? "" : value;
+        !fieldReference.disabled && set(_formValues, name, getFieldValueAs(value2, fieldReference));
+        fieldValue = isHTMLElement(fieldReference.ref) && isNullOrUndefined(value2) ? "" : value2;
         if (isMultipleSelect(fieldReference.ref)) {
           [...fieldReference.ref.options].forEach((optionRef) => optionRef.selected = fieldValue.includes(optionRef.value));
         } else if (fieldReference.refs) {
@@ -8092,18 +8092,18 @@ function createFormControl(props = {}) {
     (options.shouldDirty || options.shouldTouch) && updateTouchAndDirty(name, fieldValue, options.shouldTouch, options.shouldDirty, true);
     options.shouldValidate && trigger(name);
   };
-  const setValues = (name, value, options) => {
-    for (const fieldKey in value) {
-      const fieldValue = value[fieldKey];
+  const setValues = (name, value2, options) => {
+    for (const fieldKey in value2) {
+      const fieldValue = value2[fieldKey];
       const fieldName = `${name}.${fieldKey}`;
-      const field = get(_fields, fieldName);
-      (_names.array.has(name) || isObject(fieldValue) || field && !field._f) && !isDateObject(fieldValue) ? setValues(fieldName, fieldValue, options) : setFieldValue(fieldName, fieldValue, options);
+      const field2 = get(_fields, fieldName);
+      (_names.array.has(name) || isObject(fieldValue) || field2 && !field2._f) && !isDateObject(fieldValue) ? setValues(fieldName, fieldValue, options) : setFieldValue(fieldName, fieldValue, options);
     }
   };
-  const setValue = (name, value, options = {}) => {
-    const field = get(_fields, name);
+  const setValue = (name, value2, options = {}) => {
+    const field2 = get(_fields, name);
     const isFieldArray = _names.array.has(name);
-    const cloneValue = cloneObject(value);
+    const cloneValue = cloneObject(value2);
     set(_formValues, name, cloneValue);
     if (isFieldArray) {
       _subjects.array.next({
@@ -8118,7 +8118,7 @@ function createFormControl(props = {}) {
         });
       }
     } else {
-      field && !field._f && !isNullOrUndefined(cloneValue) ? setValues(name, cloneValue, options) : setFieldValue(name, cloneValue, options);
+      field2 && !field2._f && !isNullOrUndefined(cloneValue) ? setValues(name, cloneValue, options) : setFieldValue(name, cloneValue, options);
     }
     isWatched(name, _names) && _subjects.state.next({ ..._formState });
     _subjects.values.next({
@@ -8131,24 +8131,24 @@ function createFormControl(props = {}) {
     const target = event.target;
     let name = target.name;
     let isFieldValueUpdated = true;
-    const field = get(_fields, name);
-    const getCurrentFieldValue = () => target.type ? getFieldValue(field._f) : getEventValue(event);
+    const field2 = get(_fields, name);
+    const getCurrentFieldValue = () => target.type ? getFieldValue(field2._f) : getEventValue(event);
     const _updateIsFieldValueUpdated = (fieldValue) => {
       isFieldValueUpdated = Number.isNaN(fieldValue) || isDateObject(fieldValue) && isNaN(fieldValue.getTime()) || deepEqual(fieldValue, get(_formValues, name, fieldValue));
     };
-    if (field) {
+    if (field2) {
       let error2;
       let isValid;
       const fieldValue = getCurrentFieldValue();
       const isBlurEvent = event.type === EVENTS.BLUR || event.type === EVENTS.FOCUS_OUT;
-      const shouldSkipValidation = !hasValidation(field._f) && !_options.resolver && !get(_formState.errors, name) && !field._f.deps || skipValidation(isBlurEvent, get(_formState.touchedFields, name), _formState.isSubmitted, validationModeAfterSubmit, validationModeBeforeSubmit);
+      const shouldSkipValidation = !hasValidation(field2._f) && !_options.resolver && !get(_formState.errors, name) && !field2._f.deps || skipValidation(isBlurEvent, get(_formState.touchedFields, name), _formState.isSubmitted, validationModeAfterSubmit, validationModeBeforeSubmit);
       const watched = isWatched(name, _names, isBlurEvent);
       set(_formValues, name, fieldValue);
       if (isBlurEvent) {
-        field._f.onBlur && field._f.onBlur(event);
+        field2._f.onBlur && field2._f.onBlur(event);
         delayErrorCallback && delayErrorCallback(0);
-      } else if (field._f.onChange) {
-        field._f.onChange(event);
+      } else if (field2._f.onChange) {
+        field2._f.onChange(event);
       }
       const fieldState = updateTouchAndDirty(name, fieldValue, isBlurEvent, false);
       const shouldRender = !isEmptyObject(fieldState) || watched;
@@ -8180,7 +8180,7 @@ function createFormControl(props = {}) {
         }
       } else {
         _updateIsValidating([name], true);
-        error2 = (await validateField(field, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation))[name];
+        error2 = (await validateField(field2, _names.disabled, _formValues, shouldDisplayAllAssociatedErrors, _options.shouldUseNativeValidation))[name];
         _updateIsValidating([name]);
         _updateIsFieldValueUpdated(fieldValue);
         if (isFieldValueUpdated) {
@@ -8192,7 +8192,7 @@ function createFormControl(props = {}) {
         }
       }
       if (isFieldValueUpdated) {
-        field._f.deps && trigger(field._f.deps);
+        field2._f.deps && trigger(field2._f.deps);
         shouldRenderByError(name, isValid, error2, fieldState);
       }
     }
@@ -8214,8 +8214,8 @@ function createFormControl(props = {}) {
       validationResult = name ? !fieldNames.some((name2) => get(errors, name2)) : isValid;
     } else if (name) {
       validationResult = (await Promise.all(fieldNames.map(async (fieldName) => {
-        const field = get(_fields, fieldName);
-        return await executeBuiltInValidation(field && field._f ? { [fieldName]: field } : field);
+        const field2 = get(_fields, fieldName);
+        return await executeBuiltInValidation(field2 && field2._f ? { [fieldName]: field2 } : field2);
       }))).every(Boolean);
       !(!validationResult && !_formState.isValid) && _updateValid();
     } else {
@@ -8290,28 +8290,28 @@ function createFormControl(props = {}) {
     });
     !options.keepIsValid && _updateValid();
   };
-  const _updateDisabledField = ({ disabled, name, field, fields }) => {
-    if (isBoolean(disabled) && _state.mount || !!disabled || _names.disabled.has(name)) {
-      disabled ? _names.disabled.add(name) : _names.disabled.delete(name);
-      updateTouchAndDirty(name, getFieldValue(field ? field._f : get(fields, name)._f), false, false, true);
+  const _updateDisabledField = ({ disabled: disabled2, name, field: field2, fields }) => {
+    if (isBoolean(disabled2) && _state.mount || !!disabled2 || _names.disabled.has(name)) {
+      disabled2 ? _names.disabled.add(name) : _names.disabled.delete(name);
+      updateTouchAndDirty(name, getFieldValue(field2 ? field2._f : get(fields, name)._f), false, false, true);
     }
   };
   const register = (name, options = {}) => {
-    let field = get(_fields, name);
+    let field2 = get(_fields, name);
     const disabledIsDefined = isBoolean(options.disabled) || isBoolean(_options.disabled);
     set(_fields, name, {
-      ...field || {},
+      ...field2 || {},
       _f: {
-        ...field && field._f ? field._f : { ref: { name } },
+        ...field2 && field2._f ? field2._f : { ref: { name } },
         name,
         mount: true,
         ...options
       }
     });
     _names.mount.add(name);
-    if (field) {
+    if (field2) {
       _updateDisabledField({
-        field,
+        field: field2,
         disabled: isBoolean(options.disabled) ? options.disabled : _options.disabled,
         name
       });
@@ -8334,16 +8334,16 @@ function createFormControl(props = {}) {
       ref: (ref) => {
         if (ref) {
           register(name, options);
-          field = get(_fields, name);
+          field2 = get(_fields, name);
           const fieldRef = isUndefined(ref.value) ? ref.querySelectorAll ? ref.querySelectorAll("input,select,textarea")[0] || ref : ref : ref;
           const radioOrCheckbox = isRadioOrCheckbox(fieldRef);
-          const refs = field._f.refs || [];
-          if (radioOrCheckbox ? refs.find((option2) => option2 === fieldRef) : fieldRef === field._f.ref) {
+          const refs = field2._f.refs || [];
+          if (radioOrCheckbox ? refs.find((option2) => option2 === fieldRef) : fieldRef === field2._f.ref) {
             return;
           }
           set(_fields, name, {
             _f: {
-              ...field._f,
+              ...field2._f,
               ...radioOrCheckbox ? {
                 refs: [
                   ...refs.filter(live),
@@ -8356,9 +8356,9 @@ function createFormControl(props = {}) {
           });
           updateValidAndValue(name, false, void 0, fieldRef);
         } else {
-          field = get(_fields, name, {});
-          if (field._f) {
-            field._f.mount = false;
+          field2 = get(_fields, name, {});
+          if (field2._f) {
+            field2._f.mount = false;
           }
           (_options.shouldUnregister || options.shouldUnregister) && !(isNameInFieldArray(_names.array, name) && _state.action) && _names.unMount.add(name);
         }
@@ -8366,16 +8366,16 @@ function createFormControl(props = {}) {
     };
   };
   const _focusError = () => _options.shouldFocusError && iterateFieldsByAction(_fields, _focusInput, _names.mount);
-  const _disableForm = (disabled) => {
-    if (isBoolean(disabled)) {
-      _subjects.state.next({ disabled });
+  const _disableForm = (disabled2) => {
+    if (isBoolean(disabled2)) {
+      _subjects.state.next({ disabled: disabled2 });
       iterateFieldsByAction(_fields, (ref, name) => {
         const currentField = get(_fields, name);
         if (currentField) {
-          ref.disabled = currentField._f.disabled || disabled;
+          ref.disabled = currentField._f.disabled || disabled2;
           if (Array.isArray(currentField._f.refs)) {
             currentField._f.refs.forEach((inputRef) => {
-              inputRef.disabled = currentField._f.disabled || disabled;
+              inputRef.disabled = currentField._f.disabled || disabled2;
             });
           }
         }
@@ -8474,9 +8474,9 @@ function createFormControl(props = {}) {
       } else {
         if (isWeb && isUndefined(formValues)) {
           for (const name of _names.mount) {
-            const field = get(_fields, name);
-            if (field && field._f) {
-              const fieldReference = Array.isArray(field._f.refs) ? field._f.refs[0] : field._f.ref;
+            const field2 = get(_fields, name);
+            if (field2 && field2._f) {
+              const fieldReference = Array.isArray(field2._f.refs) ? field2._f.refs[0] : field2._f.ref;
               if (isHTMLElement(fieldReference)) {
                 const form2 = fieldReference.closest("form");
                 if (form2) {
@@ -8521,8 +8521,8 @@ function createFormControl(props = {}) {
   };
   const reset = (formValues, keepStateOptions) => _reset(isFunction(formValues) ? formValues(_formValues) : formValues, keepStateOptions);
   const setFocus = (name, options = {}) => {
-    const field = get(_fields, name);
-    const fieldReference = field && field._f;
+    const field2 = get(_fields, name);
+    const fieldReference = field2 && field2._f;
     if (fieldReference) {
       const fieldRef = fieldReference.refs ? fieldReference.refs[0] : fieldReference.ref;
       if (fieldRef.focus) {
@@ -8574,8 +8574,8 @@ function createFormControl(props = {}) {
       get _state() {
         return _state;
       },
-      set _state(value) {
-        _state = value;
+      set _state(value2) {
+        _state = value2;
       },
       get _defaultValues() {
         return _defaultValues;
@@ -8583,22 +8583,22 @@ function createFormControl(props = {}) {
       get _names() {
         return _names;
       },
-      set _names(value) {
-        _names = value;
+      set _names(value2) {
+        _names = value2;
       },
       get _formState() {
         return _formState;
       },
-      set _formState(value) {
-        _formState = value;
+      set _formState(value2) {
+        _formState = value2;
       },
       get _options() {
         return _options;
       },
-      set _options(value) {
+      set _options(value2) {
         _options = {
           ..._options,
-          ...value
+          ...value2
         };
       }
     },
@@ -8646,8 +8646,8 @@ function useForm(props = {}) {
   control._options = props;
   useSubscribe({
     subject: control._subjects.state,
-    next: (value) => {
-      if (shouldRenderFormState(value, control._proxyFormState, control._updateFormState)) {
+    next: (value2) => {
+      if (shouldRenderFormState(value2, control._proxyFormState, control._updateFormState)) {
         updateFormState({ ...control._formState });
       }
     }
@@ -8696,25 +8696,25 @@ function useForm(props = {}) {
   _formControl.current.formState = getProxyFormState(formState, control);
   return _formControl.current;
 }
-const toast = "_toast_kwt6m_1";
-const visible = "_visible_kwt6m_17";
-const hidden = "_hidden_kwt6m_22";
-const success = "_success_kwt6m_27";
-const error$1 = "_error_kwt6m_31";
-const info$1 = "_info_kwt6m_35";
-const warning = "_warning_kwt6m_39";
-const icon = "_icon_kwt6m_43";
-const message = "_message_kwt6m_64";
-const styles$c = {
+const toast = "_toast_1hd6m_1";
+const visible = "_visible_1hd6m_33";
+const hidden = "_hidden_1hd6m_43";
+const success = "_success_1hd6m_53";
+const error$2 = "_error_1hd6m_61";
+const info$1 = "_info_1hd6m_69";
+const warning$1 = "_warning_1hd6m_77";
+const icon$3 = "_icon_1hd6m_85";
+const message$1 = "_message_1hd6m_127";
+const styles$g = {
   toast,
   visible,
   hidden,
   success,
-  error: error$1,
+  error: error$2,
   info: info$1,
-  warning,
-  icon,
-  message
+  warning: warning$1,
+  icon: icon$3,
+  message: message$1
 };
 const Toast = ({ message: message2, type = "success", duration = 3e3, onClose }) => {
   const [visible2, setVisible] = reactExports.useState(true);
@@ -8730,105 +8730,180 @@ const Toast = ({ message: message2, type = "success", duration = 3e3, onClose })
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: `${styles$c.toast} ${styles$c[type]} ${visible2 ? styles$c.visible : styles$c.hidden}`,
+      className: `${styles$g.toast} ${styles$g[type]} ${visible2 ? styles$g.visible : styles$g.hidden}`,
       children: [
-        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "✓" }),
-        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "✕" }),
-        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "ℹ" }),
-        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$c.icon, children: "⚠" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$c.message, children: message2 })
+        type === "success" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$g.icon, children: "✓" }),
+        type === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$g.icon, children: "✕" }),
+        type === "info" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$g.icon, children: "ℹ" }),
+        type === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$g.icon, children: "⚠" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$g.message, children: message2 })
       ]
     }
   );
 };
-const label$1 = "_label_66y8x_1";
-const styles$b = {
-  label: label$1
+const row = "_row_7y3bj_1";
+const disabled = "_disabled_7y3bj_29";
+const input$2 = "_input_7y3bj_39";
+const track$1 = "_track_7y3bj_53";
+const label$4 = "_label_7y3bj_135";
+const help$1 = "_help_7y3bj_151";
+const styles$f = {
+  row,
+  disabled,
+  input: input$2,
+  track: track$1,
+  label: label$4,
+  help: help$1
 };
-const Label = ({ children }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$b.label, children });
-};
-const checkboxContainer = "_checkboxContainer_154vz_1";
-const checkboxInput = "_checkboxInput_154vz_13";
-const checkmark = "_checkmark_154vz_21";
-const label = "_label_154vz_60";
-const styles$a = {
-  checkboxContainer,
-  checkboxInput,
-  checkmark,
-  label
-};
-const Checkbox = ({
-  label: label2,
-  disabled = false,
-  name,
-  value,
-  className = "",
-  register,
-  ...rest
-}) => {
+const Switch = ({ label: label2, help: help2, name, register, disabled: disabled2 = false, ...rest }) => {
   const registration = register ? register(name) : {};
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$a.checkboxContainer} ${className}`, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$f.row} ${disabled2 ? styles$f.disabled : ""}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "checkbox",
-        className: styles$a.checkboxInput,
-        disabled,
+        role: "switch",
+        className: styles$f.input,
+        disabled: disabled2,
         ...registration,
-        ...rest,
-        value
+        ...rest
       }
     ),
-    label2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: label2 }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.checkmark })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$f.track, "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$f.label, children: label2 }),
+      help2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$f.help, children: help2 })
+    ] })
   ] });
 };
-const formContainer$1 = "_formContainer_ofims_1";
-const form$2 = "_form_ofims_1";
-const formTitle$1 = "_formTitle_ofims_16";
-const subTitle$1 = "_subTitle_ofims_23";
-const notificationBanner = "_notificationBanner_ofims_31";
-const notificationText = "_notificationText_ofims_42";
-const errorText$1 = "_errorText_ofims_48";
-const successText$1 = "_successText_ofims_56";
-const checkboxSection = "_checkboxSection_ofims_64";
-const checkboxSectionTitle = "_checkboxSectionTitle_ofims_72";
-const button$2 = "_button_ofims_79";
-const rowControls$1 = "_rowControls_ofims_102";
-const rowControlsItem$1 = "_rowControlsItem_ofims_111";
-const buttonSecondary = "_buttonSecondary_ofims_119";
-const rowControlsItemLabel$1 = "_rowControlsItemLabel_ofims_138";
-const inputContainer = "_inputContainer_ofims_145";
-const buttonTest = "_buttonTest_ofims_149";
-const link$1 = "_link_ofims_161";
-const inputDisabled = "_inputDisabled_ofims_166";
-const labelWithMargin = "_labelWithMargin_ofims_171";
-const helpText$1 = "_helpText_ofims_175";
-const pudoReminderText = "_pudoReminderText_ofims_184";
-const styles$9 = {
+const PATHS = {
+  check: "M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm3.7 6.7-4.4 4.4a1 1 0 0 1-1.4 0l-2-2a1 1 0 1 1 1.4-1.4l1.3 1.3 3.7-3.7a1 1 0 0 1 1.4 1.4Z",
+  x: "M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm3.7 10.3a1 1 0 0 1-1.4 1.4L10 11.4l-2.3 2.3a1 1 0 0 1-1.4-1.4L8.6 10 6.3 7.7a1 1 0 0 1 1.4-1.4L10 8.6l2.3-2.3a1 1 0 1 1 1.4 1.4L11.4 10Z",
+  warn: "M10 2.5a1.6 1.6 0 0 1 1.4.8l6.2 10.8A1.6 1.6 0 0 1 16.2 16H3.8a1.6 1.6 0 0 1-1.4-2.4L8.6 3.3a1.6 1.6 0 0 1 1.4-.8ZM10 7a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0V8a1 1 0 0 0-1-1Zm0 7.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z",
+  info: "M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm1 8H9a1 1 0 1 1 0-2v-2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1v3a1 1 0 1 1 0 2Z",
+  store: "M3 4h14l1 4a2.5 2.5 0 0 1-4 2 2.5 2.5 0 0 1-4 0 2.5 2.5 0 0 1-4 0A2.5 2.5 0 0 1 2 8l1-4Zm1 8.3V16h4v-3h4v3h4v-3.7a4 4 0 0 1-1 .2 4 4 0 0 1-3-1.2 4 4 0 0 1-3 1.2 4 4 0 0 1-3-1.2 4 4 0 0 1-3 1.2 4 4 0 0 1-1-.2Z",
+  gear: "M8.6 2h2.8l.4 2a6 6 0 0 1 1.3.8l1.9-.7 1.4 2.4-1.5 1.4a6 6 0 0 1 0 1.5l1.5 1.4-1.4 2.4-1.9-.7a6 6 0 0 1-1.3.8l-.4 2H8.6l-.4-2a6 6 0 0 1-1.3-.8l-1.9.7-1.4-2.4 1.5-1.4a6 6 0 0 1 0-1.5L3.6 6.5 5 4.1l1.9.7A6 6 0 0 1 8.2 4l.4-2ZM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z",
+  truck: "M2 5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1h3l3 3.5V14a1 1 0 0 1-1 1h-.6a2.4 2.4 0 0 1-4.8 0H8.4a2.4 2.4 0 0 1-4.8 0H3a1 1 0 0 1-1-1V5Zm10 2v3h4.4L14.2 7H12ZM6 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z",
+  plug: "M6 2a1 1 0 0 1 1 1v3h4V3a1 1 0 1 1 2 0v3h1a1 1 0 0 1 1 1v3a5 5 0 0 1-4 4.9V18a1 1 0 1 1-2 0v-3.1A5 5 0 0 1 4 10V7a1 1 0 0 1 1-1h1V3a1 1 0 0 1 1-1Z",
+  shield: "M10 2 3.5 4.5V10c0 3.6 2.6 6.4 6.5 8 3.9-1.6 6.5-4.4 6.5-8V4.5L10 2Zm3.2 6.5-3.9 3.9a1 1 0 0 1-1.4 0L6.3 10.8a1 1 0 1 1 1.4-1.4l.9.9 3.2-3.2a1 1 0 0 1 1.4 1.4Z",
+  chevron: "M5.3 7.8a1 1 0 0 1 1.4 0L10 11.1l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4Z",
+  refresh: "M10 3a7 7 0 0 1 6.3 4H14a1 1 0 1 0 0 2h4.5a1 1 0 0 0 1-1V3.5a1 1 0 1 0-2 0v1.7A9 9 0 0 0 1.1 9.3a1 1 0 1 0 2 .3A7 7 0 0 1 10 3Zm6.9 7.1a1 1 0 0 0-1.2.7A7 7 0 0 1 3.7 12.8H6a1 1 0 1 0 0-2H1.5a1 1 0 0 0-1 1v4.5a1 1 0 1 0 2 0v-1.7A9 9 0 0 0 17.6 11.3a1 1 0 0 0-.7-1.2Z"
+};
+const StatusIcon = ({ name, className, size = 20 }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  "svg",
+  {
+    className,
+    width: size,
+    height: size,
+    viewBox: "0 0 20 20",
+    fill: "currentColor",
+    "aria-hidden": "true",
+    focusable: "false",
+    children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: PATHS[name] })
+  }
+);
+const card$1 = "_card_9m0j7_5";
+const head = "_head_9m0j7_27";
+const open = "_open_9m0j7_63";
+const icon$2 = "_icon_9m0j7_91";
+const toneBlue$1 = "_toneBlue_9m0j7_109";
+const toneViolet$1 = "_toneViolet_9m0j7_111";
+const toneGreen$1 = "_toneGreen_9m0j7_113";
+const toneGray = "_toneGray_9m0j7_115";
+const title$3 = "_title_9m0j7_119";
+const description$1 = "_description_9m0j7_133";
+const chevron = "_chevron_9m0j7_149";
+const body = "_body_9m0j7_169";
+const callout = "_callout_9m0j7_193";
+const calloutIcon = "_calloutIcon_9m0j7_219";
+const grid = "_grid_9m0j7_231";
+const field = "_field_9m0j7_243";
+const label$3 = "_label_9m0j7_255";
+const fieldSelect = "_fieldSelect_9m0j7_273";
+const nested = "_nested_9m0j7_287";
+const help = "_help_9m0j7_305";
+const actions$1 = "_actions_9m0j7_321";
+const buttonOutline = "_buttonOutline_9m0j7_333";
+const cards$1 = {
+  card: card$1,
+  head,
+  open,
+  icon: icon$2,
+  toneBlue: toneBlue$1,
+  toneViolet: toneViolet$1,
+  toneGreen: toneGreen$1,
+  toneGray,
+  title: title$3,
+  description: description$1,
+  chevron,
+  body,
+  callout,
+  calloutIcon,
+  grid,
+  field,
+  label: label$3,
+  fieldSelect,
+  nested,
+  help,
+  actions: actions$1,
+  buttonOutline
+};
+const TONES = {
+  blue: cards$1.toneBlue,
+  violet: cards$1.toneViolet,
+  green: cards$1.toneGreen,
+  gray: cards$1.toneGray
+};
+const ConfigCard = ({ icon: icon2, tone = "blue", title: title2, description: description2, defaultOpen = true, children }) => {
+  const [open2, setOpen] = reactExports.useState(defaultOpen);
+  const bodyId = reactExports.useId();
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: `${cards$1.card} ${open2 ? cards$1.open : ""}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        type: "button",
+        className: cards$1.head,
+        "aria-expanded": open2,
+        "aria-controls": bodyId,
+        onClick: () => setOpen((value2) => !value2),
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${cards$1.icon} ${TONES[tone]}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: icon2, size: 18 }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: cards$1.title, children: title2 }),
+            description2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: cards$1.description, children: description2 })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "chevron", className: cards$1.chevron })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { id: bodyId, className: cards$1.body, hidden: !open2, children })
+  ] });
+};
+const formContainer$1 = "_formContainer_107yd_1";
+const form$2 = "_form_107yd_1";
+const formTitle$1 = "_formTitle_107yd_31";
+const errorText$1 = "_errorText_107yd_45";
+const successText$1 = "_successText_107yd_61";
+const button$2 = "_button_107yd_77";
+const rowControlsItemLabel$1 = "_rowControlsItemLabel_107yd_123";
+const inputContainer = "_inputContainer_107yd_137";
+const buttonTest = "_buttonTest_107yd_145";
+const link$1 = "_link_107yd_169";
+const inputDisabled = "_inputDisabled_107yd_179";
+const labelWithMargin = "_labelWithMargin_107yd_189";
+const styles$e = {
   formContainer: formContainer$1,
   form: form$2,
   formTitle: formTitle$1,
-  subTitle: subTitle$1,
-  notificationBanner,
-  notificationText,
   errorText: errorText$1,
   successText: successText$1,
-  checkboxSection,
-  checkboxSectionTitle,
   button: button$2,
-  rowControls: rowControls$1,
-  rowControlsItem: rowControlsItem$1,
-  buttonSecondary,
   rowControlsItemLabel: rowControlsItemLabel$1,
   inputContainer,
   buttonTest,
   link: link$1,
   inputDisabled,
-  labelWithMargin,
-  helpText: helpText$1,
-  pudoReminderText
+  labelWithMargin
 };
 async function validateIntegrationStatus() {
   try {
@@ -8926,6 +9001,7 @@ async function saveSettings(settings) {
           nonce: WCCorreiosIntegrationAdminParams.nonce,
           districtsEnable: settings.districtsEnable,
           pudoEnable: settings.pudoEnable,
+          pudoWidgetVersion: settings.pudoWidgetVersion,
           districtCode: settings.districtCode,
           noBlueStatus: settings.noBlueStatus,
           active_logs: settings.active_logs
@@ -9015,16 +9091,37 @@ async function shippingZonesStatus() {
     throw error2;
   }
 }
-const container$2 = "_container_qzsko_1";
-const inputWrapper = "_inputWrapper_qzsko_11";
-const input$1 = "_input_qzsko_11";
-const toggle = "_toggle_qzsko_38";
-const clear = "_clear_qzsko_51";
-const dropdown = "_dropdown_qzsko_75";
-const option = "_option_qzsko_89";
-const highlight$1 = "_highlight_qzsko_95";
-const empty = "_empty_qzsko_99";
-const styles$8 = {
+async function integrationRequest(path, { method = "GET", body: body2, query } = {}) {
+  const restUrl = WCCorreiosIntegrationAdminParams.rest_url || "/wp-json/wc-bluex/v1/";
+  const restNonce = WCCorreiosIntegrationAdminParams.rest_nonce;
+  let url = `${restUrl}${path}`;
+  if (query) {
+    url += `${url.includes("?") ? "&" : "?"}${new URLSearchParams(query)}`;
+  }
+  const response = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json", "X-WP-Nonce": restNonce },
+    body: body2 ? JSON.stringify(body2) : void 0
+  });
+  return response.json();
+}
+const integrationAuthStart = (storeId) => integrationRequest("integration-auth/start", { method: "POST", body: { storeId } });
+const integrationAuthStatus = (state) => integrationRequest("integration-auth/status", { query: { state } });
+const integrationSetupDefaults = ({ isNew = false, districtCode = null } = {}) => integrationRequest("integration-setup/defaults", {
+  method: "POST",
+  body: { isNew, districtCode }
+});
+const integrationSetupZones = () => integrationRequest("integration-setup/zones", { method: "POST" });
+const container$2 = "_container_1tdks_1";
+const inputWrapper = "_inputWrapper_1tdks_21";
+const input$1 = "_input_1tdks_21";
+const toggle = "_toggle_1tdks_75";
+const clear = "_clear_1tdks_101";
+const dropdown = "_dropdown_1tdks_149";
+const option = "_option_1tdks_177";
+const highlight$1 = "_highlight_1tdks_189";
+const empty = "_empty_1tdks_197";
+const styles$d = {
   container: container$2,
   inputWrapper,
   input: input$1,
@@ -9036,19 +9133,19 @@ const styles$8 = {
   empty
 };
 const SearchableSelect = ({
-  value,
+  value: value2,
   onChange,
   options = [],
   placeholder = "Seleccione una opción",
-  disabled = false
+  disabled: disabled2 = false
 }) => {
   const containerRef = reactExports.useRef(null);
   const [isOpen, setIsOpen] = reactExports.useState(false);
   const [query, setQuery] = reactExports.useState("");
   const [highlightIndex, setHighlightIndex] = reactExports.useState(0);
   const selectedOption = reactExports.useMemo(
-    () => options.find((opt) => opt.value === value) || null,
-    [options, value]
+    () => options.find((opt) => opt.value === value2) || null,
+    [options, value2]
   );
   reactExports.useEffect(() => {
     if (selectedOption) {
@@ -9115,15 +9212,15 @@ const SearchableSelect = ({
   reactExports.useEffect(() => {
     setHighlightIndex(0);
   }, [query, isOpen]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: containerRef, className: styles$8.container, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.inputWrapper, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: containerRef, className: styles$d.container, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$d.inputWrapper, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
-          className: styles$8.input,
+          className: styles$d.input,
           placeholder,
-          disabled,
+          disabled: disabled2,
           value: query,
           onChange: (e) => {
             setQuery(e.target.value);
@@ -9133,11 +9230,11 @@ const SearchableSelect = ({
           onKeyDown
         }
       ),
-      isOpen && !disabled && (value || query) && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isOpen && !disabled2 && (value2 || query) && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
-          className: styles$8.clear,
+          className: styles$d.clear,
           onClick: handleClear,
           "aria-label": "Limpiar selección",
           children: "×"
@@ -9147,30 +9244,63 @@ const SearchableSelect = ({
         "button",
         {
           type: "button",
-          className: styles$8.toggle,
-          onClick: () => !disabled && setIsOpen((o) => !o),
+          className: styles$d.toggle,
+          onClick: () => !disabled2 && setIsOpen((o) => !o),
           "aria-label": "Toggle",
-          disabled,
+          disabled: disabled2,
           children: "▾"
         }
       )
     ] }),
-    isOpen && !disabled && /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$8.dropdown, role: "listbox", children: [
-      filteredOptions.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: styles$8.empty, children: "Sin resultados" }),
+    isOpen && !disabled2 && /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$d.dropdown, role: "listbox", children: [
+      filteredOptions.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: styles$d.empty, children: "Sin resultados" }),
       filteredOptions.map((opt, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
         "li",
         {
-          className: `${styles$8.option} ${idx === highlightIndex ? styles$8.highlight : ""}`,
+          className: `${styles$d.option} ${idx === highlightIndex ? styles$d.highlight : ""}`,
           onMouseDown: (e) => e.preventDefault(),
           onClick: () => handleSelect(opt),
           role: "option",
-          "aria-selected": opt.value === value,
+          "aria-selected": opt.value === value2,
           children: opt.label
         },
         opt.value
       ))
     ] })
   ] });
+};
+const select__container = "_select__container_1ng7y_1";
+const select = "_select_1ng7y_1";
+const styles$c = {
+  select__container,
+  select
+};
+const Select = ({
+  register,
+  name,
+  placeholder,
+  options = [],
+  disabled: disabled2 = false,
+  defaultValue = "",
+  value: value2,
+  onChange,
+  className = ""
+}) => {
+  const selectProps = register ? register(name) : { value: value2, onChange };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$c.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "select",
+    {
+      ...selectProps,
+      disabled: disabled2,
+      defaultValue,
+      value: register ? void 0 : value2,
+      className: `${styles$c.select} ${className}`,
+      children: [
+        placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
+        options.map((option2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option2.value, children: option2.label }, option2.value))
+      ]
+    }
+  ) });
 };
 const comunas = [
   {
@@ -18388,11 +18518,13 @@ const comunas = [
     ]
   }
 ];
-const container$1 = "_container_1ehjy_1";
-const selectWrapper = "_selectWrapper_1ehjy_7";
-const styles$7 = {
+const container$1 = "_container_10doe_3";
+const selectWrapper = "_selectWrapper_10doe_11";
+const label$2 = "_label_10doe_23";
+const styles$b = {
   container: container$1,
-  selectWrapper
+  selectWrapper,
+  label: label$2
 };
 const findLocationByDistrictCode = (code) => {
   for (const region of comunas) {
@@ -18489,9 +18621,9 @@ const DistrictSelector = ({
     label: district.name
   }));
   const filteredDistrictOptions = districtOptions;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.container, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.selectWrapper, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Región de origen" }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.container, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.selectWrapper, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$b.label, children: "Región de origen" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         SearchableSelect,
         {
@@ -18502,8 +18634,8 @@ const DistrictSelector = ({
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.selectWrapper, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Comuna de origen" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$b.selectWrapper, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$b.label, children: "Comuna de origen" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         SearchableSelect,
         {
@@ -18518,6 +18650,10 @@ const DistrictSelector = ({
     ] })
   ] });
 };
+const PUDO_WIDGET_VERSION_OPTIONS = [
+  { value: "v1", label: "V1 (actual)" },
+  { value: "v2", label: "V2 (nuevo)" }
+];
 const ENABLE_DEVTOOLS$1 = String("false") === "true";
 const FormConfig = ({
   storeId,
@@ -18541,6 +18677,7 @@ const FormConfig = ({
       ...settings,
       districtsEnable: (settings == null ? void 0 : settings.districtsEnable) === "yes" ? true : false,
       pudoEnable: (settings == null ? void 0 : settings.pudoEnable) === "yes" ? true : false,
+      pudoWidgetVersion: (settings == null ? void 0 : settings.pudoWidgetVersion) === "v2" ? "v2" : "v1",
       active_logs: (settings == null ? void 0 : settings.active_logs) === "yes" ? true : false
     }
   });
@@ -18555,6 +18692,7 @@ const FormConfig = ({
         ...data,
         districtsEnable: (data == null ? void 0 : data.districtsEnable) ? "yes" : "no",
         pudoEnable: (data == null ? void 0 : data.pudoEnable) ? "yes" : "no",
+        pudoWidgetVersion: (data == null ? void 0 : data.pudoWidgetVersion) === "v2" ? "v2" : "v1",
         active_logs: (data == null ? void 0 : data.active_logs) ? "yes" : "no"
       });
       OnSaveSettings();
@@ -18572,7 +18710,8 @@ const FormConfig = ({
   };
   const isEnabledLogs = watch("active_logs");
   const isPudoEnabled = watch("pudoEnable");
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.formContainer, children: [
+  const needsStoreSetup = !watch("districtCode") || !watch("noBlueStatus");
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$e.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -18581,12 +18720,14 @@ const FormConfig = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$9.formTitle, children: "Configuración" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$9.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.notificationBanner, children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$9.notificationText, children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$9.subTitle, children: "Configura tu tienda" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControls, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$e.formTitle, children: "Configuración" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$e.form, children: [
+      needsStoreSetup && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.callout, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "info", className: cards$1.calloutIcon }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Termina la configuración de tu tienda para que puedas empezar a gestionar tus envíos con Blue Express." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ConfigCard, { icon: "store", tone: "blue", title: "Configura tu tienda", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.grid, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           DistrictSelector,
           {
             register,
@@ -18594,9 +18735,9 @@ const FormConfig = ({
             initialValue: settings == null ? void 0 : settings.districtCode,
             name: "districtCode"
           }
-        ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Estado para crear orden en Ecommerce Blue Express" }),
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.field, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: cards$1.label, children: "Estado para ordenes en Blue Express" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             SearchableSelect,
             {
@@ -18607,97 +18748,364 @@ const FormConfig = ({
             }
           )
         ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Opciones generales" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Checkbox,
-            {
-              register,
-              name: "pudoEnable",
-              label: "Habilitar Puntos de retiro Blue Express"
-            }
-          ),
-          isPudoEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.pudoReminderText, children: "Importante: para que los Puntos de retiro Blue Express se visualicen en el checkout, debes agregarlos como método de envío en cada zona de envío donde quieras ofrecerlos." })
-        ] }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Checkout y Direcciones" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControlsItem, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Checkbox,
-            {
-              register,
-              name: "districtsEnable",
-              label: "Activación de comunas y regiones en checkout"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.helpText, children: "Convierte los campos de región y ciudad en listas desplegables con opciones predefinidas de Chile." })
-        ] }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.checkboxSection, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: styles$9.checkboxSectionTitle, children: "Logs y Soporte" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControls, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Checkbox,
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ConfigCard, { icon: "gear", tone: "violet", title: "Opciones generales", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Switch,
           {
             register,
-            name: "active_logs",
-            label: "Habilitar logs"
+            name: "pudoEnable",
+            label: "Habilitar Puntos de retiro Blue Express"
           }
-        ) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.rowControls, children: [
-          isEnabledLogs && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ),
+        isPudoEnabled && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.nested, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.callout, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "info", className: cards$1.calloutIcon }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Importante: para que los Puntos de retiro Blue Express se visualicen en el checkout, debes agregarlos como método de envío en cada zona de envío donde quieras ofrecerlos." })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.field, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: cards$1.label, children: "Versión del widget de puntos de retiro" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Select,
+              {
+                register,
+                name: "pudoWidgetVersion",
+                options: PUDO_WIDGET_VERSION_OPTIONS,
+                className: cards$1.fieldSelect
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: cards$1.help, children: "V1 es el widget actual y queda activo por defecto. V2 es el nuevo widget; solo una versión está activa a la vez." })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ConfigCard, { icon: "truck", tone: "green", title: "Checkout y direcciones", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Switch,
+        {
+          register,
+          name: "districtsEnable",
+          label: "Activación de comunas y regiones en checkout",
+          help: "Convierte los campos de región y ciudad en listas desplegables con opciones predefinidas de Chile."
+        }
+      ) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(ConfigCard, { icon: "shield", tone: "gray", title: "Logs y soporte", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Switch, { register, name: "active_logs", label: "Habilitar logs" }),
+        (isEnabledLogs || ENABLE_DEVTOOLS$1) && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: cards$1.actions, children: [
+          isEnabledLogs && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
-              className: styles$9.buttonSecondary,
+              className: cards$1.buttonOutline,
               onClick: () => setActiveSection("logs"),
               children: "Logs de sistema"
             }
-          ) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.rowControlsItem, children: ENABLE_DEVTOOLS$1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ),
+          ENABLE_DEVTOOLS$1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
-              className: styles$9.buttonSecondary,
+              className: cards$1.buttonOutline,
               onClick: () => setDeveloperToolsOpen(true),
               children: "Herramientas de desarrollo"
             }
-          ) })
+          )
         ] })
       ] }),
-      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.errorText, children: errorValidation }),
-      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$9.errorText, children: error2 }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$9.button, children: "Guardar configuración" })
+      errorValidation && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$e.errorText, children: errorValidation }),
+      error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$e.errorText, children: error2 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$e.button, children: "Guardar configuración" })
     ] })
   ] });
 };
-const formContainer = "_formContainer_ecg4b_1";
-const form$1 = "_form_ecg4b_1";
-const formTitle = "_formTitle_ecg4b_16";
-const formDescription = "_formDescription_ecg4b_23";
-const storeIdInput = "_storeIdInput_ecg4b_30";
-const subTitle = "_subTitle_ecg4b_46";
-const tooltip = "_tooltip_ecg4b_55";
-const tooltipIcon = "_tooltipIcon_ecg4b_62";
-const tooltipText = "_tooltipText_ecg4b_74";
-const errorText = "_errorText_ecg4b_110";
-const successText = "_successText_ecg4b_118";
-const input = "_input_ecg4b_126";
-const button$1 = "_button_ecg4b_144";
-const link = "_link_ecg4b_167";
-const rowControls = "_rowControls_ecg4b_179";
-const rowControlsItem = "_rowControlsItem_ecg4b_187";
-const rowControlsItemLabel = "_rowControlsItemLabel_ecg4b_194";
-const createAccountText = "_createAccountText_ecg4b_201";
-const helperText = "_helperText_ecg4b_208";
-const styles$6 = {
+const STEP_LABELS = [
+  ["authorize", "Preparando autorización con WooCommerce"],
+  ["credentials", "Obteniendo credenciales de la tienda"],
+  ["connection", "Validando integración con Blue Express"],
+  ["defaults", "Aplicando configuración predeterminada"],
+  ["zones", "Creando zonas de envío"]
+];
+const GENERIC_STEP_WARNING = {
+  defaults: "No pudimos aplicar la configuración predeterminada. Puedes ajustarla desde la pestaña Configuración.",
+  zones: "No pudimos crear las zonas de envío automáticamente. Puedes crearlas desde la pestaña Zonas de Envío."
+};
+const STATE_PATTERN = /^[a-f0-9]{32}$/;
+const MAX_STATUS_FAILURES = 3;
+const createSteps = () => STEP_LABELS.map(([id, label2]) => ({ id, label: label2, status: "pending" }));
+function leavePageSilently(url, win = window) {
+  win.onbeforeunload = null;
+  win.addEventListener("beforeunload", (event) => event.stopImmediatePropagation(), true);
+  win.location.assign(url);
+}
+function parseAuthReturn(search2) {
+  const params = new URLSearchParams(search2);
+  const state = params.get("bx_auth_state");
+  if (!state || !STATE_PATTERN.test(state)) return null;
+  return { state, approved: params.get("success") === "1" };
+}
+const failure = (code, message2, allowManual) => ({
+  ok: false,
+  error: { code, message: message2, allowManual }
+});
+async function beginAuthorization({ storeId, api: api2 }) {
+  try {
+    const data = await api2.authStart(storeId);
+    if ((data == null ? void 0 : data.success) && data.auth_url) {
+      return { ok: true, authUrl: data.auth_url, state: data.state };
+    }
+    return failure(
+      (data == null ? void 0 : data.code) || "authorization_failed",
+      (data == null ? void 0 : data.message) || "No pudimos iniciar la conexión con WooCommerce. Puedes ingresar las claves manualmente.",
+      Boolean(data == null ? void 0 : data.allow_manual)
+    );
+  } catch {
+    return failure(
+      "authorization_unreachable",
+      "No pudimos iniciar la conexión automática con tu tienda. Puedes ingresar las claves manualmente.",
+      true
+    );
+  }
+}
+async function completeAuthorization({
+  state,
+  api: api2,
+  onStep,
+  sleep: sleep2,
+  now = Date.now,
+  pollIntervalMs = 2e3,
+  timeoutMs = 6e4
+}) {
+  onStep("authorize", "done");
+  onStep("credentials", "running");
+  const startedAt = now();
+  let phase = "credentials";
+  let consecutiveFailures = 0;
+  const advanceToConnection = () => {
+    if (phase !== "credentials") return;
+    onStep("credentials", "done");
+    onStep("connection", "running");
+    phase = "connection";
+  };
+  const fail = (stepId, code, message2, allowManual) => {
+    if (stepId === "connection") advanceToConnection();
+    onStep(stepId, "error", message2);
+    return failure(code, message2, allowManual);
+  };
+  for (; ; ) {
+    let response = null;
+    try {
+      response = await api2.authStatus(state);
+      consecutiveFailures = 0;
+    } catch {
+      consecutiveFailures++;
+      if (consecutiveFailures >= MAX_STATUS_FAILURES) {
+        return fail(
+          phase,
+          "status_unreachable",
+          "No pudimos consultar el estado de la conexión. Revisa tu conexión a internet e inténtalo nuevamente.",
+          phase === "credentials"
+        );
+      }
+    }
+    if ((response == null ? void 0 : response.status) === "credentials_received") {
+      advanceToConnection();
+    } else if ((response == null ? void 0 : response.status) === "connected") {
+      advanceToConnection();
+      onStep("connection", "done");
+      return { ok: true, isNew: Boolean(response.is_new) };
+    } else if ((response == null ? void 0 : response.status) === "failed" || (response == null ? void 0 : response.status) === "expired") {
+      const failedStep = ["credentials_rejected", "integration_failed"].includes(response.code) ? "connection" : "credentials";
+      return fail(
+        failedStep,
+        response.code,
+        response.message || "No pudimos completar la integración.",
+        Boolean(response.allow_manual)
+      );
+    }
+    if (now() - startedAt >= timeoutMs) {
+      return phase === "credentials" ? fail(
+        "credentials",
+        "callback_not_received",
+        "No recibimos la autorización de tu tienda. Esto suele ocurrir cuando el sitio no usa HTTPS o bloquea conexiones internas.",
+        true
+      ) : fail(
+        "connection",
+        "connection_timeout",
+        "Blue Express está tardando más de lo esperado en validar la integración. Inténtalo nuevamente en unos minutos.",
+        false
+      );
+    }
+    await sleep2(pollIntervalMs);
+  }
+}
+async function runSetupStep({ stepId, call, onStep, warnings: warnings2 }) {
+  onStep(stepId, "running");
+  let response;
+  try {
+    response = await call();
+  } catch {
+    response = null;
+  }
+  if (response == null ? void 0 : response.success) {
+    onStep(stepId, response.status === "skipped" ? "skipped" : "done", response.message);
+    return;
+  }
+  const message2 = (response == null ? void 0 : response.message) || GENERIC_STEP_WARNING[stepId];
+  warnings2.push(message2);
+  onStep(stepId, "warning", message2);
+}
+const MANUAL_FAILURE_MESSAGE = "No pudimos validar las credenciales ingresadas. Verifica el ID de integración y las claves e inténtalo nuevamente.";
+function interpretManualResponse(response) {
+  const data = response == null ? void 0 : response.data;
+  const succeeded = (response == null ? void 0 : response.success) === true && (data == null ? void 0 : data.activeIntegration) !== false;
+  if (succeeded) return { ok: true };
+  const message2 = typeof data === "string" ? data : data == null ? void 0 : data.message;
+  return { ok: false, message: message2 || MANUAL_FAILURE_MESSAGE };
+}
+const normalize = (value2) => String(value2 ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+function resolveOrigin(status2, regions) {
+  if (!status2 || !Array.isArray(regions)) return null;
+  const regionCode = Number(status2.region);
+  const isoCode = normalize(status2.provinceCode);
+  const region = regionCode && regions.find((r) => r.code === regionCode) || isoCode && regions.find((r) => normalize(r.isocode) === isoCode);
+  if (!region) return null;
+  const ineCode = Number(status2.commune);
+  const communeName = normalize(status2.communeName);
+  const commune = ineCode && region.ciudades.find((c) => c.code === ineCode) || communeName && region.ciudades.find((c) => normalize(c.name) === communeName);
+  if (!commune) return null;
+  const location = normalize(status2.location);
+  return commune.districts.some((d) => d.code === location) ? location : commune.defaultDistrict;
+}
+async function runFinalSteps({ api: api2, onStep, isNew = false, regions }) {
+  var _a;
+  const warnings2 = [];
+  let districtCode = null;
+  try {
+    districtCode = resolveOrigin(await ((_a = api2.fetchStatus) == null ? void 0 : _a.call(api2)), regions);
+  } catch {
+    districtCode = null;
+  }
+  await runSetupStep({
+    stepId: "defaults",
+    call: () => api2.setupDefaults({ isNew, districtCode }),
+    onStep,
+    warnings: warnings2
+  });
+  await runSetupStep({ stepId: "zones", call: api2.setupZones, onStep, warnings: warnings2 });
+  return { warnings: warnings2 };
+}
+const banner$1 = "_banner_1idlv_1";
+const bannerRunning = "_bannerRunning_1idlv_21";
+const bannerSuccess = "_bannerSuccess_1idlv_33";
+const bannerError = "_bannerError_1idlv_45";
+const title$2 = "_title_1idlv_57";
+const message = "_message_1idlv_69";
+const steps = "_steps_1idlv_81";
+const step = "_step_1idlv_81";
+const running = "_running_1idlv_111";
+const done = "_done_1idlv_113";
+const warning = "_warning_1idlv_115";
+const skipped = "_skipped_1idlv_117";
+const error$1 = "_error_1idlv_119";
+const icon$1 = "_icon_1idlv_127";
+const spinner$1 = "_spinner_1idlv_201";
+const bxIntegrationSpin = "_bxIntegrationSpin_1idlv_1";
+const warnings = "_warnings_1idlv_219";
+const styles$a = {
+  banner: banner$1,
+  bannerRunning,
+  bannerSuccess,
+  bannerError,
+  title: title$2,
+  message,
+  steps,
+  step,
+  running,
+  done,
+  warning,
+  skipped,
+  error: error$1,
+  icon: icon$1,
+  spinner: spinner$1,
+  bxIntegrationSpin,
+  warnings
+};
+const STATUS_ICON = {
+  pending: "",
+  done: "✓",
+  warning: "!",
+  skipped: "–",
+  error: "✕"
+};
+const BANNER_VARIANT = {
+  running: styles$a.bannerRunning,
+  success: styles$a.bannerSuccess,
+  error: styles$a.bannerError
+};
+const IntegrationProgress = ({ steps: steps2, outcome, title: title2, message: message2, warnings: warnings2 = [] }) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  "div",
+  {
+    className: `${styles$a.banner} ${BANNER_VARIANT[outcome]}`,
+    role: outcome === "error" ? "alert" : "status",
+    "aria-live": "polite",
+    children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$a.title, children: title2 }),
+      message2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$a.message, children: message2 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: styles$a.steps, children: steps2.map((step2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: `${styles$a.step} ${styles$a[step2.status]}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.icon, "aria-hidden": "true", children: step2.status === "running" ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$a.spinner }) : STATUS_ICON[step2.status] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: step2.label })
+      ] }, step2.id)) }),
+      warnings2.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: styles$a.warnings, children: warnings2.map((warning2) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: warning2 }, warning2)) })
+    ]
+  }
+);
+const banner = "_banner_efcq6_23";
+const image = "_image_efcq6_61";
+const text = "_text_efcq6_77";
+const title$1 = "_title_efcq6_91";
+const subtitle$1 = "_subtitle_efcq6_103";
+const styles$9 = {
+  banner,
+  image,
+  text,
+  title: title$1,
+  subtitle: subtitle$1
+};
+const BANNER_IMAGE = "/wp-content/plugins/bluex-for-woocommerce/assets/images/bannerIntegracion.webp";
+const IntegrationBanner = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.banner, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("img", { className: styles$9.image, src: BANNER_IMAGE, alt: "" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$9.text, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.title, children: "Bienvenido a Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$9.subtitle, children: "Gestiona tus envíos de forma eficiente, cotiza precios y descarga las etiquetas de tus paquetes." })
+  ] })
+] });
+const formContainer = "_formContainer_b25u4_1";
+const form$1 = "_form_b25u4_1";
+const formTitle = "_formTitle_b25u4_33";
+const formDescription = "_formDescription_b25u4_47";
+const storeIdInput = "_storeIdInput_b25u4_63";
+const idField = "_idField_b25u4_103";
+const subTitle = "_subTitle_b25u4_115";
+const tooltip = "_tooltip_b25u4_133";
+const tooltipIcon = "_tooltipIcon_b25u4_147";
+const tooltipText = "_tooltipText_b25u4_171";
+const errorText = "_errorText_b25u4_243";
+const successText = "_successText_b25u4_259";
+const input = "_input_b25u4_275";
+const button$1 = "_button_b25u4_317";
+const link = "_link_b25u4_363";
+const rowControls = "_rowControls_b25u4_387";
+const rowControlsItem = "_rowControlsItem_b25u4_403";
+const rowControlsItemLabel = "_rowControlsItemLabel_b25u4_417";
+const createAccountText = "_createAccountText_b25u4_431";
+const helperText = "_helperText_b25u4_445";
+const secondaryButton$1 = "_secondaryButton_b25u4_459";
+const linkButton$1 = "_linkButton_b25u4_491";
+const styles$8 = {
   formContainer,
   form: form$1,
   formTitle,
   formDescription,
   storeIdInput,
+  idField,
   subTitle,
   tooltip,
   tooltipIcon,
@@ -18711,63 +19119,174 @@ const styles$6 = {
   rowControlsItem,
   rowControlsItemLabel,
   createAccountText,
-  helperText
+  helperText,
+  secondaryButton: secondaryButton$1,
+  linkButton: linkButton$1
 };
+const SUCCESS_TITLE = "¡Integración completada con éxito! Tu tienda WooCommerce está lista para realizar envíos con Blue Express.";
+const REDIRECT_DELAY_MS = 3e3;
+const REDIRECT_DELAY_WITH_WARNINGS_MS = 7e3;
+const AUTH_QUERY_PARAMS = ["bx_auth_state", "success", "user_id"];
+const api = {
+  authStart: integrationAuthStart,
+  authStatus: integrationAuthStatus,
+  fetchStatus: validateIntegrationStatus,
+  setupDefaults: integrationSetupDefaults,
+  setupZones: integrationSetupZones
+};
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const FormNewIntegrate = ({
   storeId,
   error: error2,
-  setLoading,
   validateIntegration,
-  isActiveIntegration
+  isActiveIntegration,
+  setActiveSection
 }) => {
   const [toast2, setToast] = reactExports.useState(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting }
-  } = useForm({
+  const [steps2, setSteps] = reactExports.useState(createSteps);
+  const [phase, setPhase] = reactExports.useState("idle");
+  const [flowError, setFlowError] = reactExports.useState(null);
+  const [warnings2, setWarnings] = reactExports.useState([]);
+  const [showManual, setShowManual] = reactExports.useState(false);
+  const redirectTimer = reactExports.useRef(null);
+  const { register, handleSubmit, getValues, setValue } = useForm({
     defaultValues: {
       storeId: storeId || "",
       clientKey: "",
       clientSecret: ""
     }
   });
-  const onSubmit = async (data) => {
-    if (!data.storeId || !data.clientKey || !data.clientSecret) {
-      setToast({
-        message: "Por favor completa todos los campos",
-        type: "warning"
+  const busy = phase === "running" || phase === "success";
+  reactExports.useEffect(() => {
+    if (storeId && !getValues("storeId")) setValue("storeId", storeId);
+  }, [storeId]);
+  reactExports.useEffect(() => () => clearTimeout(redirectTimer.current), []);
+  const updateStep = reactExports.useCallback((id, status2, message2) => {
+    setSteps(
+      (previous) => previous.map((step2) => step2.id === id ? { ...step2, status: status2, message: message2 } : step2)
+    );
+  }, []);
+  const showFailure = reactExports.useCallback((failure2) => {
+    setFlowError(failure2);
+    setPhase("error");
+  }, []);
+  const finishFlow = reactExports.useCallback(async (isNew = false) => {
+    const { warnings: collected } = await runFinalSteps({
+      api,
+      onStep: updateStep,
+      isNew,
+      regions: comunas
+    });
+    setWarnings(collected);
+    setPhase("success");
+    redirectTimer.current = setTimeout(
+      async () => {
+        await validateIntegration();
+        setActiveSection("inicio");
+      },
+      collected.length ? REDIRECT_DELAY_WITH_WARNINGS_MS : REDIRECT_DELAY_MS
+    );
+  }, [updateStep, validateIntegration, setActiveSection]);
+  const resumeAfterReturn = reactExports.useCallback(
+    async (state) => {
+      setSteps(createSteps());
+      setPhase("running");
+      const result = await completeAuthorization({ state, api, onStep: updateStep, sleep });
+      if (!result.ok) {
+        showFailure(result.error);
+        return;
+      }
+      await finishFlow(result.isNew);
+    },
+    [updateStep, showFailure, finishFlow]
+  );
+  reactExports.useEffect(() => {
+    const authReturn = parseAuthReturn(window.location.search);
+    if (!authReturn) return;
+    const url = new URL(window.location.href);
+    AUTH_QUERY_PARAMS.forEach((param) => url.searchParams.delete(param));
+    window.history.replaceState({}, "", url.toString());
+    if (!authReturn.approved) {
+      updateStep("authorize", "error");
+      showFailure({
+        code: "authorization_denied",
+        message: "No autorizaste la conexión en WooCommerce. Presiona el botón para intentarlo nuevamente.",
+        allowManual: false
       });
       return;
     }
-    try {
-      setLoading(true);
-      const response = await updateIntegrationCredentials(data.storeId, {
-        clientKey: data.clientKey,
-        clientSecret: data.clientSecret
-      });
-      if (response.activeIntegration === false) {
-        setToast({
-          message: response.message || "Error al actualizar las credenciales",
-          type: "error"
-        });
-      } else {
-        await validateIntegration();
-        setToast({
-          message: "¡Conexión establecida correctamente!",
-          type: "success"
-        });
-      }
-    } catch (error22) {
-      console.error("Error updating integration credentials:", error22);
-      setToast({
-        message: "Error al actualizar las credenciales",
-        type: "error"
-      });
-    } finally {
-      setLoading(false);
-    }
+    resumeAfterReturn(authReturn.state);
+  }, []);
+  const startRun = () => {
+    setFlowError(null);
+    setWarnings([]);
+    setSteps(createSteps());
+    setPhase("running");
   };
+  const onSubmit = async (data) => {
+    const integrationId = (data.storeId || "").trim();
+    if (!integrationId) {
+      setToast({ message: "Ingresa el ID de integración para continuar", type: "warning" });
+      return;
+    }
+    startRun();
+    updateStep("authorize", "running");
+    const result = await beginAuthorization({ storeId: integrationId, api });
+    if (!result.ok) {
+      updateStep("authorize", "error");
+      showFailure(result.error);
+      return;
+    }
+    leavePageSilently(result.authUrl);
+  };
+  const onSubmitManual = async (data) => {
+    const integrationId = (data.storeId || "").trim();
+    if (!integrationId || !data.clientKey || !data.clientSecret) {
+      setToast({ message: "Por favor completa todos los campos", type: "warning" });
+      return;
+    }
+    startRun();
+    updateStep("authorize", "done");
+    updateStep("credentials", "done");
+    updateStep("connection", "running");
+    const isNewIntegration = !(storeId && isActiveIntegration);
+    let outcome;
+    try {
+      outcome = interpretManualResponse(
+        await updateIntegrationCredentials(integrationId, {
+          clientKey: data.clientKey.trim(),
+          clientSecret: data.clientSecret.trim()
+        })
+      );
+    } catch {
+      outcome = {
+        ok: false,
+        message: "No pudimos comunicarnos con Blue Express. Inténtalo nuevamente en unos minutos."
+      };
+    }
+    if (!outcome.ok) {
+      updateStep("connection", "error");
+      showFailure({ code: "manual_failed", message: outcome.message, allowManual: false });
+      return;
+    }
+    updateStep("connection", "done");
+    await finishFlow(isNewIntegration);
+  };
+  const openManualMode = () => {
+    setFlowError(null);
+    setPhase("idle");
+    setShowManual(true);
+  };
+  const closeManualMode = () => {
+    setShowManual(false);
+    setFlowError(null);
+    setPhase("idle");
+  };
+  const progressTitle = {
+    running: "Conectando tu tienda con Blue Express…",
+    success: SUCCESS_TITLE,
+    error: "No pudimos completar la integración"
+  }[phase];
   const renderText = (errorMsg) => {
     const normalizedError = (errorMsg || "").toLowerCase();
     if (normalizedError.includes("cloudflare")) {
@@ -18784,7 +19303,7 @@ const FormNewIntegrate = ({
           "a",
           {
             href: "https://ecommerce.blue.cl",
-            className: styles$6.link,
+            className: styles$8.link,
             target: "_blank",
             rel: "noopener noreferrer",
             children: "ecommerce.blue.cl"
@@ -18796,7 +19315,7 @@ const FormNewIntegrate = ({
     }
     return errorMsg;
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.formContainer, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.formContainer, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -18805,74 +19324,97 @@ const FormNewIntegrate = ({
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$6.formTitle, children: "Conexión con Blue Express" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$6.formDescription, children: "Completa la siguiente información para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit(onSubmit), className: styles$6.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "ID de integración" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$6.helperText, children: "Ingresa el ID de integración que obtuviste al pasar por el recomendador en el portal Ecommerce de Blue Express" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
-          {
-            type: "text",
-            placeholder: "ID de integración",
-            ...register("storeId"),
-            className: styles$6.storeIdInput
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.errorText, children: renderText(error2) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.subTitle, children: [
-          "Credenciales de Woocommerce",
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.tooltip, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.tooltipIcon, children: "?" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$6.tooltipText, children: [
-              "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes → Avanzado → API REST → Añadir clave.",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-              "Clave del cliente inicia con “ck_“",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-              "Clave secreta del cliente inicia con “cs_“"
+    /* @__PURE__ */ jsxRuntimeExports.jsx(IntegrationBanner, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$8.formTitle, children: "Conexión con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$8.formDescription, children: "Ingresa el ID de integración para conectar tu tienda con Blue Express y disfrutar de todas las funcionalidades de envío." }),
+    phase !== "idle" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      IntegrationProgress,
+      {
+        steps: steps2,
+        outcome: phase,
+        title: progressTitle,
+        message: phase === "error" ? flowError == null ? void 0 : flowError.message : phase === "success" ? "Te llevaremos al panel principal en unos segundos." : void 0,
+        warnings: warnings2
+      }
+    ),
+    phase === "error" && (flowError == null ? void 0 : flowError.allowManual) && !showManual && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: styles$8.secondaryButton, onClick: openManualMode, children: "Ingresar claves manuales" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "form",
+      {
+        onSubmit: handleSubmit(showManual ? onSubmitManual : onSubmit),
+        className: styles$8.form,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.idField, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              placeholder: "ID de integración",
+              "aria-label": "ID de integración",
+              disabled: busy,
+              ...register("storeId"),
+              className: styles$8.storeIdInput
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            error2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$8.errorText, children: renderText(error2) }),
+            !showManual && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$8.helperText, children: "Al continuar, WooCommerce te pedirá aprobar la conexión con Blue Express. No necesitas ingresar claves." }),
+            showManual && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.subTitle, children: [
+                "Credenciales de Woocommerce",
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.tooltip, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$8.tooltipIcon, children: "?" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$8.tooltipText, children: [
+                    "Credenciales obligatorias para la integración de Woocommerce. Se obtienen en el panel de administración de woocommerce en la sección de Ajustes → Avanzado → API REST → Añadir clave.",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+                    "Clave del cliente inicia con “ck_“",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+                    "Clave secreta del cliente inicia con “cs_“"
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.rowControls, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.rowControlsItem, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$8.rowControlsItemLabel, children: "Clave del cliente" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "text",
+                      placeholder: "Ingrese la clave del cliente",
+                      disabled: busy,
+                      ...register("clientKey"),
+                      className: styles$8.input
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$8.rowControlsItem, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$8.rowControlsItemLabel, children: "Clave secreta de cliente" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "text",
+                      placeholder: "Ingrese la clave secreta del cliente",
+                      disabled: busy,
+                      ...register("clientSecret"),
+                      className: styles$8.input
+                    }
+                  )
+                ] })
+              ] })
             ] })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControls, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "Clave del cliente" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "text",
-                placeholder: "Ingrese la clave del cliente",
-                ...register("clientKey"),
-                className: styles$6.input
-              }
-            )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.rowControlsItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$6.rowControlsItemLabel, children: "Clave secreta de cliente" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "text",
-                placeholder: "Ingrese la clave secreta del cliente",
-                ...register("clientSecret"),
-                className: styles$6.input
-              }
-            )
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: isSubmitting, className: styles$6.button, children: storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración" })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$6.createAccountText, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", disabled: busy, className: styles$8.button, children: busy ? "Conectando…" : showManual ? "Conectar con claves" : storeId && isActiveIntegration ? "Actualizar integración" : "Crear integración" }),
+          showManual && !busy && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: styles$8.linkButton, onClick: closeManualMode, children: "Volver a la conexión automática" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$8.createAccountText, children: [
       "¿No tienes un ID de integración?",
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "a",
         {
           href: "https://ecommerce.blue.cl",
-          className: styles$6.link,
+          className: styles$8.link,
           target: "_blank",
           rel: "noopener noreferrer",
           children: "Crea tu cuenta aquí"
@@ -18881,16 +19423,16 @@ const FormNewIntegrate = ({
     ] })
   ] });
 };
-const modalOverlay = "_modalOverlay_x9myy_1";
-const modalContent$1 = "_modalContent_x9myy_14";
-const warningBox$1 = "_warningBox_x9myy_31";
-const formFields = "_formFields_x9myy_41";
-const fieldGroup = "_fieldGroup_x9myy_48";
-const buttonGroup = "_buttonGroup_x9myy_73";
-const button = "_button_x9myy_73";
-const primaryButton = "_primaryButton_x9myy_89";
-const secondaryButton = "_secondaryButton_x9myy_103";
-const styles$5 = {
+const modalOverlay = "_modalOverlay_1jset_1";
+const modalContent$1 = "_modalContent_1jset_27";
+const warningBox$1 = "_warningBox_1jset_61";
+const formFields = "_formFields_1jset_81";
+const fieldGroup = "_fieldGroup_1jset_95";
+const buttonGroup = "_buttonGroup_1jset_145";
+const button = "_button_1jset_145";
+const primaryButton = "_primaryButton_1jset_177";
+const secondaryButton = "_secondaryButton_1jset_205";
+const styles$7 = {
   modalOverlay,
   modalContent: modalContent$1,
   warningBox: warningBox$1,
@@ -18902,7 +19444,7 @@ const styles$5 = {
   secondaryButton
 };
 const DeveloperToolsForm = ({
-  open,
+  open: open2,
   onClose,
   saveSettings: saveSettings2,
   validateIntegration,
@@ -18931,15 +19473,15 @@ const DeveloperToolsForm = ({
       onClose();
     }
   };
-  if (!open) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.modalOverlay, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.modalContent, children: [
+  if (!open2) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.modalOverlay, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.modalContent, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Herramientas de desarrollo" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.warningBox, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.warningBox, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Advertencia:" }),
       " No modifique estas configuraciones a menos que tenga un conocimiento claro de lo que está haciendo. Una mala configuración puede provocar que su plugin deje de funcionar."
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.formFields, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.formFields, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.fieldGroup, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "dev-enabled-checkbox", children: "Habilitar opciones de desarrollo" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
@@ -18952,7 +19494,7 @@ const DeveloperToolsForm = ({
         )
       ] }),
       isEnabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.fieldGroup, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "alternative-url-input", children: "URL alternativa" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
@@ -18964,7 +19506,7 @@ const DeveloperToolsForm = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.fieldGroup, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.fieldGroup, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "tracking-key-input", children: "Tracking BX key" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
@@ -18978,13 +19520,13 @@ const DeveloperToolsForm = ({
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.buttonGroup, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.buttonGroup, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
           onClick: onClose,
-          className: `${styles$5.button} ${styles$5.secondaryButton}`,
+          className: `${styles$7.button} ${styles$7.secondaryButton}`,
           children: "Cancelar"
         }
       ),
@@ -18994,26 +19536,26 @@ const DeveloperToolsForm = ({
           type: "button",
           disabled: loading,
           onClick: handleSave,
-          className: `${styles$5.button} ${styles$5.primaryButton}`,
+          className: `${styles$7.button} ${styles$7.primaryButton}`,
           children: loading ? "Guardando..." : "Guardar"
         }
       )
     ] })
   ] }) });
 };
-const logsContainer = "_logsContainer_171sx_1";
-const backButton = "_backButton_171sx_10";
-const logsTable = "_logsTable_171sx_22";
-const tableRow = "_tableRow_171sx_42";
-const selected = "_selected_171sx_51";
-const logType = "_logType_171sx_55";
-const error = "_error_171sx_62";
-const info = "_info_171sx_67";
-const logDetail = "_logDetail_171sx_72";
-const pagination = "_pagination_171sx_104";
-const logsDisabledContainer = "_logsDisabledContainer_171sx_135";
-const logsDisabledMessage = "_logsDisabledMessage_171sx_145";
-const styles$4 = {
+const logsContainer = "_logsContainer_18afc_1";
+const backButton = "_backButton_18afc_19";
+const logsTable = "_logsTable_18afc_43";
+const tableRow = "_tableRow_18afc_83";
+const selected = "_selected_18afc_101";
+const logType = "_logType_18afc_109";
+const error = "_error_18afc_123";
+const info = "_info_18afc_133";
+const logDetail = "_logDetail_18afc_143";
+const pagination = "_pagination_18afc_207";
+const logsDisabledContainer = "_logsDisabledContainer_18afc_269";
+const logsDisabledMessage = "_logsDisabledMessage_18afc_289";
+const styles$6 = {
   logsContainer,
   backButton,
   logsTable,
@@ -19145,9 +19687,9 @@ const blueExpressService = {
    */
   getLogs: (params = {}) => {
     const queryParams = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== void 0 && value !== null && value !== "") {
-        queryParams.append(key, value);
+    Object.entries(params).forEach(([key, value2]) => {
+      if (value2 !== void 0 && value2 !== null && value2 !== "") {
+        queryParams.append(key, value2);
       }
     });
     const queryString = queryParams.toString();
@@ -19213,13 +19755,13 @@ const Logs = ({ settings, setActiveSection }) => {
       }
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.logsContainer, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.headerControls, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.logsContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.headerControls, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
-          className: styles$4.backButton,
+          className: styles$6.backButton,
           onClick: () => setActiveSection("configuracion"),
           children: "← Volver"
         }
@@ -19228,7 +19770,7 @@ const Logs = ({ settings, setActiveSection }) => {
         "button",
         {
           type: "button",
-          className: styles$4.deleteButton,
+          className: styles$6.deleteButton,
           onClick: handleDeleteLogs,
           disabled: deleting,
           style: {
@@ -19246,13 +19788,13 @@ const Logs = ({ settings, setActiveSection }) => {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Logs del Sistema" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Visualiza registros del funcionamiento del plugin. Uso exclusivo para soporte y monitoreo. No realices cambios sin la asesoría de Blue." }),
-    !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$4.logsDisabledMessage, children: [
+    !logsEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$6.logsDisabledContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$6.logsDisabledMessage, children: [
       'Para ver los logs, por favor activa la opción "Habilitar logs" en la sección de',
       " ",
       /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "#", onClick: handleGoToConfig, children: "Configuración" }),
       "."
     ] }) }) : loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Cargando logs..." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$4.logsTable, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: styles$6.logsTable, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Fecha" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("th", { children: "Tipo" }),
@@ -19262,13 +19804,13 @@ const Logs = ({ settings, setActiveSection }) => {
           "tr",
           {
             onClick: () => handleLogClick(log),
-            className: `${styles$4.tableRow} ${(selectedLog == null ? void 0 : selectedLog.id) === log.id ? styles$4.selected : ""}`,
+            className: `${styles$6.tableRow} ${(selectedLog == null ? void 0 : selectedLog.id) === log.id ? styles$6.selected : ""}`,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: new Date(log.log_timestamp).toLocaleString() }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("td", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "span",
                 {
-                  className: `${styles$4.logType} ${styles$4[log.log_type]}`,
+                  className: `${styles$6.logType} ${styles$6[log.log_type]}`,
                   children: log.log_type
                 }
               ) }),
@@ -19281,11 +19823,11 @@ const Logs = ({ settings, setActiveSection }) => {
           log.id
         )) })
       ] }),
-      selectedLog && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.logDetail, children: [
+      selectedLog && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.logDetail, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Detalle del Log" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: selectedLog.log_body }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.pagination, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.pagination, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -19314,13 +19856,13 @@ const Logs = ({ settings, setActiveSection }) => {
     ] })
   ] });
 };
-const sidebar = "_sidebar_h80jo_1";
-const logo = "_logo_h80jo_13";
-const logo__image = "_logo__image_h80jo_20";
-const menu = "_menu_h80jo_25";
-const menu__item = "_menu__item_h80jo_32";
-const menu__item_active = "_menu__item_active_h80jo_49";
-const styles$3 = {
+const sidebar = "_sidebar_ukjvj_1";
+const logo = "_logo_ukjvj_25";
+const logo__image = "_logo__image_ukjvj_39";
+const menu = "_menu_ukjvj_49";
+const menu__item = "_menu__item_ukjvj_63";
+const menu__item_active = "_menu__item_active_ukjvj_97";
+const styles$5 = {
   sidebar,
   logo,
   logo__image,
@@ -19329,20 +19871,29 @@ const styles$3 = {
   menu__item_active
 };
 const Sidebar = ({ activeSection, setActiveSection }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.sidebar, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.logo, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.sidebar, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.logo, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
         alt: "Blue Express",
-        className: styles$3.logo__image
+        className: styles$5.logo__image
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: styles$3.menu, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: styles$5.menu, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$3.menu__item} ${activeSection === "inicio" ? styles$3.menu__item_active : ""}`,
+          className: `${styles$5.menu__item} ${activeSection === "estado" ? styles$5.menu__item_active : ""}`,
+          onClick: () => setActiveSection("estado"),
+          type: "button",
+          children: "Estado de tienda"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$5.menu__item} ${activeSection === "inicio" ? styles$5.menu__item_active : ""}`,
           onClick: () => setActiveSection("inicio"),
           type: "button",
           children: "Resumen"
@@ -19351,7 +19902,16 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$3.menu__item} ${activeSection === "configuracion" ? styles$3.menu__item_active : ""}`,
+          className: `${styles$5.menu__item} ${activeSection === "conexion" ? styles$5.menu__item_active : ""}`,
+          onClick: () => setActiveSection("conexion"),
+          type: "button",
+          children: "Conexión"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `${styles$5.menu__item} ${activeSection === "configuracion" ? styles$5.menu__item_active : ""}`,
           onClick: () => setActiveSection("configuracion"),
           type: "button",
           children: "Configuración"
@@ -19360,45 +19920,36 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: `${styles$3.menu__item} ${activeSection === "zonas-envio" ? styles$3.menu__item_active : ""}`,
+          className: `${styles$5.menu__item} ${activeSection === "zonas-envio" ? styles$5.menu__item_active : ""}`,
           onClick: () => setActiveSection("zonas-envio"),
           type: "button",
           children: "Zonas de Envío"
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          className: `${styles$3.menu__item} ${activeSection === "conexion" ? styles$3.menu__item_active : ""}`,
-          onClick: () => setActiveSection("conexion"),
-          type: "button",
-          children: "Conexión"
         }
       )
     ] })
   ] });
 };
 const Sidebar$1 = reactExports.memo(Sidebar);
-const home = "_home_15mjt_1";
-const hero = "_hero_15mjt_6";
-const hero__image = "_hero__image_15mjt_20";
-const description = "_description_15mjt_25";
-const highlight = "_highlight_15mjt_32";
-const cards = "_cards_15mjt_37";
-const card = "_card_15mjt_37";
-const status = "_status_15mjt_58";
-const statusContainer = "_statusContainer_15mjt_65";
-const statusSuccess = "_statusSuccess_15mjt_72";
-const statusError = "_statusError_15mjt_73";
-const statusIcon = "_statusIcon_15mjt_88";
-const connectButton = "_connectButton_15mjt_93";
-const configSummary = "_configSummary_15mjt_108";
-const configList = "_configList_15mjt_112";
-const helpText = "_helpText_15mjt_122";
-const helpLink = "_helpLink_15mjt_129";
-const styles$2 = {
+const home = "_home_93ram_1";
+const hero$1 = "_hero_93ram_11";
+const hero__image = "_hero__image_93ram_39";
+const description = "_description_93ram_49";
+const highlight = "_highlight_93ram_63";
+const cards = "_cards_93ram_73";
+const card = "_card_93ram_73";
+const status = "_status_93ram_115";
+const statusContainer = "_statusContainer_93ram_129";
+const statusSuccess = "_statusSuccess_93ram_143";
+const statusError = "_statusError_93ram_145";
+const statusIcon = "_statusIcon_93ram_175";
+const connectButton = "_connectButton_93ram_185";
+const configSummary = "_configSummary_93ram_215";
+const configList = "_configList_93ram_223";
+const helpText = "_helpText_93ram_243";
+const helpLink = "_helpLink_93ram_257";
+const styles$4 = {
   home,
-  hero,
+  hero: hero$1,
   hero__image,
   description,
   highlight,
@@ -19436,23 +19987,23 @@ const Home = ({
     () => getComunaForCode(config == null ? void 0 : config.districtCode),
     [config == null ? void 0 : config.districtCode]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.home, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.hero, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.home, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.hero, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Bienvenido a Blue Express" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: "/wp-content/plugins/bluex-for-woocommerce/assets/images/blueexpress.webp",
           alt: "Blue Express",
-          className: styles$2.hero__image
+          className: styles$4.hero__image
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$2.description, children: "Primero realiza las configuraciones, luego conecta tu tienda y entonces podrás realizar el envío de tus pedidos con Blue Express" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.cards, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.card, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$4.description, children: "Primero realiza las configuraciones, luego conecta tu tienda y entonces podrás realizar el envío de tus pedidos con Blue Express" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.cards, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.card, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Resumen de la configuración" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$2.configList, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.configSummary, children: config ? /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: styles$4.configList, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Comuna de origen:" }),
             " ",
@@ -19466,24 +20017,24 @@ const Home = ({
           /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Puntos de retiro Blue Express?:" }),
             " ",
-            config.pudoEnable === "yes" ? "Sí" : "No"
+            config.pudoEnable === "yes" ? `Sí (widget ${config.pudoWidgetVersion === "v2" ? "v2" : "v1"})` : "No"
           ] })
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No hay configuración disponible" }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.card, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.card, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Estado de la conexión" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusSuccess, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.statusIcon, children: "✓" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.status, children: connectionStatus ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.statusSuccess, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.statusIcon, children: "✓" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Conectado" })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusContainer, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.statusError, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.statusIcon, children: "✕" }),
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.statusContainer, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.statusError, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.statusIcon, children: "✕" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Desconectado" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
-              className: styles$2.connectButton,
+              className: styles$4.connectButton,
               onClick: () => setActiveSection("conexion"),
               children: "Ir a Conexión"
             }
@@ -19491,65 +20042,65 @@ const Home = ({
         ] }) })
       ] })
     ] }),
-    !connectionStatus && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$2.helpText, children: [
+    !connectionStatus && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles$4.helpText, children: [
       "¿Necesitas ayuda con tu integración? ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://app.puente.xyz/public/243/", className: styles$2.helpLink, target: "_blank", rel: "noopener noreferrer", children: "Agenda una integración asistida" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://app.puente.xyz/public/243/", className: styles$4.helpLink, target: "_blank", rel: "noopener noreferrer", children: "Agenda una integración asistida" })
     ] })
   ] });
 };
-const container = "_container_urh6r_1";
-const header = "_header_urh6r_7";
-const title = "_title_urh6r_11";
-const subtitle = "_subtitle_urh6r_18";
-const statusPanel = "_statusPanel_urh6r_24";
-const statusGrid = "_statusGrid_urh6r_32";
-const statusCard = "_statusCard_urh6r_39";
-const statusLabel = "_statusLabel_urh6r_46";
-const statusValue = "_statusValue_urh6r_53";
-const warningBadge = "_warningBadge_urh6r_60";
-const refreshButton = "_refreshButton_urh6r_71";
-const warningMessage = "_warningMessage_urh6r_92";
-const infoMessage = "_infoMessage_urh6r_103";
-const form = "_form_urh6r_114";
-const section = "_section_urh6r_121";
-const sectionTitle = "_sectionTitle_urh6r_133";
-const formRow = "_formRow_urh6r_140";
-const formGroup = "_formGroup_urh6r_147";
-const formHint = "_formHint_urh6r_153";
-const regionSelector = "_regionSelector_urh6r_159";
-const regionActions = "_regionActions_urh6r_163";
-const btnSmall = "_btnSmall_urh6r_169";
-const regionGrid = "_regionGrid_urh6r_185";
-const regionItem = "_regionItem_urh6r_197";
-const methodsGrid = "_methodsGrid_urh6r_204";
-const methodCard = "_methodCard_urh6r_210";
-const methodDesc = "_methodDesc_urh6r_218";
-const optionsGrid = "_optionsGrid_urh6r_226";
-const resultPanel = "_resultPanel_urh6r_232";
-const summaryGrid = "_summaryGrid_urh6r_240";
-const summaryItem = "_summaryItem_urh6r_247";
-const summaryLabel = "_summaryLabel_urh6r_254";
-const summaryValue = "_summaryValue_urh6r_261";
-const warningBox = "_warningBox_urh6r_268";
-const detailsBox = "_detailsBox_urh6r_281";
-const detailsList = "_detailsList_urh6r_289";
-const detailItem = "_detailItem_urh6r_295";
-const detailIcon = "_detailIcon_urh6r_307";
-const detailText = "_detailText_urh6r_312";
-const linkBox = "_linkBox_urh6r_317";
-const linkButton = "_linkButton_urh6r_322";
-const actions = "_actions_urh6r_339";
-const btnPrimary = "_btnPrimary_urh6r_348";
-const btnSecondary = "_btnSecondary_urh6r_372";
-const modal = "_modal_urh6r_395";
-const modalContent = "_modalContent_urh6r_408";
-const modalActions = "_modalActions_urh6r_427";
-const styles$1 = {
+const container = "_container_hzl62_1";
+const header = "_header_hzl62_13";
+const title = "_title_hzl62_21";
+const subtitle = "_subtitle_hzl62_35";
+const statusPanel$1 = "_statusPanel_hzl62_47";
+const statusGrid = "_statusGrid_hzl62_63";
+const statusCard = "_statusCard_hzl62_77";
+const statusLabel = "_statusLabel_hzl62_91";
+const statusValue = "_statusValue_hzl62_105";
+const warningBadge = "_warningBadge_hzl62_119";
+const refreshButton = "_refreshButton_hzl62_141";
+const warningMessage = "_warningMessage_hzl62_183";
+const infoMessage = "_infoMessage_hzl62_205";
+const form = "_form_hzl62_227";
+const section$1 = "_section_hzl62_241";
+const sectionTitle$1 = "_sectionTitle_hzl62_265";
+const formRow = "_formRow_hzl62_279";
+const formGroup = "_formGroup_hzl62_293";
+const formHint = "_formHint_hzl62_305";
+const regionSelector = "_regionSelector_hzl62_317";
+const regionActions = "_regionActions_hzl62_325";
+const btnSmall = "_btnSmall_hzl62_337";
+const regionGrid = "_regionGrid_hzl62_369";
+const regionItem = "_regionItem_hzl62_393";
+const methodsGrid = "_methodsGrid_hzl62_407";
+const methodCard = "_methodCard_hzl62_419";
+const methodDesc = "_methodDesc_hzl62_435";
+const optionsGrid = "_optionsGrid_hzl62_451";
+const resultPanel = "_resultPanel_hzl62_463";
+const summaryGrid = "_summaryGrid_hzl62_479";
+const summaryItem = "_summaryItem_hzl62_493";
+const summaryLabel = "_summaryLabel_hzl62_507";
+const summaryValue = "_summaryValue_hzl62_521";
+const warningBox = "_warningBox_hzl62_535";
+const detailsBox = "_detailsBox_hzl62_561";
+const detailsList = "_detailsList_hzl62_577";
+const detailItem = "_detailItem_hzl62_589";
+const detailIcon = "_detailIcon_hzl62_613";
+const detailText = "_detailText_hzl62_623";
+const linkBox = "_linkBox_hzl62_633";
+const linkButton = "_linkButton_hzl62_643";
+const actions = "_actions_hzl62_677";
+const btnPrimary = "_btnPrimary_hzl62_695";
+const btnSecondary = "_btnSecondary_hzl62_743";
+const modal = "_modal_hzl62_789";
+const modalContent = "_modalContent_hzl62_815";
+const modalActions = "_modalActions_hzl62_853";
+const styles$3 = {
   container,
   header,
   title,
   subtitle,
-  statusPanel,
+  statusPanel: statusPanel$1,
   statusGrid,
   statusCard,
   statusLabel,
@@ -19559,8 +20110,8 @@ const styles$1 = {
   warningMessage,
   infoMessage,
   form,
-  section,
-  sectionTitle,
+  section: section$1,
+  sectionTitle: sectionTitle$1,
   formRow,
   formGroup,
   formHint,
@@ -19593,37 +20144,48 @@ const styles$1 = {
   modalContent,
   modalActions
 };
-const select__container = "_select__container_1opku_1";
-const select = "_select_1opku_1";
-const styles = {
-  select__container,
-  select
+const label$1 = "_label_1o4j5_1";
+const styles$2 = {
+  label: label$1
 };
-const Select = ({
-  register,
+const Label = ({ children }) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles$2.label, children });
+};
+const checkboxContainer = "_checkboxContainer_132zr_1";
+const checkboxInput = "_checkboxInput_132zr_25";
+const checkmark = "_checkmark_132zr_41";
+const label = "_label_132zr_119";
+const styles$1 = {
+  checkboxContainer,
+  checkboxInput,
+  checkmark,
+  label
+};
+const Checkbox = ({
+  label: label2,
+  disabled: disabled2 = false,
   name,
-  placeholder,
-  options = [],
-  disabled = false,
-  defaultValue = "",
-  value,
-  onChange
+  value: value2,
+  className = "",
+  register,
+  ...rest
 }) => {
-  const selectProps = register ? register(name) : { value, onChange };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.select__container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "select",
-    {
-      ...selectProps,
-      disabled,
-      defaultValue,
-      value: register ? void 0 : value,
-      className: styles.select,
-      children: [
-        placeholder && /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: placeholder }),
-        options.map((option2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: option2.value, children: option2.label }, option2.value))
-      ]
-    }
-  ) });
+  const registration = register ? register(name) : {};
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `${styles$1.checkboxContainer} ${className}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "input",
+      {
+        type: "checkbox",
+        className: styles$1.checkboxInput,
+        disabled: disabled2,
+        ...registration,
+        ...rest,
+        value: value2
+      }
+    ),
+    label2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: label2 }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.checkmark })
+  ] });
 };
 function ShippingZones() {
   var _a, _b, _c, _d, _e, _f;
@@ -19755,7 +20317,7 @@ function ShippingZones() {
       setValue("regions", []);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.container, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.container, children: [
     toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Toast,
       {
@@ -19764,24 +20326,24 @@ function ShippingZones() {
         onClose: () => setToast(null)
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.header, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$1.title, children: "Automatización de Zonas de Envío Blue Express" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.subtitle, children: "Configure automáticamente las zonas de envío para los métodos Blue Express" })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.header, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$3.title, children: "Automatización de Zonas de Envío Blue Express" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.subtitle, children: "Configure automáticamente las zonas de envío para los métodos Blue Express" })
     ] }),
-    statusData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusPanel, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Estado Actual" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusGrid, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Zonas totales:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: statusData.total_zones })
+    statusData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.statusPanel, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$3.sectionTitle, children: "Estado Actual" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.statusGrid, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusLabel, children: "Zonas totales:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusValue, children: statusData.total_zones })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Zonas con Blue Express:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: statusData.zones_with_bluex })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusLabel, children: "Zonas con Blue Express:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusValue, children: statusData.zones_with_bluex })
         ] }),
-        statusData.bluex_methods_count && Object.keys(statusData.bluex_methods_count).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.statusCard, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusLabel, children: "Métodos configurados:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statusValue, children: Object.entries(statusData.bluex_methods_count).map(([method, count]) => {
+        statusData.bluex_methods_count && Object.keys(statusData.bluex_methods_count).length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.statusCard, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusLabel, children: "Métodos configurados:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.statusValue, children: Object.entries(statusData.bluex_methods_count).map(([method, count]) => {
             var _a2;
             const methodName = ((_a2 = availableMethods.find((m) => m.id === method)) == null ? void 0 : _a2.name) || method;
             return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -19797,16 +20359,16 @@ function ShippingZones() {
         {
           type: "button",
           onClick: loadStatus,
-          className: styles$1.refreshButton,
+          className: styles$3.refreshButton,
           disabled: loading,
           children: "🔄 Actualizar estado"
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { className: styles$1.form, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.section, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Configuración de Zonas" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.formRow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.formGroup, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { className: styles$3.form, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$3.sectionTitle, children: "Configuración de Zonas" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.formRow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.formGroup, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Modo de Operación" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
@@ -19816,15 +20378,15 @@ function ShippingZones() {
               options: modes
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.formHint, children: "Define cómo manejar zonas existentes" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$3.formHint, children: "Define cómo manejar zonas existentes" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.regionSelector, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.regionSelector, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "Regiones a Incluir" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.regionActions, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(true), className: styles$1.btnSmall, children: "Seleccionar todas" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(false), className: styles$1.btnSmall, children: "Limpiar selección" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.regionActions, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(true), className: styles$3.btnSmall, children: "Seleccionar todas" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => toggleAllRegions(false), className: styles$3.btnSmall, children: "Limpiar selección" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.regionGrid, children: Object.entries(chileanRegions).map(([code, name]) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.regionItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.regionGrid, children: Object.entries(chileanRegions).map(([code, name]) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.regionItem, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             Checkbox,
             {
               register,
@@ -19833,12 +20395,12 @@ function ShippingZones() {
               label: `${name} (${code})`
             }
           ) }, code)) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.formHint, children: "Deja vacío para incluir todas las regiones" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$3.formHint, children: "Deja vacío para incluir todas las regiones" })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.section, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.sectionTitle, children: "Métodos de Envío" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.methodsGrid, children: availableMethods.map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.methodCard, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$3.sectionTitle, children: "Métodos de Envío" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.methodsGrid, children: availableMethods.map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.methodCard, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             Checkbox,
             {
@@ -19848,78 +20410,78 @@ function ShippingZones() {
               label: method.name
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$1.methodDesc, children: method.description })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("small", { className: styles$3.methodDesc, children: method.description })
         ] }, method.id)) })
       ] }),
-      lastResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.resultPanel, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: styles$1.sectionTitle, children: [
+      lastResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.resultPanel, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: styles$3.sectionTitle, children: [
           ((_a = lastResult.summary) == null ? void 0 : _a.zones_created) > 0 || ((_b = lastResult.summary) == null ? void 0 : _b.zones_updated) > 0 ? "✅" : "ℹ️",
           " ",
           "Resultado de la Operación"
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryGrid, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas creadas:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_c = lastResult.summary) == null ? void 0 : _c.zones_created) || 0 })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.summaryGrid, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryLabel, children: "Zonas creadas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryValue, children: ((_c = lastResult.summary) == null ? void 0 : _c.zones_created) || 0 })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas actualizadas:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_d = lastResult.summary) == null ? void 0 : _d.zones_updated) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryLabel, children: "Zonas actualizadas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryValue, children: ((_d = lastResult.summary) == null ? void 0 : _d.zones_updated) || 0 })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Zonas omitidas:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_e = lastResult.summary) == null ? void 0 : _e.zones_skipped) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryLabel, children: "Zonas omitidas:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryValue, children: ((_e = lastResult.summary) == null ? void 0 : _e.zones_skipped) || 0 })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.summaryItem, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryLabel, children: "Métodos agregados:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.summaryValue, children: ((_f = lastResult.summary) == null ? void 0 : _f.methods_added) || 0 })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.summaryItem, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryLabel, children: "Métodos agregados:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.summaryValue, children: ((_f = lastResult.summary) == null ? void 0 : _f.methods_added) || 0 })
           ] })
         ] }),
-        lastResult.duplicates && lastResult.duplicates.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.warningBox, children: [
+        lastResult.duplicates && lastResult.duplicates.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.warningBox, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "⚠️ Zonas duplicadas encontradas:" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { children: lastResult.duplicates.map((dup, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: dup }, idx)) })
         ] }),
-        lastResult.details && lastResult.details.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailsBox, children: [
+        lastResult.details && lastResult.details.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.detailsBox, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Detalles:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailsList, children: [
-            lastResult.details.slice(0, 10).map((detail, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.detailItem, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailIcon, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.detailsList, children: [
+            lastResult.details.slice(0, 10).map((detail, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.detailItem, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$3.detailIcon, children: [
                 detail.status === "created" && "✅",
                 detail.status === "updated" && "🔄",
                 detail.status === "skipped" && "⏭️",
                 detail.status === "simulated" && "🎭"
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$3.detailText, children: [
                 detail.zone_name || detail.region_name || detail.commune_name,
                 detail.reason && ` - ${detail.reason}`,
                 (detail.fee_set || detail.fee_updated) && " - 💰 IVA actualizado"
               ] })
             ] }, idx)),
-            lastResult.details.length > 10 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.detailItem, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.detailText, children: [
+            lastResult.details.length > 10 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.detailItem, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$3.detailText, children: [
               "...y ",
               lastResult.details.length - 10,
               " más"
             ] }) })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.linkBox, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.linkBox, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           "a",
           {
             href: "/wp-admin/admin.php?page=wc-settings&tab=shipping",
             target: "_blank",
             rel: "noopener noreferrer",
-            className: styles$1.linkButton,
+            className: styles$3.linkButton,
             children: "📦 Ver Zonas de Envío en WooCommerce"
           }
         ) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.actions, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.actions, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
             onClick: handleSubmit(handleSimulate),
-            className: styles$1.btnSecondary,
+            className: styles$3.btnSecondary,
             disabled: loading,
             children: loading ? "⏳ Simulando..." : "🎭 Simular Cambios"
           }
@@ -19929,14 +20491,14 @@ function ShippingZones() {
           {
             type: "button",
             onClick: handleSubmit(handleApply),
-            className: styles$1.btnPrimary,
+            className: styles$3.btnPrimary,
             disabled: loading,
             children: loading ? "⏳ Aplicando..." : "🚀 Aplicar Cambios"
           }
         )
       ] })
     ] }),
-    showConfirmDialog && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.modal, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.modalContent, children: [
+    showConfirmDialog && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.modal, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.modalContent, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "⚠️ Confirmar Creación de Zonas" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
         "Ya existen ",
@@ -19944,13 +20506,13 @@ function ShippingZones() {
         " zona(s) con métodos BlueX. Al crear nuevas zonas con modo “Crear nuevas”, las zonas duplicadas serán omitidas."
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "¿Deseas continuar?" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.modalActions, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.modalActions, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
             onClick: () => setShowConfirmDialog(false),
-            className: styles$1.btnSecondary,
+            className: styles$3.btnSecondary,
             children: "Cancelar"
           }
         ),
@@ -19961,12 +20523,785 @@ function ShippingZones() {
             onClick: () => {
               if (pendingAction) pendingAction();
             },
-            className: styles$1.btnPrimary,
+            className: styles$3.btnPrimary,
             children: "Sí, continuar"
           }
         )
       ] })
     ] }) })
+  ] });
+}
+const statusPanel = "_statusPanel_1pzuj_7";
+const icon = "_icon_1pzuj_105";
+const hero = "_hero_1pzuj_115";
+const heroTop = "_heroTop_1pzuj_137";
+const heroId = "_heroId_1pzuj_153";
+const heroIcon = "_heroIcon_1pzuj_165";
+const heroTitle = "_heroTitle_1pzuj_185";
+const heroSub = "_heroSub_1pzuj_203";
+const heroActions = "_heroActions_1pzuj_215";
+const badge = "_badge_1pzuj_229";
+const badgeDone = "_badgeDone_1pzuj_243";
+const badgeAlmost = "_badgeAlmost_1pzuj_245";
+const badgeNone = "_badgeNone_1pzuj_247";
+const heroBtn = "_heroBtn_1pzuj_251";
+const progressRow = "_progressRow_1pzuj_289";
+const track = "_track_1pzuj_303";
+const fill = "_fill_1pzuj_317";
+const tiles = "_tiles_1pzuj_331";
+const tile = "_tile_1pzuj_331";
+const tileValue = "_tileValue_1pzuj_357";
+const tileLabel = "_tileLabel_1pzuj_373";
+const tileOk = "_tileOk_1pzuj_383";
+const tileWarn = "_tileWarn_1pzuj_385";
+const tileErr = "_tileErr_1pzuj_387";
+const section = "_section_1pzuj_393";
+const sectionHead = "_sectionHead_1pzuj_413";
+const sectionIcon = "_sectionIcon_1pzuj_425";
+const toneViolet = "_toneViolet_1pzuj_443";
+const toneBlue = "_toneBlue_1pzuj_445";
+const toneGreen = "_toneGreen_1pzuj_447";
+const sectionTitle = "_sectionTitle_1pzuj_451";
+const sectionDesc = "_sectionDesc_1pzuj_469";
+const items = "_items_1pzuj_481";
+const item = "_item_1pzuj_481";
+const itemError = "_itemError_1pzuj_527";
+const itemWarning = "_itemWarning_1pzuj_529";
+const itemInfo = "_itemInfo_1pzuj_531";
+const itemUnevaluated = "_itemUnevaluated_1pzuj_533";
+const itemIcon = "_itemIcon_1pzuj_537";
+const itemMain = "_itemMain_1pzuj_549";
+const itemTop = "_itemTop_1pzuj_559";
+const itemTitleRow = "_itemTitleRow_1pzuj_575";
+const itemTitle = "_itemTitle_1pzuj_575";
+const itemMsg = "_itemMsg_1pzuj_601";
+const itemDetail = "_itemDetail_1pzuj_617";
+const itemActions = "_itemActions_1pzuj_635";
+const chip = "_chip_1pzuj_647";
+const chipWarn = "_chipWarn_1pzuj_661";
+const chipOk = "_chipOk_1pzuj_663";
+const chipInfo = "_chipInfo_1pzuj_665";
+const value = "_value_1pzuj_669";
+const note = "_note_1pzuj_689";
+const noteLink = "_noteLink_1pzuj_705";
+const orderRef = "_orderRef_1pzuj_733";
+const btn = "_btn_1pzuj_753";
+const btnBlue = "_btnBlue_1pzuj_799";
+const btnOrange = "_btnOrange_1pzuj_805";
+const spinner = "_spinner_1pzuj_815";
+const bxStatusSpin = "_bxStatusSpin_1pzuj_1";
+const legend = "_legend_1pzuj_845";
+const legendLabel = "_legendLabel_1pzuj_871";
+const legendItem = "_legendItem_1pzuj_873";
+const legendOk = "_legendOk_1pzuj_875";
+const legendWarn = "_legendWarn_1pzuj_877";
+const legendErr = "_legendErr_1pzuj_879";
+const errorBanner = "_errorBanner_1pzuj_883";
+const skel = "_skel_1pzuj_913";
+const bxStatusShimmer = "_bxStatusShimmer_1pzuj_1";
+const skelBlock = "_skelBlock_1pzuj_955";
+const skelWrap = "_skelWrap_1pzuj_957";
+const skelLines = "_skelLines_1pzuj_959";
+const skelTitle = "_skelTitle_1pzuj_961";
+const skelSubtitle = "_skelSubtitle_1pzuj_963";
+const btnLg = "_btnLg_1pzuj_969";
+const btnGhost = "_btnGhost_1pzuj_971";
+const picker = "_picker_1pzuj_977";
+const pickerDesc = "_pickerDesc_1pzuj_979";
+const pickerNote = "_pickerNote_1pzuj_981";
+const pickerLabel = "_pickerLabel_1pzuj_999";
+const search = "_search_1pzuj_1003";
+const pickerStatus = "_pickerStatus_1pzuj_1033";
+const pickerError = "_pickerError_1pzuj_1035";
+const orders = "_orders_1pzuj_1039";
+const ordersItem = "_ordersItem_1pzuj_1059";
+const order = "_order_1pzuj_733";
+const orderSelected = "_orderSelected_1pzuj_1107";
+const orderMain = "_orderMain_1pzuj_1111";
+const orderNumber = "_orderNumber_1pzuj_1113";
+const orderMeta = "_orderMeta_1pzuj_1115";
+const orderMissing = "_orderMissing_1pzuj_1117";
+const styles = {
+  statusPanel,
+  icon,
+  hero,
+  heroTop,
+  heroId,
+  heroIcon,
+  heroTitle,
+  heroSub,
+  heroActions,
+  badge,
+  badgeDone,
+  badgeAlmost,
+  badgeNone,
+  heroBtn,
+  progressRow,
+  track,
+  fill,
+  tiles,
+  tile,
+  tileValue,
+  tileLabel,
+  tileOk,
+  tileWarn,
+  tileErr,
+  section,
+  sectionHead,
+  sectionIcon,
+  toneViolet,
+  toneBlue,
+  toneGreen,
+  sectionTitle,
+  sectionDesc,
+  items,
+  item,
+  itemError,
+  itemWarning,
+  itemInfo,
+  itemUnevaluated,
+  itemIcon,
+  itemMain,
+  itemTop,
+  itemTitleRow,
+  itemTitle,
+  itemMsg,
+  itemDetail,
+  itemActions,
+  chip,
+  chipWarn,
+  chipOk,
+  chipInfo,
+  value,
+  note,
+  noteLink,
+  orderRef,
+  btn,
+  btnBlue,
+  btnOrange,
+  spinner,
+  bxStatusSpin,
+  legend,
+  legendLabel,
+  legendItem,
+  legendOk,
+  legendWarn,
+  legendErr,
+  errorBanner,
+  skel,
+  bxStatusShimmer,
+  skelBlock,
+  skelWrap,
+  skelLines,
+  skelTitle,
+  skelSubtitle,
+  btnLg,
+  btnGhost,
+  picker,
+  pickerDesc,
+  pickerNote,
+  pickerLabel,
+  search,
+  pickerStatus,
+  pickerError,
+  orders,
+  ordersItem,
+  order,
+  orderSelected,
+  orderMain,
+  orderNumber,
+  orderMeta,
+  orderMissing
+};
+const VARIANTS = {
+  OK: "ok",
+  ERROR: "error",
+  WARNING: "warning",
+  INFO: "info",
+  UNEVALUATED: "unevaluated"
+};
+const TEST_ORDER_STATES = {
+  DISABLED: "disabled",
+  PENDING: "pending",
+  WAITING: "waiting",
+  SENT: "sent",
+  VALIDATED: "validated"
+};
+const flag = (item2, key) => {
+  var _a;
+  return ((_a = item2 == null ? void 0 : item2.extraData) == null ? void 0 : _a[key]) === true;
+};
+function splitEmphasis(text2) {
+  return String(text2 ?? "").split(/\*\*(.+?)\*\*/g).map((part, index) => ({ text: part, strong: index % 2 === 1 })).filter((part) => part.text !== "");
+}
+function resolveVariant(item2) {
+  if (flag(item2, "informational")) return VARIANTS.INFO;
+  if ((item2 == null ? void 0 : item2.isValid) === null || (item2 == null ? void 0 : item2.isValid) === void 0) return VARIANTS.UNEVALUATED;
+  if (flag(item2, "warning")) return VARIANTS.WARNING;
+  return item2.isValid ? VARIANTS.OK : VARIANTS.ERROR;
+}
+function flattenItems(sections) {
+  return Object.values(sections || {}).flat();
+}
+const isCounted = (item2) => resolveVariant(item2) !== VARIANTS.INFO;
+function hasBlockingErrors(items2) {
+  return items2.some((item2) => resolveVariant(item2) === VARIANTS.ERROR);
+}
+function getTestOrderState(testOrder, blocked) {
+  if (testOrder == null ? void 0 : testOrder.validationDate) return TEST_ORDER_STATES.VALIDATED;
+  if (testOrder == null ? void 0 : testOrder.polling) return TEST_ORDER_STATES.WAITING;
+  if (testOrder == null ? void 0 : testOrder.localSentAt) return TEST_ORDER_STATES.SENT;
+  return blocked ? TEST_ORDER_STATES.DISABLED : TEST_ORDER_STATES.PENDING;
+}
+const TEST_ORDER_ENABLED = false;
+function computeSummary(sections, testOrder, { includeTestOrder = TEST_ORDER_ENABLED } = {}) {
+  const items2 = flattenItems(sections);
+  const counted = items2.filter(isCounted);
+  const variants = counted.map(resolveVariant);
+  const configured = variants.filter((v) => v === VARIANTS.OK).length;
+  const itemWarnings = variants.filter((v) => v === VARIANTS.WARNING).length;
+  const errors = variants.filter((v) => v === VARIANTS.ERROR).length;
+  const evaluated = variants.filter((v) => v !== VARIANTS.UNEVALUATED).length;
+  const testState = getTestOrderState(testOrder, hasBlockingErrors(items2));
+  const testValid = includeTestOrder && testState === TEST_ORDER_STATES.VALIDATED ? 1 : 0;
+  const warnings2 = itemWarnings + (includeTestOrder && testState === TEST_ORDER_STATES.PENDING ? 1 : 0);
+  const total = evaluated + (includeTestOrder ? 1 : 0);
+  const progress = total === 0 ? 0 : Math.round((configured + testValid) / total * 100);
+  return { configured, warnings: warnings2, errors, progress, testState };
+}
+const getProgressBadge = (progress) => {
+  if (progress >= 100) return "done";
+  if (progress > 0) return "almost";
+  return "none";
+};
+const POLL_INTERVAL_MS = 1e4;
+const POLL_MAX_ATTEMPTS = 12;
+function getPollingOutcome({ previousDate, currentDate, attempts, maxAttempts = POLL_MAX_ATTEMPTS }) {
+  if (currentDate && currentDate !== previousDate) return "validated";
+  return attempts >= maxAttempts ? "timeout" : "continue";
+}
+const SECTIONS = [
+  {
+    key: "storeConfigurations",
+    title: "Configuración de tienda",
+    description: "Validaciones de configuración básica de WooCommerce",
+    icon: "gear",
+    tone: "blue"
+  },
+  {
+    key: "connection",
+    title: "Conexión",
+    description: "Credenciales y conexión con Blue Express",
+    icon: "plug",
+    tone: "violet"
+  },
+  {
+    key: "postIntegration",
+    title: "Post-integración",
+    description: "Estado de configuraciones técnicas de Blue Express",
+    icon: "truck",
+    tone: "green"
+  }
+];
+const ITEM_TITLES = {
+  credentials: "Credenciales WooCommerce",
+  apiConnection: "Conexión con Blue Express",
+  storeBillingAddress: "Dirección de facturación WooCommerce",
+  pluginVersion: "Versión del plugin Blue Express",
+  invoiceAddress: "Dirección de facturación",
+  shippingZones: "Zonas de envío en Chile",
+  labelData: "Datos necesarios para emisión de etiquetas",
+  ordersCapture: "Captura de órdenes hacia Blue",
+  pricingBlue: "Tarifas dinámicas Blue Express - API",
+  feePercentage: "Impuesto de cargo por servicio"
+};
+const VARIANT_LABELS = {
+  ok: "Configurado correctamente",
+  error: "Requiere atención",
+  warning: "Alerta",
+  info: "Información",
+  unevaluated: "Sin evaluar"
+};
+const HEADER = {
+  title: "Estado de integración",
+  subtitle: "Estado de integración con sistemas Blue Express",
+  update: "Actualizar mi integración",
+  progress: "Progreso de integración",
+  configured: "Configurados",
+  warnings: "Alertas",
+  errors: "Errores",
+  badge: { done: "Listo", almost: "Casi listo", none: "No configurado" }
+};
+const LEGEND = {
+  label: "Estado de ítems:",
+  ok: "Configurado correctamente",
+  warning: "Alerta",
+  error: "Requiere atención"
+};
+const LOAD_ERROR = {
+  message: "No pudimos cargar el estado de tu tienda. Revisa tu conexión e intenta de nuevo.",
+  retry: "Reintentar"
+};
+const MOCK_NOTICE = "Acción disponible en una próxima entrega.";
+const LABEL_DATA_PICKER = {
+  title: "Validar datos de una orden",
+  description: "Selecciona una orden de WooCommerce para comprobar que tiene teléfono, email y dirección. Así nos aseguramos de poder emitir etiquetas con Blue Express.",
+  searchLabel: "Buscar orden",
+  searchPlaceholder: "Número de orden o nombre del cliente (mín. 3 caracteres)…",
+  minCharsHint: "Escribe al menos 3 caracteres para buscar.",
+  confirm: "Validar orden",
+  confirming: "Validando…",
+  cancel: "Cancelar",
+  loading: "Cargando órdenes…",
+  noResults: "No se encontraron órdenes.",
+  loadError: "No pudimos cargar las órdenes.",
+  complete: "Completa",
+  missingPrefix: "Falta:"
+};
+const TEST_ORDER_PICKER = {
+  ...LABEL_DATA_PICKER,
+  title: "Probar creación de etiqueta",
+  description: "Selecciona una orden de WooCommerce para enviar una emisión de prueba a Blue Express y confirmar que los datos del pedido son correctos para futuras emisiones automáticas.",
+  note: "Nota importante: se enviará una emisión de prueba. La etiqueta solo se cobrará si la utilizas para realizar el envío. Las órdenes que ya fueron enviadas a Blue Express no están disponibles.",
+  confirm: "Crear etiqueta de prueba",
+  confirming: "Enviando…",
+  complete: "Disponible",
+  sent: (number) => `La orden #${number} fue enviada a Blue Express. Estamos esperando su confirmación.`,
+  confirmed: "Blue Express validó la orden de prueba.",
+  timeout: "La confirmación está tomando más tiempo del esperado. Revisa el estado de la integración en unos minutos."
+};
+const BADGE_CLASS = {
+  done: styles.badgeDone,
+  almost: styles.badgeAlmost,
+  none: styles.badgeNone
+};
+const StatusHeader = ({ summary, onUpdate }) => {
+  const { progress, configured, warnings: warnings2, errors } = summary;
+  const badge2 = getProgressBadge(progress);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: styles.hero, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.heroTop, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.heroId, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.heroIcon, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "store", size: 26 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles.heroTitle, children: HEADER.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.heroSub, children: HEADER.subtitle })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.heroActions, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${styles.badge} ${BADGE_CLASS[badge2]}`, children: HEADER.badge[badge2] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: styles.heroBtn, onClick: onUpdate, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "refresh", size: 16 }),
+          HEADER.update
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { role: "status", "aria-live": "polite", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.progressRow, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: HEADER.progress }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { children: [
+          progress,
+          "%"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.track, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.fill, style: { width: `${progress}%` } }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.tiles, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles.tile} ${styles.tileOk}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.tileValue, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "check", className: styles.icon }),
+          configured
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.tileLabel, children: HEADER.configured })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles.tile} ${styles.tileWarn}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.tileValue, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "warn", className: styles.icon }),
+          warnings2
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.tileLabel, children: HEADER.warnings })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles.tile} ${styles.tileErr}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.tileValue, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "x", className: styles.icon }),
+          errors
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.tileLabel, children: HEADER.errors })
+      ] })
+    ] })
+  ] });
+};
+const ActionButton = ({ action, onNavigate, onRun, disabled: disabled2 = false, busyLabel = null }) => {
+  const tone = action.type === "run" ? styles.btnBlue : styles.btnOrange;
+  const className = `${styles.btn} ${tone}`;
+  if (action.type === "external") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("a", { className, href: action.target, target: "_blank", rel: "noopener noreferrer", children: action.label });
+  }
+  const handleClick = () => action.type === "internal" ? onNavigate(action.target) : onRun(action.target);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className, disabled: disabled2, onClick: handleClick, children: busyLabel || action.label });
+};
+const VARIANT_CLASS = {
+  ok: "",
+  error: styles.itemError,
+  warning: styles.itemWarning,
+  info: styles.itemInfo,
+  unevaluated: styles.itemUnevaluated
+};
+const VARIANT_ICON = {
+  ok: "check",
+  error: "x",
+  warning: "warn",
+  info: "info",
+  unevaluated: "info"
+};
+const StatusItem = ({ item: item2, onNavigate, onRun }) => {
+  const variant = resolveVariant(item2);
+  const { value: value2, note: note2, noteTarget, chip: chip2, detail } = item2.extraData || {};
+  const actions2 = item2.actions || [];
+  const title2 = ITEM_TITLES[item2.id] || item2.id;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "li",
+    {
+      className: `${styles.item} ${VARIANT_CLASS[variant]}`,
+      "aria-label": `${title2}: ${VARIANT_LABELS[variant]}`,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: VARIANT_ICON[variant], className: styles.itemIcon }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.itemMain, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.itemTop, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.itemTitleRow, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.itemTitle, children: title2 }),
+              chip2 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${styles.chip} ${styles.chipInfo}`, children: chip2 }),
+              variant === "warning" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${styles.chip} ${styles.chipWarn}`, children: VARIANT_LABELS.warning })
+            ] }),
+            actions2.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.itemActions, children: actions2.map((action) => /* @__PURE__ */ jsxRuntimeExports.jsx(ActionButton, { action, onNavigate, onRun }, action.label)) })
+          ] }),
+          item2.msg && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.itemMsg, children: item2.msg }),
+          detail && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.itemDetail, children: splitEmphasis(detail).map(
+            (part, index) => part.strong ? /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: part.text }, index) : part.text
+          ) }),
+          value2 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.value, children: value2 }),
+          note2 && noteTarget && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: `${styles.note} ${styles.noteLink}`, onClick: () => onNavigate(noteTarget), children: note2 }),
+          note2 && !noteTarget && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.note, children: note2 })
+        ] })
+      ]
+    }
+  );
+};
+const TONE_CLASS = {
+  violet: styles.toneViolet,
+  blue: styles.toneBlue,
+  green: styles.toneGreen
+};
+const SectionCard = ({ section: section2, items: items2, onNavigate, onRun }) => /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.section, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHead, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.sectionIcon} ${TONE_CLASS[section2.tone]}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: section2.icon, size: 18 }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.sectionTitle, children: section2.title }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionDesc, children: section2.description })
+    ] })
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: styles.items, children: items2.map((item2) => /* @__PURE__ */ jsxRuntimeExports.jsx(StatusItem, { item: item2, onNavigate, onRun }, item2.id)) })
+] });
+const Legend = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.legend, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.legendLabel, children: LEGEND.label }),
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.legendItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "check", className: `${styles.icon} ${styles.legendOk}` }),
+    LEGEND.ok
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.legendItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "warn", className: `${styles.icon} ${styles.legendWarn}` }),
+    LEGEND.warning
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.legendItem, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(StatusIcon, { name: "x", className: `${styles.icon} ${styles.legendErr}` }),
+    LEGEND.error
+  ] })
+] });
+const StatusSkeleton = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.skelWrap, "aria-busy": "true", role: "status", "aria-label": "Cargando estado de integración", children: [0, 1].map((n) => /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.section, children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHead, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.skel} ${styles.sectionIcon}` }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.skelLines, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.skel} ${styles.skelTitle}` }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.skel} ${styles.skelSubtitle}` })
+    ] })
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.skel} ${styles.skelBlock}` }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${styles.skel} ${styles.skelBlock}` })
+] }, n)) });
+const restConfig = () => {
+  const params = window.WCCorreiosIntegrationAdminParams || {};
+  return { restUrl: params.rest_url || "/wp-json/wc-bluex/v1/", nonce: params.rest_nonce };
+};
+const buildUrl = (path, query) => {
+  const { restUrl } = restConfig();
+  const entries = Object.entries(query || {}).filter(([, value2]) => value2 !== void 0 && value2 !== "");
+  if (entries.length === 0) return `${restUrl}${path}`;
+  const separator = restUrl.includes("?") ? "&" : "?";
+  const search2 = entries.map(([key, value2]) => `${key}=${encodeURIComponent(value2)}`).join("&");
+  return `${restUrl}${path}${separator}${search2}`;
+};
+async function request(path, { method = "GET", query, body: body2, signal } = {}) {
+  const response = await fetch(buildUrl(path, query), {
+    method,
+    signal,
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json", "X-WP-Nonce": restConfig().nonce },
+    body: body2 ? JSON.stringify(body2) : void 0
+  });
+  let json = null;
+  try {
+    json = await response.json();
+  } catch {
+    json = null;
+  }
+  if (!response.ok || !(json == null ? void 0 : json.success)) {
+    throw new Error((json == null ? void 0 : json.message) || "No pudimos completar la solicitud. Intenta de nuevo.");
+  }
+  return json.data;
+}
+const getIntegrationStatus = (refresh = false, signal) => request("integration-status", { query: { refresh: refresh ? 1 : void 0 }, signal });
+const emitTestOrder = (orderId) => request("status/test-order/emit", { method: "POST", body: { orderId } });
+const goConfig = (target) => ({ label: "Ir a configuración", type: "internal", target });
+const openWoo = (label2 = "Ir a configuración") => ({ label: label2, type: "external", target: "#" });
+const connection = [
+  { id: "credentials", isValid: true, msg: "Llave de API con permisos de lectura y escritura.", extraData: { chip: "Blue Express - Mi tienda" }, actions: [openWoo("Ver credenciales")] },
+  { id: "apiConnection", isValid: true, msg: "Integración activa con tu cuenta Blue Express.", extraData: {} }
+];
+const storeConfigurations = [
+  {
+    id: "pluginVersion",
+    isValid: true,
+    msg: "Versión activa instalada en tu tienda.",
+    extraData: { informational: true, chip: "v3.4.0" }
+  },
+  {
+    id: "storeBillingAddress",
+    isValid: true,
+    msg: "Dirección de la tienda configurada en WooCommerce.",
+    extraData: { value: "Av. Libertador Bernardo O'Higgins 1234, Santiago, Región Metropolitana de Santiago" },
+    actions: [openWoo()]
+  }
+];
+const postOk = [
+  {
+    id: "invoiceAddress",
+    isValid: true,
+    msg: "Dirección configurada en Blue Express.",
+    extraData: { value: "Suecia 2345, Providencia, Región Metropolitana de Santiago" },
+    actions: [openWoo("Ir a Blue Express")]
+  },
+  {
+    id: "shippingZones",
+    isValid: true,
+    msg: "",
+    extraData: { value: "Región Metropolitana, Valparaíso", note: "2 zonas configuradas", noteTarget: "zonas-envio" }
+  },
+  {
+    id: "ordersCapture",
+    isValid: true,
+    msg: "Estado para emisión: Listo para enviar. Último envío correcto hace 5 minutos.",
+    extraData: {},
+    actions: [goConfig("configuracion")]
+  },
+  {
+    id: "pricingBlue",
+    isValid: true,
+    msg: "Tarifas Blue Express disponibles para: Express, Priority, Same Day.",
+    extraData: {}
+  }
+];
+const postIssues = [
+  {
+    id: "labelData",
+    isValid: true,
+    msg: "Para emitir etiquetas con Blue Express necesitamos el teléfono, el correo electrónico y la dirección del destinatario. Revisamos que tu checkout de WooCommerce exija estos campos como obligatorios.",
+    extraData: {
+      warning: true,
+      detail: "Campos faltantes obligatorios: **teléfono**."
+    },
+    actions: [{ label: "Ir a configuración", type: "external", target: "#" }]
+  },
+  {
+    id: "feePercentage",
+    isValid: true,
+    msg: "¡Atención! Se identificó que uno o más métodos de envío no tienen configurado el cargo por servicio al 19%. Configura ese valor en las zonas de envío para asegurar el cálculo correcto.",
+    extraData: { warning: true },
+    actions: [openWoo()]
+  }
+];
+const postFixed = [
+  { ...postIssues[0], isValid: true, msg: postIssues[0].msg, extraData: { detail: "Tu checkout exige teléfono, correo electrónico y dirección." }, actions: [] },
+  { ...postIssues[1], isValid: true, msg: "Cargo por servicio al 19% en todos los métodos.", extraData: {}, actions: [openWoo()] }
+];
+const MOCK_SCENARIOS = {
+  default: {
+    sections: { connection, storeConfigurations: [...storeConfigurations, postIssues[0]], postIntegration: [...postOk, ...postIssues.slice(1)] },
+    testOrder: { validationDate: null, orderIdShort: null, localSentAt: null, polling: false, ordersUrl: "#" }
+  },
+  complete: {
+    sections: { connection, storeConfigurations: [...storeConfigurations, postFixed[0]], postIntegration: [...postOk, ...postFixed.slice(1)] },
+    testOrder: {
+      validationDate: "2026-10-30T14:40:00Z",
+      orderIdShort: "1042",
+      localSentAt: null,
+      polling: false,
+      ordersUrl: "#"
+    }
+  },
+  empty: {
+    sections: { connection: [], storeConfigurations: [], postIntegration: [] },
+    testOrder: { validationDate: null, orderIdShort: null, localSentAt: null, polling: false, ordersUrl: "#" }
+  }
+};
+const LATENCY_MS = 600;
+function useMockStatus() {
+  const scenario = new URLSearchParams(window.location.search).get("bxMock") || "default";
+  const [state, setState] = reactExports.useState({ data: null, loading: true, error: null });
+  const timer = reactExports.useRef(null);
+  const load = reactExports.useCallback(() => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      if (scenario === "error") {
+        setState({ data: null, loading: false, error: true });
+        return;
+      }
+      setState({ data: MOCK_SCENARIOS[scenario] || MOCK_SCENARIOS.default, loading: false, error: null });
+    }, LATENCY_MS);
+  }, [scenario]);
+  reactExports.useEffect(() => {
+    load();
+    return () => clearTimeout(timer.current);
+  }, [load]);
+  return { ...state, reload: load };
+}
+function useIntegrationStatus() {
+  const [state, setState] = reactExports.useState({ data: null, loading: true, error: null });
+  const controller = reactExports.useRef(null);
+  const load = reactExports.useCallback(async (refresh) => {
+    var _a;
+    (_a = controller.current) == null ? void 0 : _a.abort();
+    const current = new AbortController();
+    controller.current = current;
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const data = await getIntegrationStatus(refresh, current.signal);
+      setState({ data, loading: false, error: null });
+    } catch (error2) {
+      if (current.signal.aborted) return;
+      setState((prev) => ({ ...prev, loading: false, error: error2.message || true }));
+    }
+  }, []);
+  reactExports.useEffect(() => {
+    load(false);
+    return () => {
+      var _a;
+      return (_a = controller.current) == null ? void 0 : _a.abort();
+    };
+  }, [load]);
+  const reload = reactExports.useCallback(() => load(true), [load]);
+  return { ...state, reload };
+}
+function useTestOrderPolling({ validationDate, reload, onValidated, onTimeout }) {
+  const [previousDate, setPreviousDate] = reactExports.useState(void 0);
+  const polling = previousDate !== void 0;
+  const latest = reactExports.useRef({ validationDate, reload, onValidated, onTimeout });
+  latest.current = { validationDate, reload, onValidated, onTimeout };
+  const start = reactExports.useCallback((currentDate) => setPreviousDate(currentDate ?? null), []);
+  reactExports.useEffect(() => {
+    if (!polling) return void 0;
+    let attempts = 0;
+    const timer = setInterval(() => {
+      var _a, _b;
+      attempts += 1;
+      const outcome = getPollingOutcome({ previousDate, currentDate: latest.current.validationDate, attempts });
+      if (outcome === "timeout") {
+        setPreviousDate(void 0);
+        (_b = (_a = latest.current).onTimeout) == null ? void 0 : _b.call(_a);
+        return;
+      }
+      if (outcome === "continue") latest.current.reload();
+    }, POLL_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [polling, previousDate]);
+  reactExports.useEffect(() => {
+    var _a, _b;
+    if (!polling) return;
+    if (getPollingOutcome({ previousDate, currentDate: validationDate, attempts: 0 }) === "validated") {
+      setPreviousDate(void 0);
+      (_b = (_a = latest.current).onValidated) == null ? void 0 : _b.call(_a);
+    }
+  }, [polling, previousDate, validationDate]);
+  return { polling, start };
+}
+const USE_MOCK = new URLSearchParams(window.location.search).has("bxMock");
+const useStatusSource = USE_MOCK ? useMockStatus : useIntegrationStatus;
+let toastCounter = 0;
+function StatusPanel({ setActiveSection }) {
+  var _a;
+  const { data, loading, error: error2, reload } = useStatusSource();
+  const [toast2, setToast] = reactExports.useState(null);
+  const [picker2, setPicker] = reactExports.useState(null);
+  const notify = reactExports.useCallback((message2, type) => {
+    toastCounter += 1;
+    setToast({ id: toastCounter, message: message2, type });
+  }, []);
+  const closeToast = reactExports.useCallback(() => setToast(null), []);
+  const goToConnection = reactExports.useCallback(() => setActiveSection("conexion"), [setActiveSection]);
+  const validationDate = ((_a = data == null ? void 0 : data.testOrder) == null ? void 0 : _a.validationDate) ?? null;
+  const handleConfirmed = reactExports.useCallback(() => notify(TEST_ORDER_PICKER.confirmed, "success"), [notify]);
+  const handleTimeout = reactExports.useCallback(() => notify(TEST_ORDER_PICKER.timeout, "warning"), [notify]);
+  const { polling, start: startPolling } = useTestOrderPolling({
+    validationDate,
+    reload,
+    onValidated: handleConfirmed,
+    onTimeout: handleTimeout
+  });
+  const testOrder = reactExports.useMemo(() => data ? { ...data.testOrder, polling } : null, [data, polling]);
+  const summary = reactExports.useMemo(
+    () => data ? computeSummary(data.sections, testOrder) : null,
+    [data, testOrder]
+  );
+  const handleRun = reactExports.useCallback(
+    (target) => {
+      if (USE_MOCK) {
+        notify(MOCK_NOTICE, "info");
+      }
+    },
+    [notify]
+  );
+  reactExports.useCallback(
+    async (order2) => {
+      const result = await emitTestOrder(order2.id);
+      setPicker(null);
+      startPolling(validationDate);
+      notify(TEST_ORDER_PICKER.sent(result.orderNumber), "success");
+      reload();
+    },
+    [notify, reload, startPolling, validationDate]
+  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.statusPanel, children: [
+    toast2 && /* @__PURE__ */ jsxRuntimeExports.jsx(Toast, { message: toast2.message, type: toast2.type, duration: 5e3, onClose: closeToast }, toast2.id),
+    error2 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.errorBanner, role: "alert", children: [
+      LOAD_ERROR.message,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: `${styles.btn} ${styles.btnBlue}`, onClick: reload, children: LOAD_ERROR.retry })
+    ] }),
+    loading && !data && /* @__PURE__ */ jsxRuntimeExports.jsx(StatusSkeleton, {}),
+    data && summary && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusHeader, { summary, onUpdate: goToConnection }),
+      SECTIONS.map((section2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SectionCard,
+        {
+          section: section2,
+          items: data.sections[section2.key] || [],
+          onNavigate: setActiveSection,
+          onRun: handleRun
+        },
+        section2.key
+      )),
+      TEST_ORDER_ENABLED,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {})
+    ] }),
+    TEST_ORDER_ENABLED
   ] });
 }
 const ENABLE_DEVTOOLS = String("false") === "true";
@@ -19976,7 +21311,9 @@ const App = () => {
   const [error2, setError] = reactExports.useState(void 0);
   const [settings, setSettings] = reactExports.useState(void 0);
   const [developerToolsOpen, setDeveloperToolsOpen] = reactExports.useState(false);
-  const [activeSection, setActiveSection] = reactExports.useState("inicio");
+  const [activeSection, setActiveSection] = reactExports.useState(
+    () => parseAuthReturn(window.location.search) ? "conexion" : "inicio"
+  );
   const [optionsEmissionOs, setOptionsEmissionOs] = reactExports.useState([]);
   const [activeIntegration, setActiveIntegration] = reactExports.useState(false);
   const handleError = (error22) => {
@@ -20009,6 +21346,9 @@ const App = () => {
   reactExports.useEffect(() => {
     validateIntegration();
   }, []);
+  reactExports.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [activeSection]);
   const saveSettingsDeveloperTools = reactExports.useCallback(async (settings2) => {
     try {
       await saveDeveloperSettingsService(settings2);
@@ -20043,6 +21383,8 @@ const App = () => {
   }, [developerToolsOpen, settings]);
   const renderContent = () => {
     switch (activeSection) {
+      case "estado":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(StatusPanel, { setActiveSection });
       case "inicio":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(
           Home,
@@ -20076,9 +21418,9 @@ const App = () => {
           {
             storeId,
             error: error2,
-            setLoading,
             validateIntegration,
-            isActiveIntegration: activeIntegration
+            isActiveIntegration: activeIntegration,
+            setActiveSection
           }
         );
       case "logs":
@@ -20095,8 +21437,8 @@ const App = () => {
         );
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$e.root, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$e.appLayout, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$i.root, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$i.appLayout, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Sidebar$1,
         {
@@ -20104,7 +21446,7 @@ const App = () => {
           setActiveSection
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$e.content, children: renderContent() })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$i.content, children: renderContent() })
     ] }),
     DeveloperToolsMemo,
     loading && /* @__PURE__ */ jsxRuntimeExports.jsx(Loading, { size: 100 })

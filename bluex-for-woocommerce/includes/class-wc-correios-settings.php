@@ -19,6 +19,11 @@ class WC_Correios_Settings
 {
 
 	/**
+	 * Supported versions of the pickup-point widget. v1 stays the default.
+	 */
+	const PUDO_WIDGET_VERSIONS = array('v1', 'v2');
+
+	/**
 	 * Settings key in wp_options table.
 	 *
 	 * @var string
@@ -70,6 +75,7 @@ class WC_Correios_Settings
 				'districtCode' => "SCL",
 				'districtsEnable' => 'yes',
 				'pudoEnable' => 'no',
+				'pudoWidgetVersion' => 'v1',
 				'active_logs' => 'no',
 			);
 
@@ -94,6 +100,28 @@ class WC_Correios_Settings
 	public function get_account_name()
 	{
 		return home_url() . "/";
+	}
+
+	/**
+	 * Whitelist a pickup-point widget version; anything unknown falls back to v1.
+	 *
+	 * @param mixed $value Raw value (POST/REST/stored option).
+	 * @return string 'v1' or 'v2'.
+	 */
+	public static function sanitize_pudo_widget_version($value)
+	{
+		$value = is_scalar($value) ? sanitize_key((string) $value) : '';
+		return in_array($value, self::PUDO_WIDGET_VERSIONS, true) ? $value : 'v1';
+	}
+
+	/**
+	 * Active pickup-point widget version. Installs without the key keep v1.
+	 *
+	 * @return string 'v1' or 'v2'.
+	 */
+	public function get_pudo_widget_version()
+	{
+		return self::sanitize_pudo_widget_version($this->get_setting('pudoWidgetVersion', 'v1'));
 	}
 
 	/**

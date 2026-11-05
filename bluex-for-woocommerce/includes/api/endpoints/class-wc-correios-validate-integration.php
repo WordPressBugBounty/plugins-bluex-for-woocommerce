@@ -30,6 +30,11 @@ class WC_Correios_Validate_Integration_Endpoint
             $settings = WC_Correios_Settings::get_instance();
             $api_client = new BlueX_API_Client();
 
+            // The UI asks right after (re)connecting: the status panel must not serve an older answer.
+            if (class_exists('WC_BlueX_Status_Facts')) {
+                WC_BlueX_Status_Facts::forget_blue();
+            }
+
             $response = $api_client->validate_integration_status();
 
             if (is_wp_error($response)) {

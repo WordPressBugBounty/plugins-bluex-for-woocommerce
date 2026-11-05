@@ -29,18 +29,23 @@
 		return;
 	}
 
-	const { select, subscribe } = wp.data;
+	const { select, subscribe, dispatch } = wp.data;
 	const config = window.bluex_checkout_params || {};
-	const usesServerSideShippingCleanup = config.server_side_shipping_cleanup === true ||
-		config.server_side_shipping_cleanup === '1' ||
-		config.server_side_shipping_cleanup === 'true';
+	// Widget v2 (pudo-widget-v2-core.js, loaded only when v2 is selected). Every v2
+	// path below is guarded by isV2; with v1 none of it runs.
+	const V2 = window.BluexPudoWidgetV2 || null;
+	const isV2 = !!V2 && V2.isActive(config);
+	let v2Bridge = null;
 
 	const WIDGET_CONTAINER_ID   = 'bluex-pudo-widget-container-blocks';
 	const HINT_ID               = 'bluex-pudo-pick-hint';
 
 	// Tracked state. `lastSelectedMethod` lets us detect transitions in/out of PUDO.
 	let lastSelectedMethod = null;
-	let pendingLegacyCleanup = null;
+	const pendingSelections = new Map();
+	let selectionQueue = Promise.resolve();
+	let pendingAgencyId = '';
+	let pendingPudoRate = null;
 
 	// ---- state -> code helpers -------------------------------------------------
 
@@ -136,19 +141,49 @@
 	// ---- server sync -----------------------------------------------------------
 
 	const pushAgencyToServer = (payload) => {
-		try {
-			if (wc.blocksCheckout && typeof wc.blocksCheckout.extensionCartUpdate === 'function') {
-				return Promise.resolve(wc.blocksCheckout.extensionCartUpdate({ namespace: 'bluex_pudo', data: payload }));
-			}
-		} catch (e) {
-			return Promise.reject(e);
+		const agencyId = String(payload.agency_id || '');
+		if (pendingAgencyId === agencyId && pendingSelections.has(agencyId)) return pendingSelections.get(agencyId);
+		const selected = getSelectedRate();
+		if (!pendingPudoRate && selected && selected.method_id === 'bluex-pudo') {
+			const rateId = selected.rate_id || selected.rateId || selected.id;
+			const choice = getShippingRateSelectionById(rateId);
+			if (choice) pendingPudoRate = { rateId, packageId: choice.packageId };
 		}
-		return Promise.reject(new Error('extensionCartUpdate unavailable'));
+		pendingAgencyId = agencyId;
+		const request = selectionQueue.then(() => {
+			if (wc.blocksCheckout && typeof wc.blocksCheckout.extensionCartUpdate === 'function') {
+				return wc.blocksCheckout.extensionCartUpdate({ namespace: 'bluex_pudo', data: payload });
+			}
+			throw new Error('extensionCartUpdate unavailable');
+		}).then(() => {
+			if (!pendingPudoRate || String(readPudoExtension().agency_id || '') !== agencyId) return;
+			const choice = getShippingRateSelectionById(pendingPudoRate.rateId);
+			const actions = dispatch('wc/store/cart');
+			if (choice && !choice.rate.selected && actions && typeof actions.selectShippingRate === 'function') {
+				return actions.selectShippingRate(pendingPudoRate.rateId, pendingPudoRate.packageId);
+			}
+		}).catch((error) => {
+			if (wc.wcBlocksData && typeof wc.wcBlocksData.processErrorResponse === 'function') {
+				wc.wcBlocksData.processErrorResponse(error);
+			}
+			throw error;
+		}).finally(() => {
+			if (pendingSelections.get(agencyId) === request) pendingSelections.delete(agencyId);
+			if (pendingSelections.size === 0) {
+				pendingAgencyId = '';
+				pendingPudoRate = null;
+				syncFromCart();
+			}
+		});
+		pendingSelections.set(agencyId, request);
+		selectionQueue = request.catch(() => {});
+		return request;
 	};
 
 	// ---- widget iframe ---------------------------------------------------------
 
 	const buildWidgetUrl = (confirmedAgencyId) => {
+		if (isV2) return V2.buildWidgetUrl(config, window.location.origin);
 		const baseUrl = config.base_path_url || '';
 		let url = (config.widget_base_urls && config.widget_base_urls.prod) || '';
 		if (baseUrl.indexOf('qa') !== -1)  url = config.widget_base_urls.qa;
@@ -201,8 +236,14 @@
 				iframe.src = url;
 				iframe.setAttribute('data-bluex-url', url);
 				iframe.title = 'Selector de Punto Blue Express';
+				if (isV2) {
+					iframe.setAttribute('allow', 'geolocation');
+					iframe.className = 'bluex-pudo-v2';
+				}
 				container.innerHTML = '';
 				container.appendChild(iframe);
+				// A new iframe will announce IFRAME_READY again.
+				if (v2Bridge) v2Bridge.reset();
 			}
 		} else if (url && iframe.getAttribute('data-bluex-url') !== url) {
 			iframe.src = url;
@@ -246,76 +287,8 @@
 		mountWidget(ext.agency_id || '', !!ext.agency_id);
 	};
 
-	// WooCommerce 9+ clears agency metadata from the server-side action fired by
-	// /cart/select-shipping-rate after Woo has stored the chosen rate. Launching
-	// extensionCartUpdate here would create a second concurrent cart writer whose
-	// slower response can restore stale PUDO state in the Blocks data store.
-	//
-	// For the declared WooCommerce 6-8 compatibility range we do not assume that
-	// action is available. We remember the target and wait until the cart store
-	// observes the official request start and finish with that exact rate selected.
-	const onPudoBecomesInactive = (selection) => {
-		LOG('PUDO inactive — unmounting widget.');
-		unmountWidget();
-
-		if (usesServerSideShippingCleanup) {
-			LOG('PUDO metadata cleanup delegated to the official shipping-selection action.');
-			return;
-		}
-
-		pendingLegacyCleanup = {
-			rateId: selection.rateId,
-			packageId: selection.packageId,
-			sawSelectionInProgress: false,
-		};
-	};
-
-	const syncLegacyPudoCleanup = () => {
-		if (usesServerSideShippingCleanup || !pendingLegacyCleanup) return;
-
-		let cartStore = null;
-		try { cartStore = select('wc/store/cart'); } catch (e) { return; }
-		if (!cartStore || typeof cartStore.isShippingRateBeingSelected !== 'function') return;
-
-		if (cartStore.isShippingRateBeingSelected()) {
-			pendingLegacyCleanup.sawSelectionInProgress = true;
-			return;
-		}
-
-		// A false selector value before observing the request in progress is just
-		// the capture phase of the click; it is not proof that Woo finished.
-		if (!pendingLegacyCleanup.sawSelectionInProgress) return;
-
-		const target = getShippingRateSelectionById(pendingLegacyCleanup.rateId);
-		if (
-			!target ||
-			!target.rate.selected ||
-			String(target.packageId) !== String(pendingLegacyCleanup.packageId)
-		) {
-			// The official request settled on something else. A stale cleanup must
-			// never clear the agency or overwrite that newer customer choice.
-			pendingLegacyCleanup = null;
-			return;
-		}
-
-		const pending = pendingLegacyCleanup;
-		pendingLegacyCleanup = null;
-		LOG('Legacy Blocks selection confirmed — clearing PUDO metadata.');
-		pushAgencyToServer({
-			agency_id: '',
-			agency_name: '',
-			agency_address: '',
-			agency_city: '',
-			agency_state: '',
-			selected_rate_id: pending.rateId,
-			package_id: pending.packageId,
-		}).catch((error) => WARN('Failed to clear PUDO selection', error));
-	};
-
-	// Clear confirmed PUDO state only from an explicit customer interaction.
-	// Store API refreshes can temporarily expose no selected rate (or let WC
-	// choose another rate when a quote is unavailable); neither is proof that
-	// the shopper intentionally abandoned the pickup point.
+	// Leaving PUDO only hides the widget: the confirmed point stays on the server so
+	// it is still selected when the shopper comes back.
 	const onShippingMethodChange = (event) => {
 		const input = event && event.target;
 		if (!input || input.type !== 'radio' || !input.checked) return;
@@ -324,18 +297,12 @@
 		const changedRate = changedSelection ? changedSelection.rate : null;
 		// Blocks names shipping radios as radio-control-*, so the input name is
 		// not a reliable discriminator. Matching the value against Store API
-		// shipping rates avoids both missing the event and clearing on payment radios.
-		if (!changedRate) return;
-		if (changedRate.method_id === 'bluex-pudo') {
-			pendingLegacyCleanup = null;
-			return;
-		}
-		const ext = readPudoExtension();
-		if (lastSelectedMethod === 'bluex-pudo' || ext.agency_id) {
-			onPudoBecomesInactive({
-				rateId,
-				packageId: changedSelection.packageId,
-			});
+		// shipping rates avoids reacting to payment radios.
+		if (!changedRate || changedRate.method_id === 'bluex-pudo') return;
+		pendingPudoRate = null;
+		if (lastSelectedMethod === 'bluex-pudo') {
+			LOG('PUDO inactive — unmounting widget.');
+			unmountWidget();
 		}
 	};
 
@@ -348,7 +315,6 @@
 	// flashes on; once extensions hydrate with the persisted agency_id, this
 	// reconciliation clears it. Idempotent on both sides of renderHint.
 	const syncFromCart = () => {
-		syncLegacyPudoCleanup();
 		const selected = getSelectedRate();
 		// During extensionCartUpdate Woo briefly publishes an empty rates snapshot.
 		// Preserve both the widget and lastSelectedMethod until a real selected rate
@@ -356,12 +322,12 @@
 		// the agency that the server just validated.
 		if (!selected) return;
 		const nowMethod = selected.method_id || null;
+		if (pendingSelections.size > 0 && pendingPudoRate && nowMethod !== 'bluex-pudo') return;
 
 		if (nowMethod === 'bluex-pudo' && lastSelectedMethod !== 'bluex-pudo') {
 			onPudoBecomesActive();
 		} else if (nowMethod !== 'bluex-pudo' && lastSelectedMethod === 'bluex-pudo') {
-			// Visual transition only. Server state is cleared exclusively by the
-			// explicit radio change listener above.
+			// Visual transition only: the confirmed point stays on the server.
 			unmountWidget();
 		} else if (nowMethod === 'bluex-pudo' && !document.getElementById(WIDGET_CONTAINER_ID)) {
 			// Recover if a re-render detached the widget.
@@ -411,16 +377,145 @@
 			renderHint(false);
 		}).catch((error) => {
 			WARN('PUDO selection rejected', error);
-			renderHint(true);
+			renderHint(!readPudoExtension().agency_id);
 		});
 	};
 
 	// ---- bootstrap -------------------------------------------------------------
 
+	// ---- widget v2 adapter -----------------------------------------------------
+	// Reads/writes the checkout address through the official cart store, takes the
+	// cart from the server (wc-ajax) and persists a selection like v1
+	// (extensionCartUpdate), so the server flow is shared.
+
+	const readBlocksAddress = () => {
+		const cartStore = select('wc/store/cart');
+		const data = cartStore && cartStore.getCustomerData ? cartStore.getCustomerData() : null;
+		const hasLocation = (a) => !!a && !!(a.city || a.address_1);
+		const a = (data && (hasLocation(data.shippingAddress) ? data.shippingAddress : data.billingAddress)) || {};
+		return V2.buildUserAddress({ state: a.state, city: a.city, address: a.address_1, complement: a.address_2 });
+	};
+
+	// Commune options WooCommerce offers for a state (null when the city is free text).
+	const getBlocksCityOptions = (state) => {
+		const params = window.wc_city_select_params;
+		if (!params || !params.cities) return null;
+		try {
+			const cities = JSON.parse(String(params.cities).replace(/&quot;/g, '"'));
+			return (cities.CL && cities.CL[state]) || null;
+		} catch (e) { return null; }
+	};
+
+	// The widget reports a detected location only when the checkout had no address or one it
+	// could not locate, so it replaces the typed values (unless the commune is already right).
+	const applyDetectedAddress = (detected) => {
+		const state = V2.normalizeState(detected.state);
+		const options = getBlocksCityOptions(state);
+		const city = options ? V2.matchCommune(detected.city, options) : String(detected.city || '').trim();
+		if (!state || !city) return;
+
+		const current = readBlocksAddress();
+		if (current.state === state && current.city === city) return;
+
+		const cartActions = dispatch('wc/store/cart');
+		if (!cartActions || typeof cartActions.setShippingAddress !== 'function') return;
+		const patch = { state: state, city: city, address_1: String(detected.address || '').trim() };
+		cartActions.setShippingAddress(patch);
+
+		// Keep billing in step only while it is still empty.
+		const data = select('wc/store/cart').getCustomerData();
+		const billing = (data && data.billingAddress) || {};
+		if (!billing.city && !billing.address_1 && typeof cartActions.setBillingAddress === 'function') {
+			cartActions.setBillingAddress(patch);
+		}
+	};
+
+	const cartSignature = () => {
+		const cart = getCartData();
+		const items = (cart && Array.isArray(cart.items)) ? cart.items : [];
+		return items.map((item) => (item.key || item.id) + ':' + item.quantity).join('|');
+	};
+
+	const initV2 = () => {
+		const cartLoader = V2.createCartLoader({ url: config.cart_endpoint, fetchFn: window.fetch.bind(window) });
+
+		v2Bridge = V2.createBridge({
+			config: config,
+			getIframe: () => document.getElementById('bluex-pudo-iframe'),
+			getPayload: () => cartLoader.get().then((cart) => {
+				if (!cart) return null;
+				const payload = Object.assign({}, cart, { userAddress: readBlocksAddress() });
+				const agencyId = readPudoExtension().agency_id;
+				if (agencyId) payload.selectedAgencyId = String(agencyId);
+				return payload;
+			}),
+			getCustomer: readBlocksAddress,
+			getPersistedAgencyId: () => pendingAgencyId || readPudoExtension().agency_id || '',
+			onSelection: (selection, trigger) => {
+				if (trigger === 'auto' && pendingSelections.size > 0) return;
+				pushAgencyToServer(selection).then(() => {
+					renderHint(false);
+				}).catch((error) => {
+					WARN('PUDO selection rejected', error);
+					renderHint(!readPudoExtension().agency_id);
+				});
+			},
+			onAddressDetected: applyDetectedAddress,
+		});
+
+		// The store notifies on every cart refresh: only react to real changes.
+		let lastCart = cartSignature();
+		let lastAddress = JSON.stringify(readBlocksAddress());
+		let lastWatched = JSON.stringify([readBlocksAddress(), readPudoExtension().agency_id || '']);
+		subscribe(() => {
+			const cart = cartSignature();
+			const address = JSON.stringify(readBlocksAddress());
+			if (address !== lastAddress) {
+				lastAddress = address;
+				v2Bridge.markAddressChanged();
+			}
+			const watched = JSON.stringify([readBlocksAddress(), readPudoExtension().agency_id || '']);
+			if (cart === lastCart && watched === lastWatched) return;
+			if (cart !== lastCart) cartLoader.invalidate();
+			lastCart = cart;
+			lastWatched = watched;
+			v2Bridge.schedule();
+		}, 'wc/store/cart');
+	};
+
+	// ---- bootstrap -------------------------------------------------------------
+
+	// WC re-renders the rates list after every recalculation and can drop the container
+	// without any cart store change, so the store subscription alone never re-mounts it.
+	const isPudoRadioChecked = () => {
+		const input = document.querySelector('input[type="radio"][value^="bluex-pudo"]');
+		return !!input && input.checked;
+	};
+
+	const ensureWidgetMounted = () => {
+		if (document.getElementById(WIDGET_CONTAINER_ID) || !isPudoRadioChecked()) return;
+		const ext = readPudoExtension();
+		mountWidget(ext.agency_id || '', !!ext.agency_id);
+	};
+
+	const watchWidgetContainer = () => {
+		if (typeof MutationObserver === 'undefined') return;
+		let timer = null;
+		new MutationObserver(() => {
+			if (timer !== null) return;
+			timer = setTimeout(() => {
+				timer = null;
+				ensureWidgetMounted();
+			}, 200);
+		}).observe(document.body, { childList: true, subtree: true });
+	};
+
 	const init = () => {
 		LOG('init()');
 		window.addEventListener('message', onWindowMessage);
 		document.addEventListener('change', onShippingMethodChange, true);
+		if (isV2) initV2();
+		watchWidgetContainer();
 
 		try {
 			subscribe(() => { syncFromCart(); }, 'wc/store/cart');

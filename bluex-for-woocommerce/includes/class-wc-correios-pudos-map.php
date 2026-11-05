@@ -23,15 +23,15 @@ class WC_Correios_PudosMap
 	 */
 	public function __construct()
 	{
-		
+
 		$configData = get_option('woocommerce_correios-integration_settings');
-		
+
 		if (isset($configData['pudoEnable']) && $configData['pudoEnable'] == "yes") {
 			add_action('init', array($this, 'init'));
 		} else {
 			bluex_log('warning', 'PUDOS: PUDO NOT enabled. pudoEnable = ' . ($configData['pudoEnable'] ?? 'not set'));
 		}
-		
+
 		// Comprobación con isset para evitar el error:
 		$this->_devMode = isset($configData['devOptions']) && $configData['devOptions'] === "yes";
 
@@ -41,7 +41,7 @@ class WC_Correios_PudosMap
 		} else {
 			$this->_basePathUrl = 'https://eplin.api.blue.cl';
 		}
-		
+
 	}
 
 	/**
@@ -49,7 +49,7 @@ class WC_Correios_PudosMap
 	 * Updated for modern WooCommerce compatibility.
 	 */
 	public function init()
-	{		
+	{
 		// Enqueue scripts and styles
 		add_action('wp_enqueue_scripts', array($this, 'frontend_scripts'));
 
@@ -61,7 +61,7 @@ class WC_Correios_PudosMap
 		// hidden inputs so the canonical ID, name and address travel with the POST.
 		add_action('woocommerce_checkout_after_order_review', array($this, 'render_custom_input'), 10);
 		add_action('woocommerce_after_shipping_rate', array($this, 'render_preview_data'), 10, 2);
-		
+
 		// Handle form processing
 		add_action('woocommerce_checkout_update_order_meta', array($this, 'save_custom_input_to_order_meta'), 10);
 
@@ -76,17 +76,17 @@ class WC_Correios_PudosMap
 		// fires per item BEFORE $order->add_item(), which is why the helper here
 		// does not save() — WC's own persist cycle handles it.
 		add_action('woocommerce_checkout_create_order_shipping_item', array($this, 'rewrite_bluex_pudo_to_ex_on_create'), 10, 4);
-		
+
 		// AJAX handlers
 		add_action('wp_ajax_clear_shipping_cache', array($this, 'clear_shipping_cache'));
 		add_action('wp_ajax_nopriv_clear_shipping_cache', array($this, 'clear_shipping_cache'));
-		
+
 		// Add checkout validation
 		add_action('woocommerce_checkout_process', array($this, 'validate_checkout_fields'));
-		
+
 		// Add custom checkout fields to order review
 		add_action('woocommerce_checkout_update_order_review', array($this, 'update_order_review_callback'));
-		
+
 	}
 
 	/**
@@ -102,7 +102,7 @@ class WC_Correios_PudosMap
 
 		if (is_checkout()) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
-			$asset_version = (WC_CORREIOS_VERSION ?? '1.0.0') . '.integr5684.2';
+			$asset_version = (WC_CORREIOS_VERSION ?? '1.0.0') . '.integr6192.7';
 
 			// Enqueue the main script with proper dependencies
 			wp_enqueue_script(
@@ -113,10 +113,13 @@ class WC_Correios_PudosMap
 				true
 			);
 
+			// Shared core of the widget v2 (no-op while v1 is selected).
+			WC_BlueX_Pudo_Widget_V2::enqueue_core($asset_version);
+
 			wp_enqueue_script(
 				'bluex-checkout-pudo',
 				plugins_url('assets/js/frontend/custom-checkout-map' . $suffix . '.js', WC_Correios::get_main_file()),
-				array('jquery', 'wc-checkout', 'bluex-pudo-widget-security'),
+				array_merge(array('jquery', 'wc-checkout', 'bluex-pudo-widget-security'), WC_BlueX_Pudo_Widget_V2::script_dependencies()),
 				$asset_version,
 				true
 			);
@@ -129,9 +132,9 @@ class WC_Correios_PudosMap
 				array(),
 				WC_CORREIOS_VERSION ?? '1.0.0'
 			);
-			
+
 			// Localize script with AJAX URL and nonce for security
-			wp_localize_script('bluex-checkout-pudo', 'bluex_checkout_params', array(
+			wp_localize_script('bluex-checkout-pudo', 'bluex_checkout_params', WC_BlueX_Pudo_Widget_V2::filter_params(array(
 				'ajax_url' => admin_url('admin-ajax.php'),
 				'nonce' => wp_create_nonce('bluex_checkout_nonce'),
 				'widget_base_urls' => array(
@@ -140,8 +143,8 @@ class WC_Correios_PudosMap
 					'dev' => 'https://widget-pudo.dev.blue.cl'
 				),
 				'base_path_url' => $this->_basePathUrl
-			));
-			
+			)));
+
 		}
 	}
 	/**
@@ -284,6 +287,28 @@ class WC_Correios_PudosMap
 	}
 
 	/**
+	 * Shipping destination from the posted checkout form: WooCommerce ships to the
+	 * billing address unless "ship to a different address" is checked.
+	 *
+	 * @param array $data Parsed post_data.
+	 * @return array
+	 */
+	private function get_posted_destination(array $data)
+	{
+		$prefix = !empty($data['ship_to_different_address']) ? 'shipping' : 'billing';
+		$field = function ($name) use ($data, $prefix) {
+			$value = $data[$prefix . '_' . $name] ?? '';
+			return is_scalar($value) ? sanitize_text_field((string) $value) : '';
+		};
+		$destination = array(
+			'state'     => $field('state'),
+			'city'      => $field('city'),
+			'address_1' => $field('address_1'),
+		);
+		return implode('', $destination) === '' ? array() : $destination;
+	}
+
+	/**
 	 * Mirror the PUDO state into the WC session on every AJAX checkout refresh.
 	 * Session values are what `WC_BlueX_Pudo::calculate_shipping` reads to
 	 * build the dynamic "Retiro en Punto Blue Express - <agency>" label and
@@ -306,6 +331,9 @@ class WC_Correios_PudosMap
 			return;
 		}
 
+		$destination = $this->get_posted_destination($data);
+		WC_Bluex_Pudo_Selection_State::invalidate_if_destination_changed(WC()->session, $destination);
+
 		$is_pudo_selected = $this->is_bluex_pudo_method_id_in_array(
 			isset($data['shipping_method']) && is_array($data['shipping_method']) ? $data['shipping_method'] : array()
 		);
@@ -323,6 +351,11 @@ class WC_Correios_PudosMap
 				// Reject the new candidate without destroying a previously-confirmed
 				// selection. Woo includes notices in the update_checkout response.
 				wc_add_notice($validated->get_error_message(), 'error');
+			} elseif (class_exists('WC_BlueX_Pudo') && !WC_BlueX_Pudo::selected_point_is_quotable($validated['agency_id'], $destination)) {
+				wc_add_notice(
+					__('No pudimos obtener la tarifa de este punto Blue Express. Elige otro punto o intenta nuevamente.', 'woocommerce-correios'),
+					'error'
+				);
 			} else {
 				// Persist canonical data returned by BlueX, never client-provided labels.
 				WC()->session->set('bluex_agency_id', $validated['agency_id']);
@@ -331,16 +364,12 @@ class WC_Correios_PudosMap
 				WC()->session->set('bluex_agency_address', $validated['agency_address']);
 				WC()->session->set('bluex_agency_city', $validated['agency_city']);
 				WC()->session->set('bluex_agency_state', $validated['agency_state']);
-				WC()->session->set('bluex_agency_region_code', $validated['agency_region_code']);
-				WC()->session->set('bluex_agency_district_code', $validated['agency_district_code']);
 				WC()->session->set('bluex_pudo_selected_quote_valid', false);
+				WC_Bluex_Pudo_Selection_State::remember_destination(WC()->session, $destination);
 			}
-		} else {
-			// Switching out of PUDO: clear ALL three keys so a stale agency
-			// name from a previous selection does not leak into a new PUDO
-			// render, and so `calculate_shipping` falls back to the base title.
-			$this->clear_agency_session();
 		}
+		// Switching to another method keeps any confirmed point: it must still be
+		// selected when the shopper comes back to PUDO.
 
 		// Invalidate the shipping-rate cache so `calculate_shipping()` — which
 		// fires immediately after this hook in WC_AJAX::update_order_review —
@@ -355,20 +384,6 @@ class WC_Correios_PudosMap
 				WC()->session->__unset('shipping_for_package_' . $package_key);
 			}
 		}
-	}
-
-	private function clear_agency_session()
-	{
-		WC()->session->__unset('bluex_agency_id');
-		WC()->session->__unset('bluex_agency_validated_id');
-		WC()->session->__unset('bluex_agency_name');
-		WC()->session->__unset('bluex_agency_address');
-		WC()->session->__unset('bluex_agency_city');
-		WC()->session->__unset('bluex_agency_state');
-		WC()->session->__unset('bluex_agency_region_code');
-		WC()->session->__unset('bluex_agency_district_code');
-		WC()->session->__unset('bluex_pudo_selected_quote_valid');
-		WC()->session->__unset('bluex_pudo_last_successful_quote');
 	}
 
 	/**
@@ -411,7 +426,7 @@ class WC_Correios_PudosMap
 		foreach ($packages as $package_key => $package) {
 			WC()->session->__unset('shipping_for_package_' . $package_key);
 			}
-			
+
 			// Clear WooCommerce transients
 			wc_delete_shop_order_transients();
 		}
@@ -422,7 +437,7 @@ class WC_Correios_PudosMap
 
 	/**
 	 * Retrieves the neutral widget URL based on the provided domain.
-	 * 
+	 *
 	 * The function analyzes the domain to determine if it belongs to the 'qa' or 'dev' environments.
 	 * @param string $domain The domain to analyze.
 	 * @return string The URL of the widget corresponding to the environment.

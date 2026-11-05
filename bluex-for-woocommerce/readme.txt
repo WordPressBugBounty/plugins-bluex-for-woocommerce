@@ -3,7 +3,7 @@ Contributors: @soporteblue
 Tags: blue express rates, live rates, shipping rates, blue express, woocommerce shipping
 Requires at least: 4.5
 Tested up to: 7.1
-Stable tag: 3.3.2
+Stable tag: 3.4.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -121,3 +121,9 @@ create a rest api user, this must be in the advanced options and deliver it to B
 * Fix: allow a validated, selected PUDO pickup point to be priced even when the address geolocation confidence is below 80%, without relaxing home-delivery or unvalidated pickup checks.
 * Fix: include the actual geolocation confidence percentage in the rejection warning.
 * Fix: price a confirmed PUDO pickup point with the region and district codes returned when the agency was validated, instead of geolocating it again. The second lookup could score 0% and block checkout with "No pudimos actualizar la tarifa del punto Blue Express".
+= 3.4.0 - 2026-11-02 =
+* New: "Estado de tienda" panel in the Blue Express settings. It checks the connection (WooCommerce API key and Blue Express integration), the store setup (plugin version, WooCommerce store address, shipping zones in Chile, 19% service fee, dynamic rates API and order capture) and the address registered in Blue Express, validates the recipient data (phone, email and address) of the last 5 orders, and shows the progress with alerts, errors and shortcuts to fix each item.
+* New: automatic connection flow. The seller only enters the integration ID and approves the connection in WooCommerce, with no API keys to type. The plugin creates the WooCommerce API key, shows each step of the process, applies the default settings and creates the shipping zones. Manual keys remain available as a fallback.
+* New: Punto Blue Express widget v2 for the Classic and Blocks checkouts (map and points list, geolocation, automatic point suggestion). It is selected with the new "Pickup widget version" option in the Blue Express settings and the two versions never run together. The selected point is kept across reloads and cleared when the delivery address changes, and the widget can correct an address it could not locate.
+* Improvement: every integration or update sets pickup points on and the pickup widget to v2. New integrations also take the origin region and commune from the store address registered in Blue Express; on updates, the seller's other settings are kept.
+* Improvement: new Connection screen with a welcome banner and simpler texts, and a redesigned Settings screen with cards and switches.

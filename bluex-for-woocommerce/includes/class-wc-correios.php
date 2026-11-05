@@ -65,6 +65,16 @@ class WC_Correios
 				WC_BlueX_Pudo_Zone_Migrator::init();
 			}
 
+			// Cart endpoint for the pickup-point widget v2 (registers only when v2 is selected).
+			if (class_exists('WC_BlueX_Pudo_Widget_V2')) {
+				WC_BlueX_Pudo_Widget_V2::init();
+			}
+
+			// Drop the saved PUDO fallback quote and cached rates when the cart changes.
+			if (class_exists('WC_Bluex_Pudo_Selection_State')) {
+				WC_Bluex_Pudo_Selection_State::init();
+			}
+
 			// Toggle watcher + admin notice. Only needed in admin contexts;
 			// the AJAX handlers also live there.
 			if (is_admin() && class_exists('WC_BlueX_Pudo_Zone_Notice')) {
@@ -151,7 +161,11 @@ class WC_Correios
 		include_once dirname(__FILE__) . '/class-wc-correios-settings.php';
 		include_once dirname(__FILE__) . '/logger/helper.php';
 		include_once dirname(__FILE__) . '/class-bluex-pudo-agency-validator.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-selection-state.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-package.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-widget-payload.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-widget-v2.php';
+		include_once dirname(__FILE__) . '/class-bluex-pudo-pricing-v2.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice.php';
 		include_once dirname(__FILE__) . '/class-bluex-pudo-nearby-service.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-webservice-international.php';
@@ -162,6 +176,7 @@ class WC_Correios
 		include_once dirname(__FILE__) . '/class-wc-correios-cart.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-blocks-integration.php';
 		include_once dirname(__FILE__) . '/class-wc-correios-pudos-map.php';
+		include_once dirname(__FILE__) . '/status/class-wc-bluex-order-sync-log.php'; // Used by the webhook
 		include_once dirname(__FILE__) . '/class-wc-correios-webhook.php'; // Depends on API Client
 		include_once dirname(__FILE__) . '/class-wc-correios-custom-order-status.php';
 		include_once dirname(__FILE__) . '/api/class-wc-correios-api.php'; // Loads endpoints which depend on API Client
@@ -171,6 +186,11 @@ class WC_Correios
 
 		// Blue Express Shipping Zone Automation
 		include_once dirname(__FILE__) . '/class-wc-bluex-shipping-zone-automation.php';
+
+		// Blue Express post-integration setup (defaults + zone provisioning)
+		include_once dirname(__FILE__) . '/class-wc-bluex-integration-defaults.php';
+		include_once dirname(__FILE__) . '/class-wc-bluex-integration-zones.php';
+		include_once dirname(__FILE__) . '/class-wc-bluex-integration-auth.php';
 
 		// Blue Express PUDO Zone Migrator (Action Scheduler-driven, runs on
 		// upgrade or first install when pudoEnable=yes; idempotent).

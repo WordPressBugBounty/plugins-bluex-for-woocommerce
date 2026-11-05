@@ -45,6 +45,22 @@ class WC_Correios_Webhook
 	private $api_client = null;
 
 	/**
+	 * The instance registered on boot. The status panel reuses it: a second instance would register
+	 * the order status hook twice and every real order would be sent twice.
+	 *
+	 * @var WC_Correios_Webhook|null
+	 */
+	private static $instance = null;
+
+	public static function instance()
+	{
+		if (null === self::$instance) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Get settings handler instance
 	 *
 	 * @return WC_Correios_Settings
@@ -100,6 +116,29 @@ class WC_Correios_Webhook
 	 */
 	public function map_order($order_id): ?string
 	{
+		$order_data = $this->build_order_payload($order_id);
+
+		if (null === $order_data) {
+			return null;
+		}
+
+		$order_json = json_encode([$order_data]);
+
+		if ($this->_devMode) {
+			bluex_log('info', "Webhook: Mapped Order JSON for order {$order_id}: " . $order_json);
+		}
+
+		return $order_json;
+	}
+
+	/**
+	 * Builds the order data the webhook sends to Blue Express. Shared by the real send and the panel's test order.
+	 *
+	 * @param int $order_id The order ID.
+	 * @return array|null The mapped order, or null when the order does not exist.
+	 */
+	public function build_order_payload($order_id): ?array
+	{
 		if ($this->_devMode) {
 			bluex_log('info', "Webhook: Start mapping order ID: {$order_id}");
 		}
@@ -148,13 +187,7 @@ class WC_Correios_Webhook
 		$order_data['seller'] = $this->_configData;
 		$order_data['storeId'] = home_url() . '/';
 
-		$order_json = json_encode([$order_data]);
-
-		if ($this->_devMode) {
-			bluex_log('info', "Webhook: Mapped Order JSON for order {$order_id}: " . $order_json);
-		}
-
-		return $order_json;
+		return $order_data;
 	}
 	/**
 	 * Retrieves the current URL details.
@@ -231,6 +264,7 @@ class WC_Correios_Webhook
 				$order_id_for_log = $order_data_array[0]['id'];
 			}
 			bluex_log('error', "Failed to decode mapped order JSON for order ID {$order_id_for_log} before sending webhook. JSON: " . $mappedOrderJson);
+			WC_BlueX_Order_Sync_Log::record(is_numeric($order_id_for_log) ? $order_id_for_log : 0, false, 'No se pudo armar la orden para enviarla a Blue Express.');
 			// Optionally send a log about the decoding failure itself? 
 			// $this->send_log_if_error('JSON Decode Error', ['raw_json' => $mappedOrderJson]); 
 			return;
@@ -245,14 +279,17 @@ class WC_Correios_Webhook
 
 			if (is_wp_error($response)) {
 				// Error is already logged by the API client, but we might want to send it to the log webhook too.
+				WC_BlueX_Order_Sync_Log::record($order_id, false, $response->get_error_message());
 				$this->send_log_if_error($response->get_error_message(), $payload);
 				return;
 			}
+			WC_BlueX_Order_Sync_Log::record($order_id, true);
 			// Optionally log success? The API client already logs the response.
 			// bluex_log('info', "Order webhook sent successfully for order ID {$order_id}. Response: " . json_encode($response));
 
 		} catch (Exception $e) { // Catch potential exceptions from API client or other issues
 			bluex_log('error', "Exception sending order webhook for order ID {$order_id}: " . $e->getMessage());
+			WC_BlueX_Order_Sync_Log::record($order_id, false, $e->getMessage());
 			// Send log about the exception
 			$this->send_log_if_error('Exception: ' . $e->getMessage(), $payload);
 			return;
@@ -324,4 +361,4 @@ class WC_Correios_Webhook
 	}
 }
 
-new WC_Correios_Webhook();
+WC_Correios_Webhook::instance();

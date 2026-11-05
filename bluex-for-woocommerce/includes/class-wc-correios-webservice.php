@@ -189,6 +189,7 @@ class WC_Correios_Webservice
 	protected $_pudoEnabled;
 	protected $_devMode;
 	protected $agency_id_override = null;
+	protected $nearest_pudo = false;
 
 	/**
 	 * Settings handler.
@@ -265,6 +266,16 @@ class WC_Correios_Webservice
 	public function set_agency_id($agency_id)
 	{
 		$this->agency_id_override = sanitize_text_field((string) $agency_id);
+	}
+
+	/**
+	 * Pricing v2 only: quote the closest pickup point when none is selected.
+	 *
+	 * @param bool $nearest Whether to quote the closest pickup point.
+	 */
+	public function set_nearest_pudo($nearest = true)
+	{
+		$this->nearest_pudo = (bool) $nearest;
 	}
 
 	/**
@@ -563,6 +574,7 @@ class WC_Correios_Webservice
 
 		// Destination details
 		$destination = $this->package['destination'] ?? [];
+		$use_v2 = WC_BlueX_Pudo_Widget_V2::is_active();
 
 		// A confirmed PUDO has its own pricing geography. Keep it separate from
 		// the package/customer destination so selecting a pickup point never
@@ -570,7 +582,8 @@ class WC_Correios_Webservice
 		// quoting the customer's address. Only use session geography when it
 		// belongs to the same server-validated agency; explicit preview quotes
 		// must continue using the current customer destination.
-		if ($this->id === 'bluex-pudo' && $agencyId && function_exists('WC') && WC()->session) {
+		// Widget v2 lists points around the customer's address, so it quotes from there.
+		if (!$use_v2 && $this->id === 'bluex-pudo' && $agencyId && function_exists('WC') && WC()->session) {
 			$session_agency_id = sanitize_text_field((string) WC()->session->get('bluex_agency_validated_id', ''));
 			$agency_city = sanitize_text_field((string) WC()->session->get('bluex_agency_city', ''));
 			$agency_state = sanitize_text_field((string) WC()->session->get('bluex_agency_state', ''));
@@ -583,6 +596,7 @@ class WC_Correios_Webservice
 				$destination['city'] = $agency_city;
 				$destination['state'] = $agency_state;
 				$destination['country'] = 'CL';
+				$destination['address_1'] = sanitize_text_field((string) WC()->session->get('bluex_agency_address', ''));
 			}
 		}
 		$regionCodeToFormat = $destination['state'] ?? '';
@@ -618,12 +632,15 @@ class WC_Correios_Webservice
 				'city'     => (string) $city_normalized,
 				'region'   => (string) $regionCode,
 				'postcode' => (string) ($destination['postcode'] ?? ''),
+				'street'   => (string) ($destination['address_1'] ?? $destination['address'] ?? ''),
 			),
 			'bultos'          => $bultos,
 			'price'           => round((float) $price, 2),
 			'agencyId'        => (string) ($agencyId ?? ''),
 			'service'         => (string) $this->service,
 			'familiaProducto' => $familiaProducto_for_key,
+			'pricingVersion'  => $use_v2 ? 'v2' : 'v1',
+			'nearest'         => $use_v2 && $this->nearest_pudo,
 		);
 		$cache_key = 'bluex_ws_rate_' . md5(wp_json_encode($cache_key_payload));
 		$cached_shipping = get_transient($cache_key);
@@ -631,13 +648,8 @@ class WC_Correios_Webservice
 			return $cached_shipping;
 		}
 
-		// A confirmed pickup point already carries the region/district codes that
-		// BlueX returned when the agency was validated. Re-geolocating it from a
-		// city name can score 0% and drop the quote, blocking checkout.
-		$bxGeoResult = $this->get_confirmed_pudo_geo($agencyId);
-		if (!$bxGeoResult) {
-			$bxGeoResult = $this->getComunasGeo($city_normalized, $regionCode, $agencyId);
-		}
+		// Get Geolocation data
+		$bxGeoResult = $this->getComunasGeo($city_normalized, $regionCode, $agencyId);
 
 		if (is_wp_error($bxGeoResult) || empty($bxGeoResult)) {
 			bluex_log('error', 'Failed to get geolocation data or bxGeo data is empty. Error: ' . (is_wp_error($bxGeoResult) ? $bxGeoResult->get_error_message() : 'Empty response'));
@@ -647,30 +659,8 @@ class WC_Correios_Webservice
 		if (isset($bxGeoResult["porcentageDeExito"])) {
 			$percentage = (int) rtrim($bxGeoResult["porcentageDeExito"], "%");
 			if ($percentage < 80) {
-				// A confirmed pickup point is identified by agency, not address-match score.
-				$session = function_exists('WC') && WC()->session ? WC()->session : null;
-				$selected_id = $session ? sanitize_text_field((string) $session->get('bluex_agency_id', '')) : '';
-				$validated_id = $session ? sanitize_text_field((string) $session->get('bluex_agency_validated_id', '')) : '';
-				$pickup = $bxGeoResult['pickupInfo'] ?? null;
-				$pickup_matches = is_array($pickup) && !empty($pickup);
-				if ($pickup_matches) {
-					foreach (array('agency_id', 'agencyId', 'id') as $key) {
-						if (isset($pickup[$key]) && (!is_scalar($pickup[$key])
-							|| (string) $pickup[$key] !== '' && !hash_equals($validated_id, sanitize_text_field((string) $pickup[$key])))) {
-							$pickup_matches = false;
-							break;
-						}
-					}
-				}
-				$confirmed_pudo = $this->id === 'bluex-pudo'
-					&& $agencyId && $selected_id !== '' && $validated_id !== ''
-					&& hash_equals($validated_id, $selected_id) && hash_equals($validated_id, (string) $agencyId)
-					&& $pickup_matches
-					&& !empty($bxGeoResult['regionCode']) && !empty($bxGeoResult['districtCode']);
-				if (!$confirmed_pudo) {
-					bluex_log('warning', "Geolocation match percentage too low ({$percentage}%). Aborting calculation.");
-					return $default_shipping;
-				}
+				bluex_log('warning', "Geolocation match percentage too low ({$percentage}%). Aborting calculation.");
+				return $default_shipping;
 			}
 		}
 
@@ -704,13 +694,21 @@ class WC_Correios_Webservice
 		}
 		bluex_log('info', "Log de precio enviado al pricing" . $price);
 
-		$pricingResponse = $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
+		$pricingResponse = $use_v2
+			? $this->fetchPriceV2($userData, $dadosGeo, $price, (string) $agencyId, $destination)
+			: $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
+
+		// A v2 outage must not leave the checkout without home delivery; pickup points have no v1 equivalent.
+		if ($use_v2 && is_wp_error($pricingResponse) && $this->id !== 'bluex-pudo' && !$agencyId) {
+			bluex_log('warning', 'Pricing v2 failed (' . $pricingResponse->get_error_message() . '), falling back to pricing v1.');
+			$pricingResponse = $this->fetchPrice($userData, $dadosGeo, $bultos, $familiaProducto, $price);
+		}
 
 		$pricing_code = is_array($pricingResponse) ? ($pricingResponse['code'] ?? 'unknown') : 'error';
 		bluex_log('info', 'Pricing API response code: ' . sanitize_text_field((string) $pricing_code));
 
 		if (is_wp_error($pricingResponse) || empty($pricingResponse['data'])) {
-			bluex_log('error', 'Failed to fetch pricing. Error: ' . (is_wp_error($pricingResponse) ? $pricingResponse->get_error_message() : 'Empty data in response'));
+			bluex_log('error', 'Failed to fetch pricing. Error: ' . (is_wp_error($pricingResponse) ? $pricingResponse->get_error_message() : 'Empty data in response' . (is_array($pricingResponse) && !empty($pricingResponse['message']) ? ' (' . sanitize_text_field((string) $pricingResponse['message']) . ')' : '')));
 			return $default_shipping;
 		}
 
@@ -729,6 +727,12 @@ class WC_Correios_Webservice
 
 			if ($shipping->isShipmentFree) {
 				$shipping->nameService .= " - Envío gratis";
+			}
+
+			if (!empty($pricingResponse['agency'])) {
+				$shipping->agencyId = $pricingResponse['agency']['id'];
+				$shipping->agencyName = $pricingResponse['agency']['name'];
+				$shipping->agencyAddress = $pricingResponse['agency']['address'];
 			}
 		} else {
 			// Use default error if API response code is not 00 or 01
@@ -814,36 +818,51 @@ class WC_Correios_Webservice
 	}
 
 	/**
-	 * Geolocation stored by WC_Bluex_Pudo_Agency_Validator for the confirmed agency.
+	 * Pricing v2: one cached quote per cart and destination serves every method.
 	 *
-	 * @param string|null $agencyId Agency being quoted.
-	 * @return array|null bxGeo-shaped result, or null to fall back to bxGeo.
+	 * @param array  $userData  Origin user settings.
+	 * @param array  $dadosGeo  Destination geography.
+	 * @param float  $price     Declared value.
+	 * @param string $agencyId  Selected pickup point, if any.
+	 * @param array  $destination Package destination.
+	 * @return array|WP_Error Response in pricing v1 shape or WP_Error.
 	 */
-	private function get_confirmed_pudo_geo($agencyId)
+	private function fetchPriceV2(array $userData, array $dadosGeo, float $price, string $agencyId, array $destination)
 	{
-		if ($this->id !== 'bluex-pudo' || !$agencyId || !function_exists('WC') || !WC()->session) {
-			return null;
+		if (!$this->api_client) {
+			bluex_log('error', 'API Client not initialized in fetchPriceV2');
+			return new WP_Error('client_error', 'API Client not initialized.');
 		}
-		$session = WC()->session;
-		$selected_id = sanitize_text_field((string) $session->get('bluex_agency_id', ''));
-		$validated_id = sanitize_text_field((string) $session->get('bluex_agency_validated_id', ''));
-		$region_code = sanitize_text_field((string) $session->get('bluex_agency_region_code', ''));
-		$district_code = sanitize_text_field((string) $session->get('bluex_agency_district_code', ''));
-		if (
-			$validated_id === '' || $region_code === '' || $district_code === ''
-			|| !hash_equals($validated_id, $selected_id)
-			|| !hash_equals($validated_id, (string) $agencyId)
-		) {
-			return null;
+
+		if (empty($dadosGeo['regionCode']) || empty($dadosGeo['districtCode'])) {
+			return new WP_Error('param_error', 'Missing destination state or district.');
 		}
-		return array(
-			'regionCode'   => $region_code,
-			'districtCode' => $district_code,
-			'pickupInfo'   => array(
-				'agency_id'   => $validated_id,
-				'agency_name' => sanitize_text_field((string) $session->get('bluex_agency_name', '')),
-			),
+
+		$payload = WC_BlueX_Pudo_Pricing_V2::build_payload(
+			['country' => 'CL', 'district' => $userData['districtCode'] ?? 'SCL'],
+			['country' => 'CL', 'state' => $dadosGeo['regionCode'], 'district' => $dadosGeo['districtCode']],
+			$this->get_settings_handler()->get_account_name(),
+			(new WC_Correios_Package($this->package))->get_bultos(true),
+			$price,
+			sanitize_text_field((string) ($destination['address_1'] ?? $destination['address'] ?? ''))
 		);
+
+		$rates_key = 'bluex_ws_v2_rates_' . md5(wp_json_encode($payload));
+		$rates = get_transient($rates_key);
+		if (!is_array($rates)) {
+			$rates = $this->api_client->get_pudo_pricing_v2($payload);
+			if (is_wp_error($rates)) {
+				return $rates;
+			}
+			if (!is_array($rates)) {
+				return new WP_Error('invalid_response', 'Pricing v2 returned an unexpected body.');
+			}
+			if (!empty($rates['rates'])) {
+				set_transient($rates_key, $rates, 5 * MINUTE_IN_SECONDS);
+			}
+		}
+
+		return WC_BlueX_Pudo_Pricing_V2::select_rate($rates, $this->service, $agencyId, $this->nearest_pudo && $agencyId === '');
 	}
 
 	/**

@@ -13,6 +13,11 @@
 	display: block;
 }
 
+/* Widget v2 renders the map and the point list together and needs more room. */
+#bluex-pudo-widget-container-blocks iframe.bluex-pudo-v2 {
+	height: 760px;
+}
+
 /* "Pick a point" hint shown above the iframe while PUDO is selected but no
    agency has been chosen yet. Paired with a server-side RouteException that
    blocks order placement in the same condition. */
